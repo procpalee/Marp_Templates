@@ -1,0 +1,29 @@
+{
+  "name": "test-markdown-output",
+  "version": "0.0.0",
+  "private": true,
+  "description": "md-to-marp conversion outputs + 9-theme showcase decks",
+  "scripts": {
+    "build:all-layouts": "marp showcase/showcase-all-layouts.md --html --allow-local-files -o output/showcase-all-layouts.html --theme-set ../samples/themes",
+    "build:tm-blue": "marp showcase/showcase-tm-blue.md --html --allow-local-files -o output/showcase-tm-blue.html --theme-set ../samples/themes",
+    "build:tm-green": "marp showcase/showcase-tm-green.md --html --allow-local-files -o output/showcase-tm-green.html --theme-set ../samples/themes",
+    "build:tm-orange": "marp showcase/showcase-tm-orange.md --html --allow-local-files -o output/showcase-tm-orange.html --theme-set ../samples/themes",
+    "build:tm-mono": "marp showcase/showcase-tm-mono.md --html --allow-local-files -o output/showcase-tm-mono.html --theme-set ../samples/themes",
+    "build:tm-keynote": "marp showcase/showcase-tm-keynote.md --html --allow-local-files -o output/showcase-tm-keynote.html --theme-set ../samples/themes",
+    "build:tm-business": "marp showcase/showcase-tm-business.md --html --allow-local-files -o output/showcase-tm-business.html --theme-set ../samples/themes",
+    "build:tm-lecture": "marp showcase/showcase-tm-lecture.md --html --allow-local-files -o output/showcase-tm-lecture.html --theme-set ../samples/themes",
+    "build:tm-demo": "marp showcase/showcase-tm-demo.md --html --allow-local-files -o output/showcase-tm-demo.html --theme-set ../samples/themes",
+    "build:tm-academic": "marp showcase/showcase-tm-academic.md --html --allow-local-files -o output/showcase-tm-academic.html --theme-set ../samples/themes",
+    "build:tm-rose": "marp showcase/showcase-tm-rose.md --html --allow-local-files -o output/showcase-tm-rose.html --theme-set ../samples/themes",
+    "build:tm-cyber": "marp showcase/showcase-tm-cyber.md --html --allow-local-files -o output/showcase-tm-cyber.html --theme-set ../samples/themes",
+    "build:showcase": "npm run build:all-layouts && npm run build:tm-blue && npm run build:tm-green && npm run build:tm-orange && npm run build:tm-mono && npm run build:tm-keynote && npm run build:tm-business && npm run build:tm-lecture && npm run build:tm-demo && npm run build:tm-academic && npm run build:tm-rose && npm run build:tm-cyber",
+    "build:alphalyzer": "marp slides-alphalyzer.md --html --allow-local-files -o output/alphalyzer.html --theme-set ../samples/themes",
+    "build:claude-excel-3": "marp slides-claude-excel-3.md --html --allow-local-files -o output/claude-excel-3.html --theme-set ../samples/themes",
+    "build:claude-excel-4": "marp slides-claude-excel-4.md --html --allow-local-files -o output/claude-excel-4.html --theme-set ../samples/themes",
+    "build:conversions": "npm run build:alphalyzer && npm run build:claude-excel-3 && npm run build:claude-excel-4",
+    "build": "npm run build:showcase && npm run build:conversions"
+  },
+  "devDependencies": {
+    "@marp-team/marp-cli": "^4.1.2"
+  }
+}

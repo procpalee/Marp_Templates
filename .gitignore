@@ -1,0 +1,27 @@
+# Build artifacts
+test_markdown_output/output/
+test_markdown_output/slides-*.md
+test_markdown_output/showcase/
+*.qa.md
+
+# Test / scratch files
+slides-test.md
+test.html
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS / tooling
+.DS_Store
+Thumbs.db
+.omc/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~

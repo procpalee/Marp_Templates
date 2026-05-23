@@ -1,0 +1,35 @@
+{
+  "name": "md-to-ppt-samples",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Marp 5-theme comparison samples",
+  "scripts": {
+    "build:01": "marp slides-01-minimal-light.md --html --allow-local-files -o output/01-minimal-light.html --theme-set themes",
+    "build:02": "marp slides-02-modern-dark.md --html --allow-local-files -o output/02-modern-dark.html --theme-set themes",
+    "build:03": "marp slides-03-academic-editorial.md --html --allow-local-files -o output/03-academic-editorial.html --theme-set themes",
+    "build:04": "marp slides-04-vivid-gradient.md --html --allow-local-files -o output/04-vivid-gradient.html --theme-set themes",
+    "build:05": "marp slides-05-warm-paper.md --html --allow-local-files -o output/05-warm-paper.html --theme-set themes",
+    "build:06": "marp slides-06-procpa.md --html --allow-local-files -o output/06-procpa.html --theme-set themes",
+    "build:07": "marp slides-07-tech-modern.md --html --allow-local-files -o output/07-tech-modern.html --theme-set themes",
+    "build:obsidian": "marp --no-stdin slides-obsidian-pkm.md --html --allow-local-files -o output/obsidian-pkm-new.html --theme-set themes && node -e \"const fs=require('fs'); fs.mkdirSync('output/themes', {recursive:true}); ['work_environment.png', 'procpa_dark2.png'].forEach(f => { if(fs.existsSync('themes/' + f)) fs.copyFileSync('themes/' + f, 'output/themes/' + f); });\"",
+    "build": "npm run build:01 && npm run build:02 && npm run build:03 && npm run build:04 && npm run build:05 && npm run build:06 && npm run build:07 && npm run build:obsidian",
+    "pdf:01": "marp slides-01-minimal-light.md --pdf --allow-local-files -o output/01-minimal-light.pdf --theme-set themes",
+    "pdf:02": "marp slides-02-modern-dark.md --pdf --allow-local-files -o output/02-modern-dark.pdf --theme-set themes",
+    "pdf:03": "marp slides-03-academic-editorial.md --pdf --allow-local-files -o output/03-academic-editorial.pdf --theme-set themes",
+    "pdf:04": "marp slides-04-vivid-gradient.md --pdf --allow-local-files -o output/04-vivid-gradient.pdf --theme-set themes",
+    "pdf:05": "marp slides-05-warm-paper.md --pdf --allow-local-files -o output/05-warm-paper.pdf --theme-set themes",
+    "pdf:06": "marp slides-06-procpa.md --pdf --allow-local-files -o output/06-procpa.pdf --theme-set themes",
+    "pdf:07": "marp slides-07-tech-modern.md --pdf --allow-local-files -o output/07-tech-modern.pdf --theme-set themes",
+    "pdf": "npm run pdf:01 && npm run pdf:02 && npm run pdf:03 && npm run pdf:04 && npm run pdf:05 && npm run pdf:06 && npm run pdf:07",
+    "watch:01": "marp slides-01-minimal-light.md --watch --html --allow-local-files --theme-set themes",
+    "watch:02": "marp slides-02-modern-dark.md --watch --html --allow-local-files --theme-set themes",
+    "watch:03": "marp slides-03-academic-editorial.md --watch --html --allow-local-files --theme-set themes",
+    "watch:04": "marp slides-04-vivid-gradient.md --watch --html --allow-local-files --theme-set themes",
+    "watch:05": "marp slides-05-warm-paper.md --watch --html --allow-local-files --theme-set themes",
+    "watch:06": "marp slides-06-procpa.md --watch --html --allow-local-files --theme-set themes",
+    "watch:07": "marp slides-07-tech-modern.md --watch --html --allow-local-files --theme-set themes"
+  },
+  "devDependencies": {
+    "@marp-team/marp-cli": "^4.1.2"
+  }
+}
