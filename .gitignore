@@ -2,6 +2,7 @@
 test_markdown_output/output/
 test_markdown_output/slides-*.md
 test_markdown_output/showcase/
+samples/templates/output/
 *.qa.md
 
 # Test / scratch files
