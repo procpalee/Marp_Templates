@@ -1,0 +1,572 @@
+/* @theme figma */
+/* ============================================================
+   figma — Multicolor Playful brand theme.
+   Designed from scratch (NOT a tech-modern derivative).
+   Source: VoltAgent/awesome-design-md (Figma DESIGN.md, MIT).
+   Brand language: black + white + saturated pastel blocks,
+   pill buttons (no square), figmaSans, frame/layer metaphor,
+   color blocks substitute elevation (no shadows on panels).
+   ============================================================ */
+
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@latest/dist/web/static/pretendard.min.css');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+/* ---------------------------------------------------------------
+   Tokens
+   --------------------------------------------------------------- */
+:root {
+  --ink: #000000;
+  --ink-mute: #1f1f1f;
+  --on-ink: #ffffff;
+
+  --canvas: #ffffff;
+  --canvas-soft: #f7f7f5;
+  --hairline: #e6e6e6;
+
+  --magenta: #ff3d8b;
+  --green: #1ea64a;
+
+  --block-lime:   #dceeb1;
+  --block-lilac:  #c5b0f4;
+  --block-navy:   #1f1d3d;
+  --block-cream:  #f5e9d4;
+  --block-mint:   #c4f0d0;
+  --block-pink:   #ffd8e2;
+  --block-coral:  #ff7262;
+  --block-yellow: #ffe45e;
+
+  --cursor-red:    #f24e1e;
+  --cursor-purple: #a259ff;
+  --cursor-blue:   #1abcfe;
+  --cursor-green:  #0acf83;
+  --cursor-pink:   #ff7262;
+
+  --font-sans: 'figmaSans', 'Inter', 'Pretendard', 'SF Pro Display', system-ui, sans-serif;
+  --font-mono: 'figmaMono', 'JetBrains Mono', 'SF Mono', menlo, monospace;
+}
+
+/* ---------------------------------------------------------------
+   Section base
+   --------------------------------------------------------------- */
+section {
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  padding: 64px 80px;
+  font-size: 18pt;
+  line-height: 1.45;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  position: relative;
+}
+
+/* ---------------------------------------------------------------
+   Typography (Figma — weight hierarchy, not opacity)
+   --------------------------------------------------------------- */
+h1 {
+  font-size: 56pt;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.0;
+  margin: 0 0 24px 0;
+  color: var(--ink);
+}
+h2 {
+  font-size: 22pt;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  margin: 0 0 14px 0;
+}
+h3 {
+  font-size: 16pt;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0 0 8px 0;
+}
+p, li {
+  font-size: 17pt;
+  line-height: 1.45;
+  color: var(--ink);
+  margin: 0 0 10px 0;
+  font-weight: 400;
+}
+strong { color: var(--ink); font-weight: 700; background: none; }
+em {
+  font-style: normal;
+  font-family: var(--font-mono);
+  font-size: 11pt;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+  color: var(--ink);
+  padding: 0;
+  margin-right: 4px;
+  background: none;
+  border: none;
+}
+a { color: var(--magenta); text-decoration: none; border-bottom: 2px solid currentColor; }
+ul, ol { margin: 0 0 16px 0; padding-left: 24px; }
+li::marker { color: var(--ink); }
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  background: var(--block-lime);
+  color: var(--ink);
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+pre {
+  background: var(--ink);
+  border-radius: 12px;
+  padding: 22px 26px;
+  margin: 14px 0;
+  font-size: 13pt;
+  line-height: 1.55;
+  overflow: hidden;
+}
+pre code { display: block; background: transparent; color: var(--on-ink); padding: 0; font-family: var(--font-mono); }
+blockquote {
+  border-left: 4px solid var(--ink);
+  padding: 4px 0 4px 22px;
+  margin: 16px 0;
+  background: none;
+  color: var(--ink);
+  font-size: 18pt;
+  font-weight: 500;
+}
+blockquote p { color: var(--ink); margin: 0; font-style: normal; }
+
+table { border-collapse: collapse; width: 100%; font-size: 15pt; margin: 14px 0 24px; }
+th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--hairline); }
+th { color: var(--ink); font-weight: 700; font-size: 12pt; text-transform: uppercase; letter-spacing: 0.06em; font-family: var(--font-mono); }
+td { color: var(--ink); }
+hr { display: none; }
+
+/* ---------------------------------------------------------------
+   Header / Footer / Pagination
+   --------------------------------------------------------------- */
+header {
+  position: absolute;
+  top: 28px;
+  left: 80px;
+  font-family: var(--font-mono);
+  font-size: 11pt;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink);
+  font-weight: 500;
+}
+footer {
+  position: absolute;
+  bottom: 28px;
+  left: 80px;
+  font-family: var(--font-mono);
+  font-size: 11pt;
+  color: var(--ink);
+}
+section::after {
+  content: attr(data-marpit-pagination);
+  position: absolute;
+  bottom: 22px;
+  right: 80px;
+  font-family: var(--font-mono);
+  font-size: 10pt;
+  color: var(--ink);
+  background: var(--ink);
+  color: var(--on-ink);
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+/* ===============================================================
+   Shell 3 — cover / section / end
+   =============================================================== */
+section.cover {
+  background: var(--canvas);
+  color: var(--ink);
+  justify-content: center;
+  align-items: flex-start;
+}
+section.cover h1 { font-size: 80pt; font-weight: 700; letter-spacing: -0.04em; line-height: 0.98; margin-bottom: 18px; max-width: 90%; }
+section.cover h2 { font-size: 20pt; font-weight: 500; color: var(--ink); margin-bottom: 44px; max-width: 60%; }
+section.cover p  { color: var(--ink); font-family: var(--font-mono); font-size: 12pt; text-transform: uppercase; letter-spacing: 0.10em; }
+section.cover::after, section.cover header, section.cover footer { display: none; }
+
+section.section {
+  background: var(--canvas-soft);
+  color: var(--ink);
+  justify-content: center;
+  align-items: flex-start;
+}
+section.section h1 { font-size: 104pt; font-weight: 700; letter-spacing: -0.045em; color: var(--ink); margin: 0; line-height: 0.95; }
+section.section h2 { font-size: 22pt; font-weight: 500; color: var(--ink); margin-top: 18px; }
+section.section::after { display: none; }
+
+section.end {
+  background: var(--canvas);
+  color: var(--ink);
+  justify-content: center;
+  align-items: flex-start;
+}
+section.end h1 { color: var(--ink); font-size: 72pt; font-weight: 700; letter-spacing: -0.04em; margin-bottom: 14px; }
+section.end h2 { color: var(--ink); font-size: 20pt; font-weight: 500; }
+section.end p  { color: var(--ink); font-family: var(--font-mono); font-size: 12pt; text-transform: uppercase; letter-spacing: 0.10em; }
+section.end::after, section.end header, section.end footer { display: none; }
+
+/* ===============================================================
+   12 BRAND LAYOUTS
+   =============================================================== */
+
+/* 1) mono-cover — pure black cover */
+section.mono-cover {
+  background: var(--ink);
+  color: var(--on-ink);
+  justify-content: center;
+  align-items: flex-start;
+}
+section.mono-cover h1 { color: var(--on-ink); font-size: 86pt; font-weight: 700; letter-spacing: -0.045em; line-height: 1.0; margin-bottom: 18px; }
+section.mono-cover h2 { color: var(--on-ink); font-size: 22pt; font-weight: 400; margin-bottom: 48px; max-width: 70%; }
+section.mono-cover p  { color: var(--on-ink); font-family: var(--font-mono); font-size: 12pt; text-transform: uppercase; letter-spacing: 0.10em; }
+section.mono-cover::after, section.mono-cover header, section.mono-cover footer { display: none; }
+
+/* 2) block-section — full pastel block section divider */
+section.block-section {
+  background: var(--block-lime);
+  color: var(--ink);
+  justify-content: center;
+  align-items: flex-start;
+  padding: 80px 80px;
+}
+section.block-section h1 { font-size: 128pt; font-weight: 700; letter-spacing: -0.045em; color: var(--ink); margin: 0; line-height: 0.9; }
+section.block-section h2 { font-size: 22pt; font-weight: 500; color: var(--ink); margin-top: 20px; }
+section.block-section.lilac  { background: var(--block-lilac); }
+section.block-section.coral  { background: var(--block-coral); color: var(--on-ink); }
+section.block-section.coral h1, section.block-section.coral h2 { color: var(--on-ink); }
+section.block-section.navy   { background: var(--block-navy); color: var(--on-ink); }
+section.block-section.navy h1, section.block-section.navy h2 { color: var(--on-ink); }
+section.block-section.yellow { background: var(--block-yellow); }
+section.block-section::after, section.block-section header, section.block-section footer { display: none; }
+
+/* 3) color-blocks — 6 saturated pastel blocks */
+section.color-blocks { padding: 48px 64px; }
+section.color-blocks h1 { font-size: 30pt; margin-bottom: 24px; font-weight: 700; }
+section.color-blocks .blocks {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 14px;
+  flex: 1;
+}
+section.color-blocks .blocks > div {
+  padding: 22px 24px;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  color: var(--ink);
+  min-height: 0;
+}
+section.color-blocks .blocks > div:nth-child(1) { background: var(--block-lime); }
+section.color-blocks .blocks > div:nth-child(2) { background: var(--block-lilac); }
+section.color-blocks .blocks > div:nth-child(3) { background: var(--block-cream); }
+section.color-blocks .blocks > div:nth-child(4) { background: var(--block-pink); }
+section.color-blocks .blocks > div:nth-child(5) { background: var(--block-mint); }
+section.color-blocks .blocks > div:nth-child(6) { background: var(--block-coral); color: var(--on-ink); }
+section.color-blocks .blocks h3 { font-size: 17pt; margin: 0 0 4px; color: inherit; }
+section.color-blocks .blocks p  { font-size: 13pt; margin: 0; color: inherit; opacity: 0.85; line-height: 1.4; }
+
+/* 4) marquee-strip — black ribbon strip top + content */
+section.marquee-strip {
+  padding: 0 !important;
+  display: grid;
+  grid-template-rows: 56px 1fr;
+}
+section.marquee-strip > .ribbon {
+  background: var(--ink);
+  color: var(--on-ink);
+  display: flex;
+  align-items: center;
+  padding: 0 28px;
+  gap: 48px;
+  font-family: var(--font-mono);
+  font-size: 12pt;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  overflow: hidden;
+  white-space: nowrap;
+}
+section.marquee-strip > .ribbon > span { opacity: 0.85; }
+section.marquee-strip > .ribbon > span:nth-child(2n) { opacity: 0.55; }
+section.marquee-strip > .body {
+  padding: 48px 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+section.marquee-strip > .body h1 { font-size: 56pt; font-weight: 700; letter-spacing: -0.04em; margin: 0 0 16px; line-height: 1.0; }
+section.marquee-strip > .body h2 { font-size: 22pt; font-weight: 500; color: var(--ink); margin: 0 0 28px; }
+section.marquee-strip > .body p { font-size: 17pt; color: var(--ink); margin: 0; }
+section.marquee-strip::after { bottom: 22px; right: 80px; }
+
+/* 5) frame-badge — slide framed with Figma "Frame N" corner badge */
+section.frame-badge {
+  padding: 48px 56px;
+  background: var(--canvas-soft);
+}
+section.frame-badge .frame {
+  flex: 1;
+  background: var(--canvas);
+  border-radius: 16px;
+  padding: 38px 42px;
+  border: 2px solid var(--cursor-blue);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+section.frame-badge .frame::before {
+  content: 'Frame ' attr(data-frame, '01');
+  position: absolute;
+  top: -22px;
+  left: -2px;
+  background: var(--cursor-blue);
+  color: var(--on-ink);
+  font-family: var(--font-mono);
+  font-size: 11pt;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  padding: 4px 10px;
+  border-radius: 4px 4px 0 0;
+  text-transform: uppercase;
+}
+section.frame-badge .frame h1 { font-size: 44pt; font-weight: 700; letter-spacing: -0.04em; margin: 0 0 14px; line-height: 1.05; }
+section.frame-badge .frame p { font-size: 17pt; color: var(--ink); margin: 0; max-width: 80%; }
+section.frame-badge .frame .dim {
+  position: absolute;
+  bottom: -18px;
+  right: 14px;
+  background: var(--canvas);
+  padding: 0 8px;
+  font-family: var(--font-mono);
+  font-size: 11pt;
+  color: var(--ink);
+  letter-spacing: 0.04em;
+}
+section.frame-badge::after, section.frame-badge header, section.frame-badge footer { display: none; }
+
+/* 6) multiplayer-cursors — 5 colored cursor labels on a frame */
+section.multiplayer-cursors {
+  padding: 48px 64px;
+  background: var(--canvas-soft);
+  position: relative;
+}
+section.multiplayer-cursors h1 { font-size: 30pt; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 16px; }
+section.multiplayer-cursors h2 { font-size: 17pt; color: var(--ink); margin-bottom: 24px; font-weight: 500; max-width: 60%; }
+section.multiplayer-cursors .canvas-frame {
+  flex: 1;
+  background: var(--canvas);
+  border: 1px dashed var(--hairline);
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+}
+section.multiplayer-cursors .cursor {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 11pt;
+  font-weight: 600;
+  color: var(--on-ink);
+  padding: 4px 10px;
+  border-radius: 0 8px 8px 8px;
+  white-space: nowrap;
+}
+section.multiplayer-cursors .cursor::before {
+  content: '▲';
+  position: absolute;
+  top: -14px;
+  left: -2px;
+  font-size: 14pt;
+  transform: rotate(-30deg);
+  color: inherit;
+}
+section.multiplayer-cursors .cursor.c1 { background: var(--cursor-red);    top: 16%; left: 12%; }
+section.multiplayer-cursors .cursor.c1::before { color: var(--cursor-red); }
+section.multiplayer-cursors .cursor.c2 { background: var(--cursor-purple); top: 28%; left: 60%; }
+section.multiplayer-cursors .cursor.c2::before { color: var(--cursor-purple); }
+section.multiplayer-cursors .cursor.c3 { background: var(--cursor-blue);   top: 50%; left: 22%; }
+section.multiplayer-cursors .cursor.c3::before { color: var(--cursor-blue); }
+section.multiplayer-cursors .cursor.c4 { background: var(--cursor-green);  top: 64%; left: 70%; }
+section.multiplayer-cursors .cursor.c4::before { color: var(--cursor-green); }
+section.multiplayer-cursors .cursor.c5 { background: var(--cursor-pink);   top: 78%; left: 40%; }
+section.multiplayer-cursors .cursor.c5::before { color: var(--cursor-pink); }
+
+/* 7) lilac-promo — full lilac promo with magenta CTA */
+section.lilac-promo {
+  background: var(--block-lilac);
+  color: var(--ink);
+  justify-content: center;
+  align-items: flex-start;
+  padding: 80px 96px;
+}
+section.lilac-promo h1 { font-size: 60pt; font-weight: 700; letter-spacing: -0.04em; line-height: 1.0; margin: 0 0 18px; max-width: 80%; }
+section.lilac-promo h2 { font-size: 22pt; font-weight: 500; color: var(--ink); margin-bottom: 36px; max-width: 60%; }
+section.lilac-promo .cta {
+  display: inline-block;
+  background: var(--magenta);
+  color: var(--on-ink);
+  font-weight: 700;
+  font-size: 17pt;
+  padding: 14px 30px;
+  border-radius: 999px;
+  letter-spacing: -0.005em;
+}
+section.lilac-promo p { color: var(--ink); font-family: var(--font-mono); font-size: 11pt; margin-top: 24px; letter-spacing: 0.10em; text-transform: uppercase; }
+
+/* 8) comment-thread — Figma comment bubble mockup */
+section.comment-thread { padding: 56px 80px; }
+section.comment-thread h1 { font-size: 28pt; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 22px; }
+section.comment-thread .thread {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex: 1;
+}
+section.comment-thread .thread > .comment {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 14px;
+  align-items: start;
+}
+section.comment-thread .thread > .comment .avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  color: var(--on-ink);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700;
+  font-size: 14pt;
+}
+section.comment-thread .thread > .comment:nth-child(1) .avatar { background: var(--cursor-red); }
+section.comment-thread .thread > .comment:nth-child(2) .avatar { background: var(--cursor-purple); }
+section.comment-thread .thread > .comment:nth-child(3) .avatar { background: var(--cursor-blue); }
+section.comment-thread .thread > .comment:nth-child(4) .avatar { background: var(--cursor-green); }
+section.comment-thread .thread > .comment .bubble {
+  background: var(--canvas);
+  border: 1px solid var(--hairline);
+  border-radius: 0 14px 14px 14px;
+  padding: 14px 18px;
+}
+section.comment-thread .thread > .comment .bubble .name { font-weight: 700; font-size: 13pt; margin-bottom: 4px; }
+section.comment-thread .thread > .comment .bubble .name .ts { font-weight: 400; color: var(--ink); margin-left: 8px; font-family: var(--font-mono); font-size: 11pt; opacity: 0.6; }
+section.comment-thread .thread > .comment .bubble p { font-size: 15pt; color: var(--ink); margin: 0; line-height: 1.45; }
+section.comment-thread .thread > .comment .bubble .react {
+  display: inline-flex; gap: 6px; margin-top: 10px;
+}
+section.comment-thread .thread > .comment .bubble .react > span {
+  background: var(--canvas-soft); padding: 2px 8px; border-radius: 999px; font-size: 11pt; border: 1px solid var(--hairline);
+}
+
+/* 9) template-tiles — 4 off-white tiles with thumbnails */
+section.template-tiles { padding: 56px 80px; }
+section.template-tiles h1 { font-size: 30pt; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 22px; }
+section.template-tiles .tiles {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  flex: 1;
+}
+section.template-tiles .tile {
+  background: var(--canvas-soft);
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--hairline);
+}
+section.template-tiles .tile .thumb {
+  border-radius: 8px;
+  flex: 1;
+  margin-bottom: 12px;
+  min-height: 0;
+}
+section.template-tiles .tile:nth-child(1) .thumb { background: var(--block-lime); }
+section.template-tiles .tile:nth-child(2) .thumb { background: var(--block-lilac); }
+section.template-tiles .tile:nth-child(3) .thumb { background: var(--block-coral); }
+section.template-tiles .tile:nth-child(4) .thumb { background: var(--block-mint); }
+section.template-tiles .tile .name { font-size: 14pt; font-weight: 700; color: var(--ink); }
+section.template-tiles .tile .meta { font-size: 11pt; color: var(--ink); font-family: var(--font-mono); margin-top: 2px; opacity: 0.6; letter-spacing: 0.04em; }
+
+/* 10) mono-quote — large quote on white */
+section.mono-quote {
+  background: var(--canvas);
+  justify-content: center;
+  align-items: flex-start;
+  padding: 88px 120px;
+}
+section.mono-quote h1 { display: none; }
+section.mono-quote blockquote {
+  font-size: 46pt;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: none;
+}
+section.mono-quote blockquote p:last-child {
+  font-family: var(--font-mono);
+  font-size: 13pt;
+  margin-top: 36px;
+  color: var(--ink);
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+  font-weight: 500;
+}
+
+/* 11) navy-product — navy block with code/UI mockup inside */
+section.navy-product {
+  background: var(--block-navy);
+  color: var(--on-ink);
+  padding: 56px 72px;
+}
+section.navy-product h1 { color: var(--on-ink); font-size: 36pt; font-weight: 700; letter-spacing: -0.03em; margin: 0 0 20px; }
+section.navy-product h2 { color: var(--on-ink); font-size: 18pt; font-weight: 400; margin-bottom: 26px; opacity: 0.75; max-width: 80%; }
+section.navy-product .mockup {
+  background: var(--canvas);
+  color: var(--ink);
+  border-radius: 12px;
+  padding: 22px 26px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+section.navy-product .mockup .tab {
+  font-family: var(--font-mono);
+  font-size: 11pt;
+  color: var(--ink);
+  letter-spacing: 0.06em;
+  margin-bottom: 10px;
+  opacity: 0.6;
+}
+section.navy-product .mockup pre { background: none; padding: 0; margin: 0; font-size: 12pt; box-shadow: none; }
+section.navy-product .mockup pre code { color: var(--ink); }
+
+/* 12) coral-end — full coral closing */
+section.coral-end {
+  background: var(--block-coral);
+  color: var(--on-ink);
+  justify-content: center;
+  align-items: flex-start;
+  padding: 96px 96px;
+}
+section.coral-end h1 { color: var(--on-ink); font-size: 96pt; font-weight: 700; letter-spacing: -0.045em; line-height: 0.95; margin: 0 0 16px; }
+section.coral-end h2 { color: var(--on-ink); font-size: 22pt; font-weight: 500; margin-bottom: 32px; opacity: 0.92; }
+section.coral-end p { color: var(--on-ink); font-family: var(--font-mono); font-size: 12pt; letter-spacing: 0.10em; text-transform: uppercase; opacity: 0.85; }
+section.coral-end::after, section.coral-end header, section.coral-end footer { display: none; }

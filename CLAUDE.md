@@ -1,25 +1,26 @@
 # MD to PPT — Project Working Rules
 
 이 프로젝트는 마크다운 → Marp 슬라이드 → HTML 변환 도구체인입니다.
-설계 단일 출처는 [`design.md`](./design.md), CSS는 [`samples/themes/`](./samples/themes/) 의 15 테마.
+각 테마는 [`themes/slide/<theme>/`](./themes/) 폴더에 자기완결형으로 존재하며, 디자인 시스템은 `themes/slide/<theme>/design.md`에 기술됩니다.
 
 ---
 
 ## 슬라이드 변환 요청 처리 (필수)
 
-사용자가 다음 중 어느 표현을 쓰든 **반드시 `md-to-deck` 스킬을 가장 먼저 호출**하세요:
+사용자가 다음 중 어느 표현을 쓰든 **반드시 `md-to-marp` 스킬(오케스트레이터)을 가장 먼저 호출**하세요:
 
 - "이 파일/문서/마크다운을 슬라이드로 변환"
 - "발표 자료로 만들어줘"
+- "강의 자료로"
 - "Marp으로 변환"
 - "PPT / 덱 / 프레젠테이션으로"
-- "/deck" 슬래시 명령
+- "/marp" 슬래시 명령
 
 **금지**:
 - `anthropic-skills:pptx` 호출 (이 프로젝트는 .pptx를 산출하지 않음, Marp HTML이 산출)
-- `anthropic-skills:theme-factory` 호출 (자체 15 테마 시스템 사용)
+- `anthropic-skills:theme-factory` 호출 (자체 테마 시스템 사용)
 - `web-artifacts-builder` 호출 (HTML은 Marp CLI가 생성)
-- 새로 스킬을 검색하거나 다른 변환기 추천 (`md-to-deck`가 이미 존재함)
+- 새로 스킬을 검색하거나 다른 변환기 추천 (`md-to-marp`가 이미 존재함)
 
 ---
 
@@ -27,75 +28,257 @@
 
 | 컴포넌트 | 경로 | 역할 |
 |---|---|---|
-| 변환 스킬 | `.claude/skills/md-to-marp/` | MD → Marp MD (25 레이아웃 자동 매칭) |
-| 오케스트레이터 | `.claude/skills/md-to-deck/` | 테마 선택 + 빌드 + QA + 재시도 |
-| 검증 에이전트 | `.claude/agents/marp-deck-reviewer.md` | 독립 컨텍스트 QA |
-| 슬래시 명령 | `.claude/commands/deck.md` | `/deck <file> [용도]` 명시 호출 |
-| 15 테마 CSS | `samples/themes/tm-*.css` | 자기완결형 (인라인 CSS) |
+| 오케스트레이터 | `.claude/skills/md-to-marp/` | 모드 선택 + obsidian-cleanup·md-to-marp-propca 호출 + 빌드 + QA + 재시도 + watch |
+| 옵시디언 전처리 | `.claude/skills/obsidian-cleanup/` | 옵시디언 MD → 표준 MD (테마 무관). wikilinks/embeds/콜아웃/frontmatter 정리 + 이미지 자산 복사 |
+| propca 자동매칭 | `.claude/skills/md-to-marp-propca/` | 표준 MD → propca-notion-style Marp MD. 21 레이아웃 + 8 인라인 헬퍼 휴리스틱 자동 매칭 (강의·교육·발표) |
+| 검증 에이전트 | `.claude/agents/marp-reviewer.md` | 독립 컨텍스트 QA. theme front matter로 propca/card-news 분기 |
+| 슬래시 명령 | `.claude/commands/marp.md` | `/marp <file> [watch] [용도]` — 원샷 빌드 + 선택 watch |
+| 테마 폴더 | `themes/slide/<theme>/` | 테마별 design.md + slides/{css,md,html} 트리플 |
+| 카드뉴스 폴더 | `themes/card-news/tech-modern/` | 4:5 카드뉴스 design.md + tech-modern-cards.css + sample.md |
+| 빌드 인프라 | `build/` | `package.json` + `build.cmd` (marp-cli 래퍼) |
 
 ---
 
-## 15 테마 카탈로그
+## 테마 카탈로그
 
 | 테마 | 톤 / 용도 |
 |---|---|
-| `tech-modern` | 라이트 블루 (베이스) |
-| `tm-blue` | 라이트 블루 (테크 일반) |
-| `tm-green` | 라이트 그린 (ESG/헬스) |
-| `tm-orange` | 라이트 오렌지 (스타트업/피치) |
-| `tm-mono` | 다크 모노 (럭셔리/미니멀) |
-| `tm-keynote` | 라이트 큰 폰트 (Apple 풍) |
-| `tm-business` | 라이트 차분 (IR/임원) |
-| `tm-lecture` | 라이트 큰 줄간격 (교육) |
-| `tm-demo` | 비비드 마젠타 (데모/프레스) |
-| `tm-academic` | 세리프 네이비 (학회/논문) |
-| `tm-rose` | 파스텔 핑크 (디자인/UX) |
-| `tm-cyber` | 네온 다크 (보안/해커톤) |
-| `tm-stripe` | 프리미엄 인디고/네이비 (핀테크/SaaS) |
-| `tm-shopify` | 다크 틸 (대시보드/커머스) |
-| `tm-linear` | 미니멀 보라 (툴체인/생산성) |
+| `tech-modern` | 라이트 블루 (베이스, 일반 테크 발표, fallback) |
+| `vercel` | 모노크롬 블랙앤화이트 + 0070f3 (프론트엔드/배포/Next.js) |
+| `notion` | 퍼플 + 파스텔 카드 (문서/위키/워크스페이스) |
+| `claude` | 따뜻한 크림 + 코랄 세리프 (AI/리서치/에디토리얼) |
+| `spotify` | 다크 + 비비드 그린 (미디어/엔터테인먼트/콘텐츠) |
+| `stripe` | 프리미엄 인디고 + 그라데이션 메시 (핀테크/결제/SaaS B2B) |
+| `figma` | 블랙앤화이트 + 8색 파스텔 블록 (디자인 시스템/콜라보) |
+| `apple` | 화이트 + parchment + 단일 Action Blue (제품 키노트) |
+| `linear` | 다크 near-black + 단일 라일락 + surface ladder (툴체인/생산성) |
+| `cursor` | 따뜻한 cream + 오렌지 + IDE mockup (AI-증강 IDE/에이전트 데모) |
+| `raycast` | 다크 + 4-step surface + 레드 stripe + ⌘K 팔레트 (런처/생산성) |
+| `supabase` | 화이트 + 민트 그린 + SQL/터미널 mockup (OSS 백엔드/Postgres) |
+| `airbnb` | 코랄 + 사진 우선 + 64pt rating (호스피탈리티/마켓플레이스) |
+| `nvidia` | 풀블랙/화이트 + brand green + 4 corner squares (하드웨어 AI/spec) |
+| `tesla` | 화이트/카본 + Electric Blue + 극단적 whitespace (자동차/럭셔리) |
 
 용도→테마 매핑은 [`.claude/skills/md-to-deck/references/theme-picker.md`](.claude/skills/md-to-deck/references/theme-picker.md) 참조.
+
+`tech-modern` 외 14 테마는 [VoltAgent/awesome-design-md](https://github.com/VoltAgent/awesome-design-md) (MIT)의 DESIGN.md 토큰을 기반. 브랜드 로고·상표는 사용하지 않음.
 
 ---
 
 ## 산출물 위치 규칙
 
-- **변환물**: `test_markdown_output/slides-<slug>.md`
-- **빌드물**: `test_markdown_output/output/<slug>.html`
-- **QA 리포트**: `test_markdown_output/output/<slug>.qa.md`
+| 종류 | 위치 |
+|---|---|
+| 테마 CSS | `themes/slide/<theme>/slides/<theme>.css` |
+| 쇼케이스 MD | `themes/slide/<theme>/slides/<theme>.md` |
+| 빌드 HTML | `themes/slide/<theme>/slides/<theme>.html` |
+| 디자인 문서 | `themes/slide/<theme>/design.md` |
 
-`<slug>`는 입력 파일명 기반 kebab-case. 임의의 다른 위치에 쓰지 마세요.
+사용자 변환물(`/deck` 워크플로 산출)은 별도 `output/<slug>.html` 형태로 저장될 수 있습니다 (md-to-deck SKILL.md 참조).
 
 ---
 
 ## 빌드 명령
 
 ```cmd
-cd test_markdown_output
-npx --yes @marp-team/marp-cli slides-<slug>.md ^
-    --html --allow-local-files ^
-    -o output/<slug>.html ^
-    --theme-set ../samples/themes
+cd build
+npm run build:<theme>      # 1회 빌드
+npm run watch:<theme>      # 변경 감지 + 자동 빌드
 ```
 
-- `--theme-set` 은 디렉터리째 지정 (15 테마 모두 등록)
-- `--allow-local-files` 누락하면 PDF에서 이미지 누락
+수동 호출:
+```cmd
+cd build
+npx --yes @marp-team/marp-cli ^
+  ..\themes\slide\<theme>\slides\<theme>.md ^
+  --html --allow-local-files ^
+  --theme-set ..\themes ^
+  -o ..\themes\slide\<theme>\slides\<theme>.html
+```
+
+- `--theme-set ..\themes`는 폴더를 재귀 스캔해 모든 `<theme>.css` 자동 등록
+- `--allow-local-files` 누락 시 PDF에서 로컬 이미지 누락
 - `--html` 필수 (인라인 `<div>` 파싱)
 
 ---
 
 ## CSS 변경 시 주의
 
-- 베이스(`tech-modern.css`) 수정 시 모든 `tm-*` 파생본도 함께 갱신 필요 (`@import` 사용 안 함, 자기완결형)
-- 새 레이아웃 추가는 [`samples/themes/tech-modern.css`](samples/themes/tech-modern.css) 끝에 append
-- 새 테마는 `tech-modern.css` 전체 복사 → `@theme` 라인 치환 → 끝에 override append
+- 각 테마는 **자기완결형** (`@import` 사용 안 함). 베이스 변경이 다른 테마로 자동 전파되지 않음
+- 베이스(`themes/slide/tech-modern/slides/tech-modern.css`) 수정 시 다른 테마 파생본도 함께 갱신해야 회귀 일관성 보장
+- 새 레이아웃 추가 위치:
+  - 모든 테마 공용 → `tech-modern.css` 끝에 append + 다른 테마들에도 동일 append
+  - 특정 테마 전용 → 해당 테마 CSS 끝에만 append
+- 새 테마 추가 절차:
+  1. `themes/slide/<brand>/` 폴더 + `slides/` 서브폴더 생성
+  2. `tech-modern/slides/tech-modern.css` 복사 → `slides/<brand>.css` (첫 줄 `/* @theme <brand> */`로 치환)
+  3. 파일 끝에 브랜드 토큰 override CSS append
+  4. `tech-modern.md` 복사 → `slides/<brand>.md` (front matter `theme: <brand>`로 치환)
+  5. `build/package.json`에 `build:<brand>` / `watch:<brand>` 스크립트 2행 추가
+  6. `themes/slide/<brand>/design.md` 생성 (출처 + 토큰 요약)
+  7. 위 테마 카탈로그 + theme-picker.md 키워드 매핑 갱신
+
+---
+
+## 브랜드 레이아웃 모델 (14 브랜드 테마)
+
+`tech-modern`을 제외한 14 브랜드 테마는 **처음부터 설계된 자기완결형 CSS**다. 26개 공용 레이아웃(split/grid-3/stats/timeline 등)은 정의되어 있지 않다. 대신 각 테마가 **셸 3개 (`cover`/`section`/`end`) + 브랜드 고유 12개 레이아웃**의 자체 어휘를 가진다.
+
+| 테마 | 브랜드 고유 12개 어휘 |
+|---|---|
+| `vercel` | mesh-cover, polarity-section, mono-statement, code-window, hairline-grid, polarity-pair, stack-shadow-feature, mesh-band, digit-marquee, code-pair, gradient-quote, mesh-end |
+| `notion` | navy-cover, purple-section, sticky-notes, database-rows, pastel-blocks, yellow-banner, workspace-split, toggle-list, block-features, pastel-quote, pricing-blocks, signup-end |
+| `claude` | serif-cover, editorial-section, editorial-spread, pull-quote-drop, coral-fullbleed, numbered-toc, tri-band, dark-mockup-card, author-bio, coral-vs-dark, serif-kpi, coral-thanks |
+| `spotify` | glow-cover, green-section, album-grid, playlist-rows, now-playing, pill-cloud, green-cta, vinyl-quote, lyric-stanza, chart-toplist, dark-card-row, pulse-end |
+| `stripe` | mesh-cover, indigo-section, polished-grid, code-dashboard, cream-band, tabular-stats, pricing-tier, indigo-cta, gradient-band, dual-mockup, ledger-row, cream-thanks |
+| `figma` | mono-cover, block-section, color-blocks, marquee-strip, frame-badge, multiplayer-cursors, lilac-promo, comment-thread, template-tiles, mono-quote, navy-product, coral-end |
+| `apple` | hero-product, dark-section, oversized-quote, spec-row, parchment-band, single-stat, product-pair, comparison-bar, palette-show, scroll-narrative, dim-section, soft-end |
+| `linear` | void-cover, violet-section, issue-list, status-board, surface-grid, command-palette, keyboard-shortcut, milestone-timeline, cycle-progress, surface-quote, integration-row, void-end |
+| `cursor` | editorial-cover, ide-section, ide-mockup, composer-chat, agent-timeline, diff-suggest, cream-grid, mono-feature, tab-stack, editor-pair, orange-cta, editorial-end |
+| `raycast` | stripe-cover, surface-section, palette-hero, extension-row, keycap-feature, app-grid, pill-tabs, red-stripe, command-result, dark-stat, feature-split, keycap-end |
+| `supabase` | mint-cover, night-section, sql-editor, schema-grid, dashboard-stack, log-stream, code-result, mono-stat, gh-badge, polished-grid, green-cta, night-end |
+| `airbnb` | photo-cover, rausch-section, listing-grid, search-pill, rating-hero, host-card, reservation-split, review-pair, experience-tiles, amenity-row, city-grid, rausch-end |
+| `nvidia` | hardware-cover, void-section, benchmark-bars, spec-table, corner-card-grid, large-numeric, hardware-hero, dual-chapter, link-row, green-stat, white-feature, void-end |
+| `tesla` | vehicle-cover, carbon-section, gallery-hero, category-2up, spec-strip, vehicle-3up, dashboard-mockup, feature-callout, velocity-stat, chart-pair, frosted-nav, monochrome-end |
+
+자세한 정의는 각 [`themes/slide/<theme>/design.md`](./themes/) §5 참조.
+
+**자동 매칭 가능 deck 테마**: `propca-notion-style` (md-to-marp-propca 스킬, 21 전용 레이아웃 + 8 인라인 헬퍼). 강의·교육·발표 컨텍스트 특화.
+
+기존 14 브랜드 테마(`vercel`/`notion`/`claude`/`spotify`/`stripe`/`figma`/`apple`/`linear`/`cursor`/`raycast`/`supabase`/`airbnb`/`nvidia`/`tesla`)는 **자동 매칭 부재** — 사용자가 `<!-- _class -->`를 수동으로 작성한 MD에서만 사용 가능. `tech-modern`은 이번 워크플로 개편으로 자동 매칭 대상에서 제외됨 (구 `md-to-marp` tech-modern 휴리스틱 제거).
+
+카드뉴스 모드는 `tech-modern-cards` 단일 테마 + 7 카드 레이아웃, `md-to-marp` 오케스트레이터에 내장된 휴리스틱으로 매칭.
+
+---
+
+## 카드뉴스 모드 (4:5 Threads/Instagram)
+
+위 16:9 deck 모드와 **별개의 파이프라인**. tech-modern 디자인 토큰(§2 Color, §3 Typography)을 그대로 계승하면서 1080×1350 세로 카드를 산출한다.
+
+### 트리거 키워드
+
+`purpose`에 다음 중 하나라도 매치되면 자동으로 `mode: card-news` 분기:
+- 인스타 / insta / instagram / 쓰레드 / threads
+- 카드뉴스 / card news / sns / 소셜 / social 카드
+
+명시적 `/deck` 호출 시 `mode=card-news` 인자로도 지정 가능.
+
+### 7개 카드 레이아웃
+
+| 클래스 | 역할 | 트리거 |
+|---|---|---|
+| `card-cover` | 표지 | 첫 슬라이드 (강제) |
+| `card-hook` | 후크/스와이프 유도 | H1 단독 + 본문 ≤1줄 + 후속 ≥3 |
+| `card-point` | 요점 (반복) | H2 + 본문/ul/ol (기본 분기) |
+| `card-quote` | 인용/권위 | blockquote 단독 |
+| `card-list` | 나열형 (1~5) | ol 3~5 항목 |
+| `card-cta` | 행동 유도 | 마지막 H1 + 팔로우/저장/@핸들/URL |
+| `card-end` | 엔딩 | 마지막 슬라이드 (CTA 미해당) |
+
+### 산출물 위치
+
+| 종류 | 위치 |
+|---|---|
+| 변환물 | `output/slides-<slug>-cards.md` |
+| 검수 HTML | `output/<slug>-cards.html` |
+| 카드 PNG (1080×1350) | `output/<slug>-cards/<slug>-cards.NNN.png` |
+| QA 리포트 | `output/<slug>-cards.qa.md` |
+| 디자인 출처 | `themes/card-news/tech-modern/design.md` |
+| CSS | `themes/card-news/tech-modern/tech-modern-cards.css` |
+| 샘플 원본 | `themes/card-news/tech-modern/sample.md` |
+
+### 2-pass 빌드 명령 (`build/`에서)
+
+```cmd
+cd build
+
+:: 1) HTML (검수용)
+npx --yes @marp-team/marp-cli ../output/slides-<slug>-cards.md ^
+    --html --allow-local-files ^
+    -o ../output/<slug>-cards.html ^
+    --theme-set ../themes/card-news/tech-modern
+
+:: 2) PNG 카드 (소셜 업로드용)
+npx --yes @marp-team/marp-cli ../output/slides-<slug>-cards.md ^
+    --images png --allow-local-files ^
+    -o ../output/<slug>-cards/<slug>-cards.png ^
+    --theme-set ../themes/card-news/tech-modern
+```
+
+`--theme-set`은 16:9 deck 모드와 **다른 경로**(`themes/card-news/tech-modern/`)를 사용. 두 CSS는 같은 폴더에 두지 않는다.
+
+### 카드뉴스 모드 금지
+
+- 16:9 클래스(`cover`/`section`/`split`/`grid-3`/`stats`/`timeline`/`compare`/`cards`/`agenda`/`bg-full`/`end`) 사용 금지 — `card-*` 네임스페이스만
+- 슬라이드 10장 초과 금지 (캐러셀 상한)
+- 본문 200자/8줄 초과 금지
+- 본문 20pt 미만 폰트 금지 (모바일 가독성)
+- CSS 토큰 외 인라인 HEX 색상 금지
+
+---
+
+## SNS 자동 게시 (Threads + LinkedIn)
+
+빌드된 카드뉴스를 `npm run publish:cards <slug>` 한 줄로 **Threads 캐러셀** + **LinkedIn Document Share** 동시 게시. 반자동 (CLI 1회 실행, 스케줄러 없음).
+
+### 워크플로
+
+```
+/deck <원본.md> 인스타 카드뉴스   →  PNG 7장 + HTML 빌드
+/caption <slug>                    →  .caption.md 초안 (LLM 자동 + 사용자 수정)
+npm run publish:cards <slug>       →  PDF 빌드 + 양 플랫폼 게시 + log
+```
+
+### 1회성 셋업
+
+- 토큰 발급 가이드: [`docs/PUBLISH_SETUP.md`](./docs/PUBLISH_SETUP.md)
+- `.env.example`을 `.env`로 복사하고 토큰 4개 채우기 (Threads 2, LinkedIn 2)
+- `cd build && npm install` (dotenv 의존성)
+
+### 옵션 플래그
+
+```cmd
+npm run publish:cards <slug> -- --dry-run         :: 사전 검증만, 실제 게시 X
+npm run publish:cards <slug> -- --threads-only    :: Threads만
+npm run publish:cards <slug> -- --linkedin-only   :: LinkedIn만 (PDF)
+npm run publish:cards <slug> -- --force           :: 24h 내 중복 게시 우회
+```
+
+### 산출물 (기존 `output/<slug>-cards/` 폴더 통합)
+
+| 파일 | 용도 |
+|---|---|
+| `<slug>-cards.NNN.png` | Threads 캐러셀 (7장) |
+| `<slug>-cards.pdf` | LinkedIn Document Share (1개) |
+| `<slug>-cards.caption.md` | 플랫폼별 캡션·해시태그 (frontmatter만 publish 대상) |
+| `publish.log` | append-only 게시 이력 |
+
+### 핵심 컴포넌트
+
+| 파일 | 역할 |
+|---|---|
+| `.claude/commands/caption.md` | `/caption <slug>` 슬래시 명령 |
+| `build/publish.cmd` | Windows 진입점 |
+| `build/scripts/publish/index.js` | 오케스트레이션 (argv, preflight, 순차 호출) |
+| `build/scripts/publish/caption.js` | `.caption.md` frontmatter 파서 |
+| `build/scripts/publish/pdf.js` | Marp `--pdf` + mtime 캐시 |
+| `build/scripts/publish/threads.js` | Meta Threads Graph API 캐러셀 |
+| `build/scripts/publish/linkedin.js` | LinkedIn Document Share |
+| `build/scripts/publish/image-host.js` | PNG 공개 URL 발급 (0x0.st / GitHub) |
+| `build/scripts/publish/log.js` | publish.log append + 중복 가드 |
+
+### 제약
+
+- **Threads**: 캐러셀 2~20장 (현 구현 7장 기준). 250 posts/24h rate limit.
+- **LinkedIn**: PDF Document Share 1개. 토큰 60일 만료.
+- **PNG 호스팅**: Threads API가 공개 URL 요구 → 0x0.st(기본) 또는 GitHub raw branch.
+- **토큰**: 절대 commit 금지. `.env`는 `.gitignore`로 보호됨.
 
 ---
 
 ## 검증 원칙
 
-`marp-deck-reviewer` 에이전트는 **독립 컨텍스트로 실행**되어야 합니다.
+`marp-reviewer` 에이전트는 **독립 컨텍스트로 실행**되어야 합니다.
 - 같은 세션의 변환 컨텍스트를 공유하지 말 것 (합리화 편향 회피)
 - Agent 도구로 호출하고 결과(리포트)만 수령
 - 파일 수정 권한은 reviewer에게 주지 말 것 (Read/Grep/Glob/Bash만)

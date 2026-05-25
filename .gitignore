@@ -1,9 +1,22 @@
 # Build artifacts
-test_markdown_output/output/
-test_markdown_output/slides-*.md
-test_markdown_output/showcase/
+output/*.html
+output/slides-*.md
+output/*-cards/
+output/*.qa.md
+output/showcase/
 samples/templates/output/
 *.qa.md
+
+# SNS publish CLI: PDF + caption + log inside theme card-news folders
+themes/card-news/**/*.pdf
+themes/card-news/**/publish.log
+themes/card-news/**/*.caption.md
+
+# Secrets (OAuth tokens for Threads / LinkedIn / image host)
+.env
+.env.local
+.env.*.local
+!.env.example
 
 # Test / scratch files
 slides-test.md

@@ -1,266 +1,394 @@
 ---
 name: md-to-marp
-description: 임의의 마크다운 원본을 Tech Modern 테마(v2.1, 25 레이아웃)의 Marp 슬라이드 마크다운으로 변환. H1/H2/H3 계층, 코드, 표, 인용, GitHub 콜아웃, YAML frontmatter, 이미지 다중 배치를 슬라이드로 분절하고 25종 레이아웃 클래스(cover/section/agenda/split/grid-3/stats/timeline/icon-list/compare/bg-full/hero-quote/cards/callout/terminal/end + big-number/pricing-card/chart-caption/kpi-row/two-image/image-quote/gallery-4/before-after/qa/thanks-contact/session-break/vertical-timeline/pyramid)를 자동 매칭. 입력은 원본 .md 경로, 출력은 test_markdown_output/slides-<slug>.md.
+description: 마크다운 파일(옵시디언 또는 표준)을 받아 Marp 슬라이드 HTML로 한 번에 변환하는 오케스트레이터. 두 가지 모드 — (1) deck 모드: propca-notion-style 16:9 슬라이드 (강의·교육·발표 자료 기본), (2) card-news 모드: 4:5 Threads/Instagram 카드뉴스 (purpose에 인스타/카드뉴스/sns 키워드 매치 시). 파이프라인은 obsidian-cleanup → md-to-marp-propca → Marp HTML 빌드 → marp-reviewer QA → (선택) watch 모드. 출력은 output/<slug>/<slug>.html (+ cleaned.md, marp.md, qa.md, assets/). card-news 모드는 기존 output/<slug>-cards/*.png 구조 유지.
 ---
 
-# md-to-marp (v2.1)
+# md-to-marp (v2.0)
 
-원본 마크다운을 **Tech Modern Marp 슬라이드 덱**(25 레이아웃)으로 변환한다.
-디자인 시스템 단일 출처는 프로젝트 루트 [`design.md`](../../design.md), CSS는 [`samples/themes/tech-modern.css`](../../samples/themes/tech-modern.css) 와 8 파생 테마(`tm-{blue|green|orange|mono|keynote|business|lecture|demo}.css`).
+**End-to-end 워크플로**: 옵시디언 또는 표준 마크다운 → 모드 결정 → (옵시디언 전처리 →) Marp MD 변환 → HTML 빌드 → 독립 QA → (선택) watch 모드.
+
+`obsidian-cleanup`, `md-to-marp-propca` 스킬과 `marp-reviewer` 에이전트를 오케스트레이션하는 상위 레이어.
 
 ---
 
 ## 입출력 계약
 
 ### 입력
-- **필수:** 원본 마크다운 파일 경로(절대/상대) 또는 본문 텍스트
-- **선택:**
-  - `slug` — 출력 파일명. 기본은 입력 파일명에서 추출
-  - `header` — front matter `header:` 값. 기본 frontmatter `series`/`book_id`에서 추출, 없으면 `''`
-  - `footer` — front matter `footer:` 값. 기본 `''`
-  - `presenter` — 표지 발표자 라인. 기본 frontmatter `author`에서 추출
-  - `theme` — `tech-modern`(기본) / `tm-blue` / `tm-green` / `tm-orange` / `tm-mono` / `tm-keynote` / `tm-business` / `tm-lecture` / `tm-demo`
 
-### 출력
-- **파일 1개:** `test_markdown_output/slides-<slug>.md`
-- **빌드 안내:**
-  ```cmd
-  cd test_markdown_output
-  npx --yes @marp-team/marp-cli slides-<slug>.md --html --allow-local-files -o output/<slug>.html --theme-set ../samples/themes
-  ```
+| 필드 | 필수 | 설명 |
+|---|---|---|
+| `source` | ✅ | 마크다운 파일 경로 (절대/상대). 옵시디언 또는 표준 형식 모두 지원 |
+| `purpose` | ❌ | 자연어 용도. 카드뉴스 키워드 검출 시 mode=card-news로 분기 |
+| `mode` | ❌ | `deck`(기본) 또는 `card-news`. 미지정 시 `purpose`에서 자동 감지 |
+| `slug` | ❌ | 출력 파일명. 기본은 source 파일명 기반 |
+| `watch` | ❌ | true면 빌드 후 watch 프로세스 background 시작 |
+| `max_retries` | ❌ | QA 실패 시 자동 수정 재시도 횟수. 기본 2 |
+| `skip_qa` | ❌ | QA 건너뛰기. 기본 false |
+
+### 출력 (deck 모드 — propca-notion-style)
+
+```
+output/<slug>/
+  <slug>.cleaned.md       ← obsidian-cleanup 산출 (옵시디언이 아니어도 정리본)
+  <slug>.marp.md          ← md-to-marp-propca 산출
+  <slug>.html             ← Marp HTML 빌드
+  <slug>.qa.md            ← marp-reviewer 리포트
+  assets/                 ← 옵시디언 이미지 복사본 (있을 때)
+```
+
+### 출력 (card-news 모드 — tech-modern-cards)
+
+기존 flat 구조 유지 (호환성):
+```
+output/
+  slides-<slug>-cards.md  ← 카드뉴스 Marp MD
+  <slug>-cards.html       ← 검수 HTML
+  <slug>-cards/*.png      ← 1080×1350 PNG 카드 7장
+  <slug>-cards.qa.md      ← QA 리포트
+```
 
 ### 보장 사항
-1. front matter는 항상 `theme:` 지정 (인자 또는 `tech-modern`)
-2. 첫 슬라이드는 무조건 `<!-- _class: cover -->`
-3. 한 슬라이드 본문 8줄(~600자) 이하로 자동 분할
-4. 원본의 모든 H2 텍스트가 결과 덱 어딘가에 살아남음
-5. fenced code의 언어 태그 보존, 표 셀 내용 변경 금지
-6. cover/section/end/qa/thanks-contact는 `_paginate: false`, `_header: ''`, `_footer: ''`
-7. GitHub 콜아웃(`> [!INFO]` 등)은 무조건 `<div class="callout xxx">` 로 변환
-8. YAML frontmatter는 추출 후 본문에서 제거하고 cover/header에 재배치
 
-### 비보장 (보수적 결정)
-- 본문 강조어 자동 추출은 패스 (의도 왜곡 방지)
-- 이미지 URL 유효성 검사 안 함
-- 사용자 문체/어휘 변경 금지
-- 이미지 경로 수정 안 함 (로컬 경로면 빌드 안내 메시지만 출력)
+1. `mode` 미지정 시 `purpose`에서 자동 감지 (§2)
+2. deck 모드 = propca-notion-style 고정 (다른 14 브랜드 테마는 자동 매칭 부재)
+3. 빌드 실패 시 즉시 에러 보고하고 중단
+4. QA FAIL + `max_retries > 0`이면 이슈 기반 자동 수정 후 재빌드·재QA
+5. `watch` 활성 시 초기 빌드 + QA 완료 후 watch 프로세스를 background 시작 (QA는 watch 모드에선 재실행하지 않음)
+6. 최종 결과는 항상 PASS 또는 명시적 FAIL 리포트 동반
 
 ---
 
-## 작업 흐름
-
-### 1) 원본 분석
-
-순서대로 처리:
-
-**1-1) YAML frontmatter 추출**
-- 선두 `^---\n` ~ `---\n` 블록 감지
-- 키 추출 및 본문에서 제거. 사용 키:
-  - `subject` / `title` → 원본에 H1 없을 때 cover H1 으로 사용
-  - `author` / `presenter` → cover 발표자 라인
-  - `date` / `last_synced` → cover 날짜
-  - `book_id` / `series` → front matter `header:` 값
-
-**1-2) 구조 추출**
-- 헤딩 트리(H1/H2/H3 위치·텍스트·번호 패턴)
-- fenced code 블록(언어, 시작/끝 라인)
-- blockquote 블록 (첫 줄 `[!TOKEN]` 검사)
-- table 블록 (열·행 수, 셀 길이)
-- image 라인 (URL, 인라인 vs 단독)
-- ol / ul 리스트 (개수, 항목 길이, `**bold** —` 리드인 여부)
-- `→` / `->` 분리자가 있는 인라인 텍스트
-
-### 2) 슬라이드 분절
-
-**분절 우선순위:**
-1. **첫 H1** → cover (없으면 frontmatter `title`/`subject` 사용. 둘 다 없으면 파일명 사용)
-2. **한국어 `## N.` 패턴 검사**: 형제 H2 중 3개 이상이 `^\d+\.\s+(.+)$` 매칭이면 → 각각 `<!-- _class: section -->` 챕터 divider로 (제목 = `# 0N` + `## {나머지}`). 짝수 번째는 `section dark` 교차
-3. **나머지 H2** → 새 슬라이드 시작
-4. **H3 다층 번호 `### N.N.N`**: depth ≥3이면 새 슬라이드 시작 안 함. 부모 슬라이드 본문에 `<strong>` 리드인으로 합침
-5. **본문 8줄 또는 ~600자 초과** → 다음 슬라이드로 분할. 헤딩 없으면 `H2 (계속)` 형태로
-6. **마지막 H1이 `Q&A`/`질문`** → qa 슬라이드
-7. **마지막 H1이 `감사합니다`/`Thanks`** + 연락처(email/`@`) → thanks-contact
-8. **마지막 H1이 `감사합니다`/`Thanks` 단독** → end
-9. **부재** → end 슬라이드 자동 추가
-
-### 3) 레이아웃 자동 매칭 (휴리스틱 26종)
-
-#### 기존 14종
-
-| # | 입력 패턴 | 출력 | 신뢰도 | 폴백 |
-|---|---|---|---|---|
-| 1 | 첫 H1 + 부제 + 발표자 라인 | `cover` | 高 | — |
-| 2 | H2 단독 슬라이드 (본문 ≤ 1줄) | `section` (or `section dark` 짝수번째) | 高 | content |
-| 3 | blockquote 첫 줄 `[!TOKEN]` | callout (§2.2 표 참조) | 高 | content |
-| 4 | blockquote만 단독 (≥ 2줄, 마커 없음) | `hero-quote` | 高 | content |
-| 5 | 첫 슬라이드 직후 ol (3~5항목, 각 ≤ 1줄) | `agenda` | 高 | content |
-| 6 | 본문 중간 ol (3~5항목, `**bold** —` 리드인 없음) | `timeline` | 中 | content |
-| 7 | H3 카드 3개 연속 (각 H3 + 짧은 본문) | `grid-3` | 高 | cards |
-| 8 | H3(숫자 1~4글자, "%", "×" 포함) + 짧은 본문 4쌍 | `stats` | 高 | grid-3 |
-| 9 | h2 + ul 두 묶음 대등 + "vs/대비/비교" 키워드 | `compare` | 高 | split |
-| 10 | h2 + ul 두 묶음 대등 (양쪽 각 ≥3 항목, 이미지 없음) | `split` | **中** ↓ | grid-3 / cards / icon-list 우선 |
-| 11 | ul 모든 항목 첫 단어가 `*tag*` 또는 콜론 종료 카테고리 | `icon-list` | 高 | content |
-| 12 | 본문 + 단일 이미지 (본문 4~7줄) | `![bg right:40%]` 일반 | 中 | content |
-| 13 | 이미지 단독 + 한두 줄 텍스트 | `bg-full` | 高 | content |
-| 14 | 마지막 H1 `감사합니다`/`Thanks`/`Q&A`/없을 시 추가 | `end` / `qa` / `thanks-contact` | 高 | — |
-
-#### v2 신규 11종
-
-| # | 입력 패턴 | 출력 | 신뢰도 | 폴백 |
-|---|---|---|---|---|
-| 15 | H2 + 단일 숫자/% 라인 + 캡션 ≤1 | `big-number` | 高 | content |
-| 16 | 인라인 이미지 정확히 2장 + 본문 ≤3줄 | `two-image` | 高 | content |
-| 17 | 인라인 이미지 정확히 4장 + 본문 ≤2줄 | `gallery-4` | 高 | 슬라이드 분할 |
-| 18 | 이미지 1 + blockquote (마커 없음) | `image-quote` | 中 | `bg right:40%` |
-| 19 | 이미지 2 + `이전`/`이후`/`before`/`after` 키워드 | `before-after` | 高 | `two-image` |
-| 20 | 이미지 + "Key Takeaways"/"포인트"/"시사점" 2~3줄 | `chart-caption` | 中 | content |
-| 21 | ol ≥5, 각 항목 `**bold** —` 리드인 | `vertical-timeline` | 高 | timeline |
-| 22 | grid-3/cards 후보 + 하나에 `(추천)`/`Recommended` 마커 | `cards` + `card featured` | 中 | grid-3 |
-| 23 | 마지막 H1 = `Q&A`/`질문` 단독 | `qa` | 高 | end |
-| 24 | 마지막 H1 + 연락처 패턴(email/`@handle`) | `thanks-contact` | 高 | end |
-| 25 | H2 키워드 `우선순위`/`pyramid` + ol ≤5 | `pyramid` | 低 | timeline |
-
-**v2.1 변경**: `flow-arrow` 레이아웃 deprecated → `timeline` 또는 `vertical-timeline`으로 폴백. timeline은 4단계 초과 시 auto-wrap (220px minmax).
-
-**매칭 신뢰도 낮으면 항상 기본 content 폴백.**
-
-#### split 신뢰도 강등 (v2 핵심 변경)
-
-기존 룰 #10 (split) 발화 조건 강화:
-- 좌·우 컬럼 각 ≥3 항목 AND 이미지 없음 일 때만 split
-- 그 외엔 우선순위 `grid-3 → cards → icon-list → split` 순서로 폴백
-
-직전 옵시디언 변환에서 split×4 편중 문제 해결.
-
-### 3.1) GitHub 콜아웃 매핑 (신규)
-
-Blockquote 첫 비어있지 않은 줄에 정규식 매칭:
-```regex
-/^>\s*\[!([a-z]+)\]\s*(.*)$/i
-```
-
-| 원본 토큰 (소문자) | 출력 클래스 | 기본 헤딩 |
-|---|---|---|
-| `info`, `note` | `callout info` | INFO / NOTE |
-| `example` | `callout info` | EXAMPLE |
-| `tip`, `success`, `check`, `done` | `callout success` | TIP |
-| `warning`, `warn`, `caution`, `attention` | `callout warn` | WARNING |
-| `danger`, `error`, `fail`, `bug` | `callout danger` | DANGER |
-| `quote`, `cite` | 단독이면 `hero-quote`, 아니면 평문 인용 | — |
-| `abstract`, `summary`, `tldr` | `callout info` | TL;DR |
-
-마커 라인은 제거. 마커 뒤 텍스트(`> [!info] 알파라이저 매뉴얼`)가 있으면 그 텍스트가 콜아웃 헤딩. 나머지 라인은 콜아웃 본문.
-
-### 3.2) 이미지 결정 트리
+## 워크플로
 
 ```
-imageCount(slide):
-  0       → no-op
-  1 + body ≤3줄    → 인라인 ![](url) 유지
-  1 + body 4~7줄   → ![bg right:40%](url)
-  1 + body >7줄    → 슬라이드 분할 (이미지는 첫 슬라이드)
-  1 + blockquote   → image-quote (![bg left:50%] + 인용)
-  2                → two-image (키워드 매치면 before-after)
-  3                → split 좌측 본문 + 우측 이미지 스택
-  4 + body ≤2줄    → gallery-4
-  4 + body >2줄    → 슬라이드 2개로 분할
-  ≥5               → 4장씩 분할
+[1] 입력 파싱 (source, purpose, mode, watch)
+     ↓
+[2] 모드 결정 (§2)
+     │  - card-news 키워드 매치 → mode=card-news, theme=tech-modern-cards
+     │  - 그 외 → mode=deck, theme=propca-notion-style
+     ↓
+[3] deck 모드:
+     [3-1] Skill(obsidian-cleanup) → output/<slug>/<slug>.cleaned.md + assets/
+     [3-2] Skill(md-to-marp-propca) → output/<slug>/<slug>.marp.md
+    card-news 모드:
+     [3'] 카드뉴스 변환 (§5) → output/slides-<slug>-cards.md
+     ↓
+[4] Marp 빌드
+     │  - deck: HTML 1-pass
+     │  - card-news: HTML + PNG 2-pass
+     ↓
+[5] Agent(marp-reviewer) 호출 (독립 컨텍스트)
+     │  - rule-based + visual
+     │  - PASS/FAIL + 이슈 목록 반환
+     ↓
+[6] PASS면 산출 종료
+    FAIL + retry < max_retries:
+       이슈 → 슬라이드 단위 수정 (Edit tool) → [4]부터 재실행
+    FAIL + retry ≥ max_retries:
+       명시적 FAIL 리포트 + 남은 이슈 노출 후 종료
+     ↓
+[7] watch=true:
+     - background로 Marp --watch 시작
+     - 사용자에게 HTML 절대 경로 + PID 알림
 ```
 
-### 3.3) 표 처리
+---
 
-- 열 ≤5 AND 행 ≤6 → 인라인
-- 열 ≤5 AND 행 7~12 → 2슬라이드 분할, 헤더 반복, 제목에 `(1/2)` / `(2/2)`
-- 열 ≤5 AND 행 >12 → 경고 + 첫 12행만 + `...외 N행` 푸터
-- 열 ≥6 → 경고만 출력, 자동 변환 안 함 (원본 유지)
-- 셀 >60자 → 한국어면 절 경계에서 `<br>` 삽입
+## 1) 입력 파싱
 
-### 4) Marp 마크다운 생성
+사용자 발화에서 추출:
+- **source**: 명시적 경로 또는 첨부 파일. 한글 공백 포함 경로도 지원 (큰따옴표)
+- **purpose**: 따옴표/콜론 뒤 자연어. 생략 시 deck 모드 기본
+- **slug**: source 파일명에서 `(\d+\.)?\s*(.*)\.md` → kebab-case (한글 보존 + 공백/특수문자만 `-`)
+- **watch**: 인자에 `watch` 키워드 있으면 활성
+- **max_retries**: `--retries=N`. 기본 2
 
-#### front matter
+---
+
+## 2) 모드 자동 감지
+
+```
+keywords(purpose) → mode
+
+  인스타|insta|instagram|쓰레드|threads|카드뉴스|card news|sns|소셜|social 카드
+    → mode=card-news, theme=tech-modern-cards (고정)
+
+  (그 외)
+    → mode=deck, theme=propca-notion-style (고정)
+```
+
+선택 결과 1줄 로그:
+- `Mode: deck / Theme: propca-notion-style`
+- `Mode: card-news (matched "인스타") / Theme: tech-modern-cards`
+
+> **주의**: deck 모드의 14 다른 브랜드 테마(vercel/notion/claude/spotify/stripe/figma/apple/linear/cursor/raycast/supabase/airbnb/nvidia/tesla)는 **자동 매칭 부재** — 사용자가 `<!-- _class -->`를 수동으로 작성한 경우에만 사용 가능. 본 오케스트레이터는 자동 변환 시 propca-notion-style만 사용.
+
+---
+
+## 3) deck 모드 파이프라인
+
+### 3-1) obsidian-cleanup 호출
+
+```
+Skill(obsidian-cleanup, args: "<source 경로> slug=<slug>")
+```
+
+산출: `output/<slug>/<slug>.cleaned.md` + `output/<slug>/assets/` (이미지 복사본).
+
+**옵시디언 마커가 없는 표준 MD도 그대로 통과** (cleanup은 멱등). 의미: 이 단계는 항상 안전하게 실행 가능.
+
+### 3-2) md-to-marp-propca 호출
+
+```
+Skill(md-to-marp-propca, args: "<output/<slug>/<slug>.cleaned.md> slug=<slug> [header=...] [footer=...] [presenter=...]")
+```
+
+산출: `output/<slug>/<slug>.marp.md`.
+
+### 3-3) Marp 빌드
+
+```cmd
+cd build
+npx --yes @marp-team/marp-cli ^
+    ../output/<slug>/<slug>.marp.md ^
+    --html --allow-local-files ^
+    -o ../output/<slug>/<slug>.html ^
+    --theme-set ../themes/slide
+```
+
+`--theme-set ../themes/slide`로 propca-notion-style.css 자동 등록 (재귀 스캔).
+
+빌드 exit code ≠ 0:
+- stderr 캡처 후 즉시 사용자 보고 + 중단
+
+### 3-4) marp-reviewer QA
+
+```
+Agent({
+  description: "Marp deck QA review",
+  subagent_type: "marp-reviewer",
+  prompt: <검증 컨텍스트>
+})
+```
+
+검증 컨텍스트 prompt 구조:
+
+```
+다음 Marp 슬라이드 덱을 품질 검증해주세요.
+
+[입력]
+- 모드: deck
+- 원본: output/<slug>/<slug>.cleaned.md (또는 source)
+- 변환물: output/<slug>/<slug>.marp.md
+- 빌드물: output/<slug>/<slug>.html
+- 의도된 용도: <purpose>
+- 적용 테마: propca-notion-style
+
+[지침]
+- Phase 0 테마 감지 → propca-notion-style → Phase 1A 적용
+- Phase 2 visual 양 모드 공통
+- PASS/FAIL 판정 + 슬라이드별 이슈 + 자동 수정 권장 사항
+
+[출력 형식]
+.claude/agents/marp-reviewer.md §"출력 형식" 스키마 그대로
+리포트만 반환하고 파일은 수정하지 마세요.
+```
+
+리포트는 `output/<slug>/<slug>.qa.md`로 저장.
+
+---
+
+## 4) card-news 모드 파이프라인
+
+> 옵시디언 전처리 + propca 매칭은 사용 안 함. tech-modern-cards 어휘 직접 적용.
+
+### 4-1) 카드뉴스 변환 (오케스트레이터 내장)
+
+source를 직접 읽어 7 카드뉴스 레이아웃에 매핑:
+
+| # | 입력 패턴 | 출력 클래스 | 신뢰도 |
+|---|---|---|---|
+| 1 | 첫 슬라이드 (강제) | `card-cover` | 高 |
+| 2 | 마지막 H1 = `팔로우`/`저장`/`구독`/`Follow`/`@핸들`/URL | `card-cta` | 高 |
+| 3 | 마지막 H1 = `감사`/`Thanks`/`끝` (CTA 미해당) | `card-end` | 高 |
+| 4 | blockquote 단독 (≥2줄) | `card-quote` | 高 |
+| 5 | H1 단독 + 본문 ≤1줄 + 후속 ≥3 (2번 슬라이드 이내) | `card-hook` | 中 |
+| 6 | ol 3~5 항목 (각 ≤2줄) | `card-list` | 高 |
+| 7 | 그 외 (H2 + 본문/ul) | `card-point` | 高 |
+| 0 | 폴백 | `card-point` | — |
+
+부가 규칙:
+- `card-point`에 번호 배지 자동 부여 (인라인 코드 ``01``, ``02`` 형식)
+- `card-cover` 첫 슬라이드: H1 + 부제 + 핸들 3줄 구조
+- `card-cta`: URL/`@핸들`을 마지막 단락으로 분리
+- 16:9용 `<div class="col">`/`<div class="tile">` 등 추가 마크업 금지
+
+front matter:
 ```yaml
 ---
 marp: true
-theme: <인자 또는 tech-modern>
-paginate: true
-size: 16:9
-header: '<frontmatter series/book_id 또는 인자 또는 "">'
-footer: '<인자 또는 "">'
+theme: tech-modern-cards
+size: sns
+paginate: false
+_header: ''
+_footer: ''
 ---
 ```
 
-#### 슬라이드 사이 구분자
+산출: `output/slides-<slug>-cards.md`.
+
+### 4-2) 2-pass 빌드
+
+```cmd
+cd build
+
+:: HTML (검수용)
+npx --yes @marp-team/marp-cli ../output/slides-<slug>-cards.md ^
+    --html --allow-local-files ^
+    -o ../output/<slug>-cards.html ^
+    --theme-set ../themes/card-news/tech-modern
+
+:: PNG 카드 (소셜 업로드)
+npx --yes @marp-team/marp-cli ../output/slides-<slug>-cards.md ^
+    --images png --allow-local-files ^
+    -o ../output/<slug>-cards/<slug>-cards.png ^
+    --theme-set ../themes/card-news/tech-modern
 ```
-\n\n---\n\n
-```
 
-#### 슬라이드 첫 디렉티브
-- cover / qa / thanks-contact / end / session-break: `<!-- _class: <name> -->` + `<!-- _paginate: false -->` + `<!-- _header: '' -->` + `<!-- _footer: '' -->`
-- section / section dark: `<!-- _class: section -->` (or `section dark` 교차) + `<!-- _header: '' -->`
-- 그 외 25개 레이아웃: `<!-- _class: <name> -->` 한 줄
+### 4-3) marp-reviewer QA
 
-#### div 블록 작성 규칙
-- `<div class="col">`, `<div class="card">`, `<div class="tile">`, `<div class="callout xxx">`, `<div class="chart-wrap">`, `<div class="takeaway">`, `<div class="kpi-list">`, `<div class="kpi">`, `<div class="images">`, `<figure>`, `<figcaption>`, `<div class="gallery">`, `<div class="ba-row">`, `<div class="ba-col">`, `<div class="ba-arrow">`
-- **빈 줄 필수**: 모든 `<div ...>` 와 `</div>` 위아래로 빈 줄 1개. markdown-it 파싱 누락 방지.
-
-#### 강조어 / 배지 (보수적)
-- 원본 `**bold**`은 유지. 자동 추출 안 함
-- ul 첫 단어가 `Color:`, `Focus:` 같은 콜론 종료 카테고리면 `*Color*` em 배지로 치환. 그 외 유지
-
-#### 이미지 변환
-- §3.2 결정 트리 적용
-- 로컬 상대경로면 끝에 빌드 노트 추가:
-  ```
-  ⚠️ N개 로컬 이미지 참조 감지. 빌드 전 ../assets/ 복사 또는 file:/// 변환 필요.
-  ```
-
-#### 코드 블록
-- ``` 언어 태그 그대로 유지
-- 언어가 `bash`/`sh`/`shell` 이면 `<!-- _class: terminal -->` 적용
-
-### 5) 산출 및 빌드 안내
-
-1. `test_markdown_output/slides-<slug>.md` 작성
-2. 산출 통계 출력:
-   - 총 슬라이드 수
-   - 레이아웃 분포 (각 클래스별 카운트)
-   - 사용된 컴포넌트 (callout/code/table/image 개수)
-   - 신규 레이아웃 사용 여부 (v2 14종 중 몇 종)
-3. 빌드 명령 안내 출력
-4. 검증 체크리스트 출력:
-   - [ ] split 사용 ≤2회
-   - [ ] callout 클래스 ≥1회 (원본에 콜아웃 존재 시)
-   - [ ] 신규 레이아웃 ≥1회
-   - [ ] H2 텍스트 100% 보존
+위와 동일하지만 prompt의 `[모드]`를 `card-news`로, `[적용 테마]`를 `tech-modern-cards`로 지정.
 
 ---
 
-## 출력 예시
+## 5) PASS / FAIL 분기
 
-원본 "Claude Excel 3.주요기능" (H2×2 + H3×13 + 표×3 + 코드×2 + 이미지×8 + 콜아웃×4) 변환 결과:
+### PASS 경로
+
+deck:
+```
+✓ QA PASS — <slug>
+  Mode: deck
+  Theme: propca-notion-style
+  Slides: <N>
+  HTML: output/<slug>/<slug>.html (<KB>)
+  Report: output/<slug>/<slug>.qa.md
+
+  미리보기: file:///<절대경로>/<slug>.html
+```
+
+card-news:
+```
+✓ QA PASS — <slug>
+  Mode: card-news
+  Slides: <N>
+  HTML: output/<slug>-cards.html
+  PNG:  output/<slug>-cards/ (<N> files, 1080×1350)
+  Report: output/<slug>-cards.qa.md
+```
+
+### FAIL + retry < max_retries
+
+이슈 목록 → 슬라이드 단위 수정:
+```
+for each issue in report.issues:
+  if issue.severity ∈ {high, medium}:
+    locate slide in <slug>.marp.md (또는 slides-<slug>-cards.md)
+    apply fix (Edit tool)
+retry build + QA
+```
+
+### FAIL + retry ≥ max_retries
 
 ```
-test_markdown_output/slides-claude-excel-3.md (≈22 slides)
-  • cover ×1
-  • section ×2 (01 주요기능 / 02 동작원리)
-  • content ×8
-  • grid-3 ×2 (1.1~1.6 기능 카드)
-  • two-image ×1
-  • chart-caption ×1
-  • callout ×4 (example×2, info, note)
-  • table ×3 (인라인)
-  • code ×2 (terminal ×1)
-  • end ×1
-  • new layouts used: chart-caption, two-image (2/14)
+✗ QA FAIL after <max_retries> retries — <slug>
+  Remaining issues:
+    [slide 7] 카드 개수 불일치 — high
+    [slide 12] _header 누락 — medium
+  Report: output/<slug>/<slug>.qa.md (수동 검토 필요)
+```
+
+---
+
+## 6) Watch 모드 (deck 모드 전용, 선택)
+
+`watch=true` 인자가 있으면 QA PASS 후 watch 프로세스 background 시작:
+
+```cmd
+cd build
+npx --yes @marp-team/marp-cli ^
+    ../output/<slug>/<slug>.marp.md ^
+    --watch --html --allow-local-files ^
+    --theme-set ../themes/slide
+```
+
+Bash 도구의 `run_in_background: true`로 호출. 사용자에게 알림:
+
+```
+👀 Watch 모드 시작
+   PID: <pid>
+   감시 중: output/<slug>/<slug>.marp.md
+   HTML: file:///<절대경로>/<slug>.html
+
+   .marp.md를 수정하면 HTML이 자동 재빌드됩니다.
+   종료: kill <pid> 또는 터미널 닫기
+```
+
+> watch 모드에서는 QA 재실행하지 않음 (재빌드 노이즈 회피). QA는 초기 1회만.
+
+---
+
+## 사용 예시
+
+### 옵시디언 강의 자료
+```
+사용자: "/marp sample/2. 설치 및 기본설정.md"
+
+Claude:
+  → Skill(md-to-marp)
+  → 파싱: source=sample/2. 설치 및 기본설정.md, slug=2-설치-및-기본설정
+  → 모드: deck / 테마: propca-notion-style
+  → Skill(obsidian-cleanup): 18 wikilinks, 4 image embeds, 1 callout 처리
+  → Skill(md-to-marp-propca): 14 slides, 3 cover/section, 2 timeline, 4 cards, ...
+  → 빌드: 142 KB HTML ✓
+  → Agent(marp-reviewer): PASS (high=0, medium=1)
+  → 출력:
+       ✓ QA PASS — 2-설치-및-기본설정
+         HTML: output/2-설치-및-기본설정/2-설치-및-기본설정.html
+         미리보기: file:///.../2-설치-및-기본설정.html
+```
+
+### Watch 모드
+```
+사용자: "/marp sample/3. 주요 기능 및 동작 원리.md watch"
+
+Claude:
+  → 위 전체 파이프라인 1회 실행
+  → QA PASS
+  → Watch 프로세스 background 시작 (PID: 12345)
+  → "이제 원본 .md를 수정하면 HTML이 자동 갱신됩니다."
+```
+
+### 카드뉴스
+```
+사용자: "/marp content.md 인스타 카드뉴스용 7장"
+
+Claude:
+  → Skill(md-to-marp)
+  → 모드: card-news (matched "인스타") / 테마: tech-modern-cards
+  → 카드뉴스 변환: 7 slides (card-cover/4×card-point/card-list/card-cta)
+  → 빌드: HTML 32KB + 7 PNG (1080×1350)
+  → Agent(marp-reviewer): PASS
+  → 출력 경로 안내
 ```
 
 ---
 
 ## 참고 자료
 
-- 디자인 시스템: [`../../design.md`](../../design.md)
-- 베이스 CSS: [`../../samples/themes/tech-modern.css`](../../samples/themes/tech-modern.css)
-- 8 파생 테마: `../../samples/themes/tm-{blue,green,orange,mono,keynote,business,lecture,demo}.css`
-- Marp 컨벤션 치트시트 (26 페어): [`references/conventions.md`](references/conventions.md)
-- 통합 회귀 덱: [`../../test_markdown_output/showcase/showcase-all-layouts.md`](../../test_markdown_output/showcase/showcase-all-layouts.md)
-- 직전 변환 사례: 프로젝트 루트 `옵시디언을 활용한 실무 지식관리( + LLM Wiki)_MARP.md` (v1 변환)
+- 옵시디언 전처리: [`../obsidian-cleanup/SKILL.md`](../obsidian-cleanup/SKILL.md)
+- propca 자동 매칭: [`../md-to-marp-propca/SKILL.md`](../md-to-marp-propca/SKILL.md)
+- 검수 에이전트: [`../../agents/marp-reviewer.md`](../../agents/marp-reviewer.md)
+- propca-notion-style 디자인: [`../../../themes/slide/propca-notion-style/design.md`](../../../themes/slide/propca-notion-style/design.md)
+- 카드뉴스 디자인: [`../../../themes/card-news/tech-modern/design.md`](../../../themes/card-news/tech-modern/design.md)
+- 슬래시 명령: [`../../commands/marp.md`](../../commands/marp.md)

@@ -1,0 +1,514 @@
+/* @theme apple */
+/* ============================================================
+   apple — Keynote-Style brand theme.
+   Designed from scratch (NOT a tech-modern derivative).
+   Source: VoltAgent/awesome-design-md (Apple DESIGN.md, MIT).
+   Brand language: photography-first hero, generous whitespace,
+   SF Pro tight tracking, single Action Blue accent, alternating
+   light/parchment/dark tile rhythm, "exactly one drop-shadow".
+   ============================================================ */
+
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@latest/dist/web/static/pretendard.min.css');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* ---------------------------------------------------------------
+   Tokens
+   --------------------------------------------------------------- */
+:root {
+  --canvas:    #ffffff;
+  --parchment: #f5f5f7;
+  --pearl:     #fafafc;
+
+  --ink:        #1d1d1f;
+  --ink-mute:   #515154;
+  --ink-sub:    #86868b;
+  --hairline:   #d2d2d7;
+
+  --dark-1: #272729;
+  --dark-2: #2a2a2c;
+  --dark-3: #252527;
+  --void:   #000000;
+  --on-dark: #f5f5f7;
+  --on-dark-mute: #86868b;
+
+  --action:  #0066cc;
+  --focus:   #0071e3;
+  --sky:     #2997ff;
+
+  --font-display: 'SF Pro Display', 'Inter', 'Pretendard', system-ui, -apple-system, sans-serif;
+  --font-text:    'SF Pro Text',    'Inter', 'Pretendard', system-ui, -apple-system, sans-serif;
+  --font-mono:    'SF Mono', ui-monospace, monospace;
+
+  --shadow-product: 3px 5px 30px rgba(0,0,0,0.22);
+}
+
+/* ---------------------------------------------------------------
+   Section base — generous padding, center-friendly
+   --------------------------------------------------------------- */
+section {
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-text);
+  padding: 88px 112px;
+  font-size: 17pt;
+  line-height: 1.5;
+  font-weight: 400;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  position: relative;
+}
+
+/* ---------------------------------------------------------------
+   Typography (SF Pro tight signature)
+   --------------------------------------------------------------- */
+h1 {
+  font-family: var(--font-display);
+  font-size: 48pt;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  margin: 0 0 22px 0;
+  color: var(--ink);
+}
+h2 {
+  font-family: var(--font-display);
+  font-size: 22pt;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  color: var(--ink-mute);
+  margin: 0 0 14px 0;
+}
+h3 {
+  font-family: var(--font-display);
+  font-size: 17pt;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin: 0 0 8px 0;
+}
+p, li {
+  font-size: 17pt;
+  line-height: 1.5;
+  color: var(--ink-mute);
+  margin: 0 0 10px 0;
+  font-weight: 400;
+}
+strong { color: var(--ink); font-weight: 600; background: none; }
+em {
+  font-style: normal;
+  font-family: var(--font-text);
+  font-size: 11pt;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--action);
+  margin-right: 0;
+  padding: 0;
+  background: none;
+  border: none;
+}
+a { color: var(--action); text-decoration: none; }
+a::after { content: ' ›'; color: var(--action); }
+ul, ol { margin: 0 0 16px 0; padding-left: 22px; }
+li::marker { color: var(--action); }
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  background: var(--parchment);
+  color: var(--action);
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+pre {
+  background: var(--parchment);
+  border-radius: 14px;
+  padding: 22px 26px;
+  margin: 14px 0;
+  font-size: 13pt;
+  line-height: 1.55;
+  overflow: hidden;
+}
+pre code { display: block; background: transparent; color: var(--ink); padding: 0; font-family: var(--font-mono); }
+blockquote {
+  border: none;
+  padding: 0;
+  margin: 12px 0;
+  background: none;
+  color: var(--ink);
+  font-size: 19pt;
+  font-weight: 400;
+  font-style: normal;
+}
+blockquote p { color: var(--ink); margin: 0; font-style: normal; }
+
+table { border-collapse: collapse; width: 100%; font-size: 15pt; margin: 14px 0 24px; }
+th, td { padding: 14px 16px; text-align: left; border-bottom: 1px solid var(--hairline); }
+th { color: var(--ink); font-weight: 600; font-size: 12pt; }
+td { color: var(--ink-mute); }
+hr { display: none; }
+
+/* ---------------------------------------------------------------
+   Header / Footer / Pagination
+   --------------------------------------------------------------- */
+header {
+  position: absolute;
+  top: 28px;
+  left: 112px;
+  font-family: var(--font-text);
+  font-size: 11pt;
+  color: var(--ink-sub);
+  font-weight: 500;
+}
+footer {
+  position: absolute;
+  bottom: 28px;
+  left: 112px;
+  font-family: var(--font-text);
+  font-size: 11pt;
+  color: var(--ink-sub);
+}
+section::after {
+  content: attr(data-marpit-pagination);
+  position: absolute;
+  bottom: 28px;
+  right: 112px;
+  font-family: var(--font-text);
+  font-size: 10pt;
+  color: var(--ink-sub);
+  letter-spacing: 0;
+}
+
+/* ===============================================================
+   Shell 3 — cover / section / end
+   =============================================================== */
+section.cover {
+  background: var(--canvas);
+  color: var(--ink);
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+section.cover h1 { font-family: var(--font-display); font-size: 76pt; font-weight: 600; letter-spacing: -0.035em; line-height: 1.0; margin-bottom: 16px; }
+section.cover h2 { font-family: var(--font-display); font-size: 24pt; font-weight: 400; color: var(--ink-mute); margin-bottom: 40px; }
+section.cover p  { color: var(--action); font-size: 16pt; font-weight: 500; }
+section.cover p::after { content: ' ›'; }
+section.cover::after, section.cover header, section.cover footer { display: none; }
+
+section.section {
+  background: var(--parchment);
+  color: var(--ink);
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+section.section h1 { font-family: var(--font-display); font-size: 92pt; font-weight: 600; letter-spacing: -0.035em; color: var(--ink); margin: 0; line-height: 1; }
+section.section h2 { font-family: var(--font-display); font-size: 24pt; font-weight: 400; color: var(--ink-mute); margin-top: 18px; }
+section.section::after { display: none; }
+
+section.end {
+  background: var(--canvas);
+  color: var(--ink);
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+section.end h1 { font-family: var(--font-display); font-size: 64pt; font-weight: 600; letter-spacing: -0.035em; margin-bottom: 12px; }
+section.end h2 { font-family: var(--font-display); font-size: 22pt; font-weight: 400; color: var(--ink-mute); margin-bottom: 28px; }
+section.end p  { color: var(--action); font-size: 15pt; font-weight: 500; }
+section.end p::after { content: ' ›'; }
+section.end::after, section.end header, section.end footer { display: none; }
+
+/* ===============================================================
+   12 BRAND LAYOUTS
+   =============================================================== */
+
+/* 1) hero-product — single product photo placeholder + name + price */
+section.hero-product {
+  background: var(--canvas);
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 56px 80px;
+}
+section.hero-product .product {
+  width: 360px; height: 360px;
+  border-radius: 28px;
+  background: linear-gradient(135deg, var(--parchment) 0%, #e4e4e8 100%);
+  box-shadow: var(--shadow-product);
+  margin-bottom: 36px;
+  position: relative;
+}
+section.hero-product .product::after {
+  content: '';
+  position: absolute;
+  inset: 28% 28% 28% 28%;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #5a5a5e 0%, #1d1d1f 100%);
+  opacity: 0.85;
+}
+section.hero-product h1 { font-family: var(--font-display); font-size: 56pt; font-weight: 600; letter-spacing: -0.035em; margin: 0 0 8px; }
+section.hero-product h2 { font-family: var(--font-display); font-size: 20pt; font-weight: 400; color: var(--ink-mute); margin-bottom: 18px; }
+section.hero-product .price { font-family: var(--font-display); font-size: 22pt; font-weight: 500; color: var(--ink); margin-bottom: 12px; }
+section.hero-product p { color: var(--action); font-size: 15pt; font-weight: 500; margin: 0; }
+section.hero-product p::after { content: ' ›'; }
+section.hero-product::after, section.hero-product header, section.hero-product footer { display: none; }
+
+/* 2) dark-section — dark divider between light panels */
+section.dark-section {
+  background: var(--dark-1);
+  color: var(--on-dark);
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+section.dark-section h1 { font-family: var(--font-display); color: var(--on-dark); font-size: 80pt; font-weight: 600; letter-spacing: -0.035em; margin: 0; line-height: 1; }
+section.dark-section h2 { font-family: var(--font-display); color: var(--on-dark-mute); font-size: 24pt; font-weight: 400; margin-top: 18px; }
+section.dark-section p { color: var(--sky); font-size: 15pt; font-weight: 500; margin-top: 28px; }
+section.dark-section p::after { content: ' ›'; }
+section.dark-section::after, section.dark-section header, section.dark-section footer { display: none; }
+
+/* 3) oversized-quote — center huge quote on parchment */
+section.oversized-quote {
+  background: var(--parchment);
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 88px 140px;
+}
+section.oversized-quote h1 { display: none; }
+section.oversized-quote blockquote {
+  font-family: var(--font-display);
+  font-size: 46pt;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+  color: var(--ink);
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+section.oversized-quote blockquote p:last-child {
+  font-family: var(--font-text);
+  font-size: 14pt;
+  font-weight: 500;
+  color: var(--ink-sub);
+  margin-top: 28px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* 4) spec-row — 4-col utility grid with 1:1 tiles */
+section.spec-row { padding: 72px 88px; }
+section.spec-row h1 { font-family: var(--font-display); font-size: 30pt; margin-bottom: 24px; text-align: center; }
+section.spec-row .specs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  flex: 1;
+  align-items: stretch;
+}
+section.spec-row .spec {
+  background: var(--parchment);
+  border-radius: 18px;
+  padding: 22px 22px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+section.spec-row .spec .glyph {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #c2c2c6 0%, #6e6e73 100%);
+  margin: 0 auto 14px;
+}
+section.spec-row .spec strong {
+  font-family: var(--font-display);
+  font-size: 28pt;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.025em;
+  display: block;
+  margin-bottom: 4px;
+  background: none;
+}
+section.spec-row .spec p { font-size: 13pt; color: var(--ink-mute); margin: 0; line-height: 1.4; }
+
+/* 5) parchment-band — full parchment slide with single value prop */
+section.parchment-band {
+  background: var(--parchment);
+  color: var(--ink);
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 96px 140px;
+}
+section.parchment-band h1 { font-family: var(--font-display); font-size: 60pt; font-weight: 600; letter-spacing: -0.035em; line-height: 1.05; margin: 0 0 18px; max-width: 80%; }
+section.parchment-band h2 { font-family: var(--font-display); font-size: 24pt; font-weight: 400; color: var(--ink-mute); margin-bottom: 32px; max-width: 70%; }
+section.parchment-band p { color: var(--action); font-size: 15pt; font-weight: 500; }
+section.parchment-band p::after { content: ' ›'; }
+
+/* 6) single-stat — one huge number centered */
+section.single-stat {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+section.single-stat h1 { font-family: var(--font-display); font-size: 14pt; font-weight: 500; color: var(--ink-mute); letter-spacing: 0.06em; text-transform: uppercase; margin: 0 0 24px; }
+section.single-stat .stat {
+  font-family: var(--font-display);
+  font-size: 220pt;
+  font-weight: 600;
+  letter-spacing: -0.05em;
+  color: var(--ink);
+  line-height: 0.9;
+  margin-bottom: 24px;
+}
+section.single-stat .stat small {
+  font-size: 64pt;
+  color: var(--ink-mute);
+  margin-left: 12px;
+  font-weight: 400;
+}
+section.single-stat p { font-size: 22pt; color: var(--ink-mute); max-width: 60%; margin: 0 auto; font-weight: 400; }
+
+/* 7) product-pair — two product tiles side-by-side */
+section.product-pair { padding: 64px 88px; }
+section.product-pair h1 { font-family: var(--font-display); font-size: 30pt; margin-bottom: 24px; text-align: center; }
+section.product-pair .pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  flex: 1;
+}
+section.product-pair .pair > .tile {
+  background: var(--parchment);
+  border-radius: 22px;
+  padding: 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+section.product-pair .pair > .tile.dark {
+  background: var(--dark-1);
+  color: var(--on-dark);
+}
+section.product-pair .pair > .tile .product {
+  width: 180px; height: 180px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #ffffff 0%, #d2d2d7 100%);
+  box-shadow: var(--shadow-product);
+  margin-bottom: 22px;
+}
+section.product-pair .pair > .tile.dark .product { background: linear-gradient(135deg, #3a3a3e 0%, #1d1d1f 100%); }
+section.product-pair .pair > .tile h3 { font-family: var(--font-display); font-size: 24pt; margin: 0 0 4px; letter-spacing: -0.02em; }
+section.product-pair .pair > .tile h3 { color: var(--ink); }
+section.product-pair .pair > .tile.dark h3 { color: var(--on-dark); }
+section.product-pair .pair > .tile p { font-size: 14pt; color: var(--ink-mute); margin: 0 0 14px; }
+section.product-pair .pair > .tile.dark p { color: var(--on-dark-mute); }
+section.product-pair .pair > .tile .price { font-weight: 500; font-size: 16pt; color: var(--ink); }
+section.product-pair .pair > .tile.dark .price { color: var(--on-dark); }
+section.product-pair .pair > .tile .more { font-size: 13pt; color: var(--action); font-weight: 500; margin-top: 6px; }
+section.product-pair .pair > .tile .more::after { content: ' ›'; }
+section.product-pair .pair > .tile.dark .more { color: var(--sky); }
+
+/* 8) comparison-bar — bar chart with single highlight */
+section.comparison-bar { padding: 64px 96px; }
+section.comparison-bar h1 { font-family: var(--font-display); font-size: 28pt; margin-bottom: 8px; }
+section.comparison-bar h2 { font-family: var(--font-display); font-size: 18pt; font-weight: 400; color: var(--ink-mute); margin-bottom: 28px; }
+section.comparison-bar .bars {
+  display: grid;
+  grid-template-columns: 120px 1fr 80px;
+  gap: 12px 22px;
+  flex: 1;
+  align-content: center;
+  align-items: center;
+}
+section.comparison-bar .bars > .label { font-family: var(--font-display); font-size: 15pt; color: var(--ink); font-weight: 500; }
+section.comparison-bar .bars > .bar {
+  height: 28px;
+  background: var(--parchment);
+  border-radius: 999px;
+  position: relative;
+  overflow: hidden;
+}
+section.comparison-bar .bars > .bar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  width: var(--w, 50%);
+  background: var(--ink-mute);
+  border-radius: 999px;
+}
+section.comparison-bar .bars > .bar.highlight::before { background: var(--action); }
+section.comparison-bar .bars > .value { font-family: var(--font-display); font-size: 18pt; color: var(--ink); font-weight: 600; text-align: right; letter-spacing: -0.02em; }
+section.comparison-bar .bars > .value.highlight { color: var(--action); }
+
+/* 9) palette-show — color swatch row (5 variants) */
+section.palette-show {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 64px 96px;
+}
+section.palette-show h1 { font-family: var(--font-display); font-size: 32pt; font-weight: 600; letter-spacing: -0.025em; margin-bottom: 14px; }
+section.palette-show h2 { font-family: var(--font-display); font-size: 18pt; font-weight: 400; color: var(--ink-mute); margin-bottom: 56px; }
+section.palette-show .swatches {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+  margin-bottom: 32px;
+}
+section.palette-show .swatches > .swatch {
+  width: 96px; height: 96px;
+  border-radius: 50%;
+  box-shadow: var(--shadow-product);
+}
+section.palette-show .swatches > .swatch:nth-child(1) { background: linear-gradient(135deg, #f4f0ec 0%, #d2c8bd 100%); }
+section.palette-show .swatches > .swatch:nth-child(2) { background: linear-gradient(135deg, #5d5754 0%, #2c2826 100%); }
+section.palette-show .swatches > .swatch:nth-child(3) { background: linear-gradient(135deg, #003f7e 0%, #001f3f 100%); }
+section.palette-show .swatches > .swatch:nth-child(4) { background: linear-gradient(135deg, #c08a4a 0%, #7f5824 100%); }
+section.palette-show .swatches > .swatch:nth-child(5) { background: linear-gradient(135deg, #b34c4c 0%, #6e2828 100%); }
+section.palette-show p { font-family: var(--font-display); font-size: 16pt; color: var(--ink-mute); font-weight: 400; margin: 0; }
+
+/* 10) scroll-narrative — left-aligned story narrative */
+section.scroll-narrative {
+  padding: 72px 96px;
+  justify-content: center;
+}
+section.scroll-narrative h1 { font-family: var(--font-display); font-size: 56pt; font-weight: 600; letter-spacing: -0.035em; line-height: 1.05; margin-bottom: 22px; max-width: 80%; }
+section.scroll-narrative h2 { font-family: var(--font-display); font-size: 24pt; font-weight: 400; color: var(--ink-mute); margin-bottom: 28px; max-width: 78%; }
+section.scroll-narrative p { font-size: 17pt; color: var(--ink); margin: 0 0 14px; max-width: 72%; line-height: 1.55; }
+section.scroll-narrative .learn { color: var(--action); font-weight: 500; font-size: 15pt; margin-top: 18px; }
+section.scroll-narrative .learn::after { content: ' ›'; }
+
+/* 11) dim-section — dim section between fully-light panels */
+section.dim-section {
+  background: var(--dark-2);
+  color: var(--on-dark);
+  justify-content: center;
+  align-items: flex-start;
+  padding: 80px 96px;
+}
+section.dim-section h1 { font-family: var(--font-display); color: var(--on-dark); font-size: 56pt; font-weight: 600; letter-spacing: -0.035em; line-height: 1.05; margin: 0 0 18px; max-width: 80%; }
+section.dim-section h2 { font-family: var(--font-display); color: var(--on-dark-mute); font-size: 22pt; font-weight: 400; margin-bottom: 30px; max-width: 75%; }
+section.dim-section p { color: var(--on-dark-mute); font-size: 17pt; margin: 0 0 12px; max-width: 75%; }
+section.dim-section .learn { color: var(--sky); font-weight: 500; font-size: 15pt; margin-top: 18px; }
+section.dim-section .learn::after { content: ' ›'; }
+
+/* 12) soft-end — minimal closing */
+section.soft-end {
+  background: var(--canvas);
+  color: var(--ink);
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+section.soft-end h1 { font-family: var(--font-display); font-size: 56pt; font-weight: 600; letter-spacing: -0.035em; margin: 0 0 12px; }
+section.soft-end h2 { font-family: var(--font-display); font-size: 22pt; font-weight: 400; color: var(--ink-mute); margin-bottom: 30px; }
+section.soft-end p { color: var(--action); font-size: 15pt; font-weight: 500; margin: 0; }
+section.soft-end p::after { content: ' ›'; }
+section.soft-end::after, section.soft-end header, section.soft-end footer { display: none; }
