@@ -191,7 +191,7 @@ Russell-cell PPT-Design-Prompt 7 universal type을 Notion 어휘에 매핑.
 
 | 클래스 | 용도 |
 |---|---|
-| `.callout info/success/example/warn/danger` | 5단계 상태 콜아웃 |
+| `.callout info/success/example/warn/danger` | 5단계 콜아웃 — **단일 톤 통일**: 좌측 컬러바·라벨 모두 `--purple`(시그니처 보라). 종류 구분은 좌측 4px 색상이 아닌 **아이콘 + 굵은 라벨**(`**참고**`/`**예시**`/`**중요**`/`**경고**`)로 표현. `.danger`만 예외적으로 `--danger` 좌측바 유지 (정말 위험 신호 시) |
 | `.tag green/yellow/purple/rose/sky/peach/navy` | 인라인 상태 배지 (database-rows 스코프에서 전역으로 승격) |
 | `.chip` / `.chip.solid` / `.chip.outline` | 풀필(pill) 라벨 |
 | `.kbd` | 키보드 키 캡 |

@@ -38,11 +38,9 @@
     "watch:supabase": "marp ../themes/slide/supabase/slides/supabase.md --watch --html --allow-local-files --theme-set ../themes/slide",
     "watch:airbnb": "marp ../themes/slide/airbnb/slides/airbnb.md --watch --html --allow-local-files --theme-set ../themes/slide",
     "watch:nvidia": "marp ../themes/slide/nvidia/slides/nvidia.md --watch --html --allow-local-files --theme-set ../themes/slide",
-    "watch:tesla": "marp ../themes/slide/tesla/slides/tesla.md --watch --html --allow-local-files --theme-set ../themes/slide",
-    "publish:cards": "cmd /c publish.cmd"
+    "watch:tesla": "marp ../themes/slide/tesla/slides/tesla.md --watch --html --allow-local-files --theme-set ../themes/slide"
   },
   "devDependencies": {
-    "@marp-team/marp-cli": "^4.1.2",
-    "dotenv": "^16.6.1"
+    "@marp-team/marp-cli": "^4.1.2"
   }
 }

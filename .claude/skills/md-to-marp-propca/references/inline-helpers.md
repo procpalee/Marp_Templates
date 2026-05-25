@@ -23,9 +23,9 @@
 
 ### 1. `.callout` — cleanup이 이미 처리
 
-`obsidian-cleanup` 스킬이 `> [!NOTE]` 등을 `<div class="callout ...">`로 변환해두므로 md-to-marp-propca는 그대로 통과시킨다.
+md-to-marp-propca의 옵시디언 전처리 단계(§obsidian-prep.md)가 `> [!NOTE]` 등을 `<div class="callout ...">`로 미리 변환해두므로 레이아웃 매칭 단계는 그대로 통과시킨다.
 
-추가 케이스 (cleanup 거치지 않은 입력):
+추가 케이스 (이미 표준 MD라 전처리에서 매치 안 됐을 때):
 - 본문 첫 줄이 `**참고**`, `**Note**`, `**Tip**`, `**중요**`, `**경고**`, `**위험**`로 시작 + 후속 본문 2~5행 → `.callout` 자동 감싸기
   - `참고`/`Note`/`Tip` → `info`
   - `중요`/`Important` → `info`

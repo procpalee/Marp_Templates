@@ -28,9 +28,8 @@
 
 | 컴포넌트 | 경로 | 역할 |
 |---|---|---|
-| 오케스트레이터 | `.claude/skills/md-to-marp/` | 모드 선택 + obsidian-cleanup·md-to-marp-propca 호출 + 빌드 + QA + 재시도 + watch |
-| 옵시디언 전처리 | `.claude/skills/obsidian-cleanup/` | 옵시디언 MD → 표준 MD (테마 무관). wikilinks/embeds/콜아웃/frontmatter 정리 + 이미지 자산 복사 |
-| propca 자동매칭 | `.claude/skills/md-to-marp-propca/` | 표준 MD → propca-notion-style Marp MD. 21 레이아웃 + 8 인라인 헬퍼 휴리스틱 자동 매칭 (강의·교육·발표) |
+| 오케스트레이터 | `.claude/skills/md-to-marp/` | 모드 선택 + md-to-marp-propca 호출 + 빌드 + QA + 재시도 + watch |
+| 변환 스킬 (통합) | `.claude/skills/md-to-marp-propca/` | 옵시디언 전처리(`[[wikilinks]]`/`![[embeds]]`/콜아웃/frontmatter/태그 + 이미지 자산 복사) + propca-notion-style 21 레이아웃·8 인라인 헬퍼 자동 매칭. 변환은 [`themes/slide/propca-notion-style/propca-notion-style.md`](themes/slide/propca-notion-style/propca-notion-style.md) 쇼케이스 패턴 준수 — cover의 H1+H2+연월, section의 #=숫자/##=제목, 본문 슬라이드 # 헤더 우선, 인용 신중 사용, 여백 최소화 |
 | 검증 에이전트 | `.claude/agents/marp-reviewer.md` | 독립 컨텍스트 QA. theme front matter로 propca/card-news 분기 |
 | 슬래시 명령 | `.claude/commands/marp.md` | `/marp <file> [watch] [용도]` — 원샷 빌드 + 선택 watch |
 | 테마 폴더 | `themes/slide/<theme>/` | 테마별 design.md + slides/{css,md,html} 트리플 |
@@ -214,67 +213,6 @@ npx --yes @marp-team/marp-cli ../output/slides-<slug>-cards.md ^
 - 본문 200자/8줄 초과 금지
 - 본문 20pt 미만 폰트 금지 (모바일 가독성)
 - CSS 토큰 외 인라인 HEX 색상 금지
-
----
-
-## SNS 자동 게시 (Threads + LinkedIn)
-
-빌드된 카드뉴스를 `npm run publish:cards <slug>` 한 줄로 **Threads 캐러셀** + **LinkedIn Document Share** 동시 게시. 반자동 (CLI 1회 실행, 스케줄러 없음).
-
-### 워크플로
-
-```
-/deck <원본.md> 인스타 카드뉴스   →  PNG 7장 + HTML 빌드
-/caption <slug>                    →  .caption.md 초안 (LLM 자동 + 사용자 수정)
-npm run publish:cards <slug>       →  PDF 빌드 + 양 플랫폼 게시 + log
-```
-
-### 1회성 셋업
-
-- 토큰 발급 가이드: [`docs/PUBLISH_SETUP.md`](./docs/PUBLISH_SETUP.md)
-- `.env.example`을 `.env`로 복사하고 토큰 4개 채우기 (Threads 2, LinkedIn 2)
-- `cd build && npm install` (dotenv 의존성)
-
-### 옵션 플래그
-
-```cmd
-npm run publish:cards <slug> -- --dry-run         :: 사전 검증만, 실제 게시 X
-npm run publish:cards <slug> -- --threads-only    :: Threads만
-npm run publish:cards <slug> -- --linkedin-only   :: LinkedIn만 (PDF)
-npm run publish:cards <slug> -- --force           :: 24h 내 중복 게시 우회
-```
-
-### 산출물 (기존 `output/<slug>-cards/` 폴더 통합)
-
-| 파일 | 용도 |
-|---|---|
-| `<slug>-cards.NNN.png` | Threads 캐러셀 (7장) |
-| `<slug>-cards.pdf` | LinkedIn Document Share (1개) |
-| `<slug>-cards.caption.md` | 플랫폼별 캡션·해시태그 (frontmatter만 publish 대상) |
-| `publish.log` | append-only 게시 이력 |
-
-### 핵심 컴포넌트
-
-| 파일 | 역할 |
-|---|---|
-| `.claude/commands/caption.md` | `/caption <slug>` 슬래시 명령 |
-| `build/publish.cmd` | Windows 진입점 |
-| `build/scripts/publish/index.js` | 오케스트레이션 (argv, preflight, 순차 호출) |
-| `build/scripts/publish/caption.js` | `.caption.md` frontmatter 파서 |
-| `build/scripts/publish/pdf.js` | Marp `--pdf` + mtime 캐시 |
-| `build/scripts/publish/threads.js` | Meta Threads Graph API 캐러셀 |
-| `build/scripts/publish/linkedin.js` | LinkedIn Document Share |
-| `build/scripts/publish/image-host.js` | PNG 공개 URL 발급 (0x0.st / GitHub) |
-| `build/scripts/publish/log.js` | publish.log append + 중복 가드 |
-
-### 제약
-
-- **Threads**: 캐러셀 2~20장 (현 구현 7장 기준). 250 posts/24h rate limit.
-- **LinkedIn**: PDF Document Share 1개. 토큰 60일 만료.
-- **PNG 호스팅**: Threads API가 공개 URL 요구 → 0x0.st(기본) 또는 GitHub raw branch.
-- **토큰**: 절대 commit 금지. `.env`는 `.gitignore`로 보호됨.
-
----
 
 ## 검증 원칙
 

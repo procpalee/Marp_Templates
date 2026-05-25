@@ -203,6 +203,46 @@ Grep `!\[.*\]\(([^)]+)\)` 변환물에서 이미지 경로 추출
 누락 시 high
 ```
 
+#### C-5. 레이아웃 overflow 검출 (신규)
+
+**목적**: 본문이 슬라이드 영역(1080×608px 본문 영역 추정)을 넘어가는지 추정.
+
+**휴리스틱**:
+1. 슬라이드별 본문 라인 수 × 추정 행 높이(40~50px) 누적
+2. `block-features`/`cards`/`pastel-blocks` 같은 그리드 레이아웃은 카드 개수 × 카드 최소 높이(180~220px) 적용
+3. `database-rows` / 표는 행 수 × 행 높이(48px) + 헤더 60px 누적
+4. 코드 블록은 라인 수 × 행 높이(28px) + 패딩 32px 누적
+5. 콜아웃은 본문 라인 + 패딩 32px 가산
+
+**판정**:
+- 추정 총 높이 > 580px → **medium 이슈** ("slide N 본문 추정 높이 ${h}px — overflow 위험")
+- 추정 총 높이 > 700px → **high 이슈** ("slide N 추정 높이 ${h}px — 명백한 overflow, 분할 권장")
+- 본문에 H2/H3가 4개 이상 + 각 H3 아래 본문 ≥2행 → 그리드 레이아웃이 없으면 자동 overflow 의심 (medium)
+
+#### C-6. Footer/Header 충돌 검출 (신규)
+
+**목적**: 본문 마지막 요소와 footer 영역 간 간격이 충분한지 확인.
+
+**검사**:
+1. 슬라이드 클래스가 `cover/end/qa/thanks-contact/session-break/image-quote/hero-quote/toc-split`이 아니면 footer 표시됨
+2. C-5에서 계산한 추정 총 높이가 슬라이드 본문 영역(약 920px = 1080 - header 80 - footer 80)을 넘으면 footer 영역 침범으로 간주
+3. 미달 시 **medium 이슈** ("slide N footer 영역과 본문 마지막 요소 ${gap}px 미만 — 겹침 위험")
+4. footer 텍스트 길이가 70자 초과 → **low 이슈** ("footer 텍스트 길이 ${n}자 — 본문 너비와 겹칠 가능성")
+5. front matter `footer:` 값이 빈 문자열이면 이 체크 skip
+
+#### C-7. 페이지당 강조 색상 종류 수 (신규)
+
+**목적**: 한 슬라이드에 발산 색상이 과다 등장하는지 검출.
+
+**검사**:
+1. 슬라이드 안에 등장하는 색상 종류 카운트:
+   - `<span class="tag {green|yellow|rose|sky|peach|purple|navy}">` 색상별
+   - `<div class="callout {info|success|example|warn|danger}">` 종류별 (CSS는 단일 톤이지만 마크업 의미 카운트)
+   - `<span class="chip">` 변형별
+2. 색상/종류 종합 ≥ 3종 → **medium 이슈** ("slide N 강조 색상 ${n}종 — propca 시그니처 외 보조 강조 ≤1종 권장")
+3. ≥ 5종 → **high 이슈** ("slide N 색상 ${n}종 — 알록달록함, 강제 정리 필요")
+4. 시그니처 톤(navy/purple) + 무채(canvas/hairline)는 카운트 제외
+
 ---
 
 ## Severity 분류
@@ -269,9 +309,10 @@ high 0건, medium 2건 → PASS
 ## PASS 판정 기준
 
 ### deck (propca-notion-style)
-1. **high 이슈 0건**
+1. **high 이슈 0건** (C-5/C-7의 high도 포함 — 명백한 overflow나 색상 알록달록함은 즉시 FAIL)
 2. medium 이슈 ≤ 3건
 3. Phase 1A의 A-1, A-2, A-3, A-8, A-9 통과
+4. **Phase 2 C-5/C-6/C-7 high 0건** (시각 결함 무관용)
 
 ### card-news (tech-modern-cards)
 1. **high 이슈 0건**

@@ -2,19 +2,28 @@
 /* @size sns 1080px 1350px */
 
 /*
- * propca Notion Style — Card News (4:5)
+ * propca Notion Style — Card News (4:5) v2
  * 단일 출처: ./design.md
- * 베이스 디자인 토큰: ../../slide/propca-notion-style/slides/propca-notion-style.css :root (100% 계승)
+ * 베이스: ../../slide/propca-notion-style/slides/propca-notion-style.css :root (100% 계승)
  *
- * 16:9 슬라이드 테마(propca-notion-style)와 별개로 동작.
- * 카드뉴스 전용 14개 레이아웃:
- *   표준 7종 (자동매칭 호환): card-cover, card-hook, card-point, card-quote, card-list, card-cta, card-end
- *   Notion 확장 7종 (수동 지정): card-sticky-notes, card-pastel-blocks, card-database-rows,
- *                                card-yellow-banner, card-toggle-list, card-block-features, card-pastel-quote
+ * v2 변경 요지 (slide와 시각 언어 100% 일치):
+ *   - card-cover: 풀블리드 navy + 화이트 H1 60pt (slide.cover 동일)
+ *   - em: pastel-yellow + ink 텍스트 (slide.em 동일, 따뜻한 톤)
+ *   - card-pastel-quote: white canvas 안에 rounded lavender 카드 (slide.pastel-quote 동일)
+ *   - strong: purple 색상만 (형광펜 제거, slide.strong 동일)
+ *   - h1/h2 font-weight: 600/500 (slide 기본)
+ *
+ * 카드뉴스 차별화 (NEW):
+ *   - 우상단 페이지네이션 pill (paginate: true 활용, 시각 카드는 hide)
+ *   - card-hook 좌하단 "스와이프 →" mono CTA
+ *   - card-summary (CTA 직전 요약, navy + yellow stripe)
+ *   - card-callout (인용보다 가벼운 강조, pastel 풀배경 + purple stripe)
+ *
+ * 전체 16 레이아웃 = 표준 7 + Notion 확장 7 + 카드뉴스 신규 2
  */
 
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@latest/dist/web/static/pretendard.min.css');
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Noto+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Noto+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
 /* ==========================================================================
    Tokens (propca deck :root 100% 복제)
@@ -49,7 +58,7 @@
   --pastel-sky:      #dcecfa;
   --pastel-yellow:   #f9e79f;
 
-  /* tech-modern-cards alias — 자동매칭 휴리스틱이 표준 변수명 가정 */
+  /* tech-modern-cards alias — 자동매칭 휴리스틱 호환 */
   --bg-base: var(--canvas);
   --bg-elevated: var(--canvas-soft);
   --bg-code: var(--navy-deep);
@@ -87,11 +96,11 @@ section {
 }
 
 /* ==========================================================================
-   Typography
+   Typography — slide와 일치 (h1=600, h2=500, strong=색만)
    ========================================================================== */
 h1 {
   font-size: 34pt;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: -0.03em;
   line-height: 1.2;
   color: var(--ink);
@@ -99,7 +108,7 @@ h1 {
 }
 h2 {
   font-size: 28pt;
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: -0.02em;
   color: var(--ink);
   margin: 0 0 20px 0;
@@ -117,32 +126,33 @@ p, li {
   margin: 0 0 14px 0;
 }
 
+/* (4) strong: 색상만, 형광펜 제거 (slide.strong과 동일) */
 strong {
   color: var(--purple);
-  font-weight: 700;
-  background: linear-gradient(transparent 60%, rgba(86, 69, 212, 0.16) 60%);
-  padding: 0 2px;
+  font-weight: 600;
+  background: none;
+  padding: 0;
 }
 
+/* (2) em: pastel-yellow + ink (slide.em과 동일, 따뜻한 톤) */
 em {
   display: inline-block;
   font-style: normal;
-  padding: 3px 12px;
-  font-size: 14pt;
-  font-weight: 600;
-  background: var(--accent-soft);
-  color: var(--purple);
-  border: 1px solid var(--hairline);
-  border-radius: 6px;
-  vertical-align: middle;
-  margin-right: 8px;
+  background: var(--pastel-yellow);
+  color: var(--ink);
+  font-weight: 500;
+  font-size: 0.85em;
+  padding: 1px 8px;
+  border-radius: 4px;
+  margin-right: 6px;
+  border: none;
   line-height: 1.4;
 }
 
 a {
   color: var(--link);
   text-decoration: none;
-  border-bottom: 2px solid rgba(0, 117, 222, 0.3);
+  border-bottom: 1px solid rgba(0, 117, 222, 0.3);
 }
 
 ul, ol {
@@ -156,7 +166,7 @@ code {
   font-family: var(--font-mono);
   background: rgba(86, 69, 212, 0.10);
   color: var(--purple);
-  padding: 3px 8px;
+  padding: 2px 7px;
   border-radius: 4px;
   font-size: 0.85em;
   font-weight: 500;
@@ -183,10 +193,12 @@ pre code {
 
 blockquote {
   background: var(--canvas-card);
-  border-left: 4px solid var(--purple);
-  padding: 18px 26px;
+  border-left: 3px solid var(--purple);
+  padding: 14px 22px;
   margin: 16px 0;
-  border-radius: 0 8px 8px 0;
+  border-radius: 4px;
+  color: var(--ink);
+  font-size: 17pt;
 }
 blockquote p {
   color: var(--ink);
@@ -198,65 +210,81 @@ blockquote p {
 
 hr { display: none; }
 header, footer { display: none; }
-section::after { display: none; }
 
 /* ==========================================================================
-   1) card-cover — 표지
-   상단 30% navy 그라데이션 + 우상단 purple→pink 64×64 코너 글리프
+   카드뉴스 차별화 — 페이지네이션 배지 (NEW)
+   paginate: true 일 때 우상단 mono pill 표시.
+   Marp 기본 section::after를 override 하기 위해 !important 사용.
+   ========================================================================== */
+section::after {
+  content: attr(data-marpit-pagination) !important;
+  position: absolute !important;
+  top: 40px !important;
+  right: 56px !important;
+  bottom: auto !important;
+  left: auto !important;
+  font-family: var(--font-mono) !important;
+  font-size: 13pt !important;
+  font-weight: 500 !important;
+  color: var(--purple) !important;
+  background: var(--canvas-card) !important;
+  padding: 4px 14px !important;
+  border-radius: 999px !important;
+  letter-spacing: 0.04em !important;
+  z-index: 5 !important;
+  line-height: 1.4 !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+/* ==========================================================================
+   1) card-cover — slide.cover와 100% 동일: 풀블리드 navy + 화이트 H1 60pt
    ========================================================================== */
 section.card-cover {
-  padding: 0;
-  background: var(--canvas);
-  justify-content: flex-start;
+  background: linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 100%);
+  color: #ffffff;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 80px 88px;
 }
 section.card-cover::before {
   content: '';
-  display: block;
-  width: 100%;
-  height: 405px; /* 30% of 1350 */
-  background: linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 100%);
-}
-section.card-cover::after {
-  content: '';
   position: absolute;
   top: 56px;
-  right: 64px;
-  width: 72px;
-  height: 72px;
-  border-radius: 14px;
+  right: 88px;
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
   background: linear-gradient(135deg, var(--purple) 0%, var(--pink) 100%);
-  opacity: 0.95;
+  opacity: 0.85;
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.10), 0 12px 28px rgba(0, 0, 0, 0.35);
-  display: block;
 }
-section.card-cover > * {
-  padding-left: 72px;
-  padding-right: 72px;
-}
+section.card-cover::after { display: none !important; }
 section.card-cover h1 {
-  font-size: 50pt;
-  font-weight: 700;
+  color: #ffffff;
+  font-size: 60pt;
+  font-weight: 600;
   letter-spacing: -0.03em;
   line-height: 1.1;
-  color: var(--ink);
-  margin: 80px 0 24px 0;
+  margin: 0 0 18px 0;
 }
 section.card-cover h2 {
+  color: rgba(255, 255, 255, 0.75);
   font-size: 22pt;
-  font-weight: 500;
-  color: var(--ink-mute);
-  margin: 0 0 32px 0;
+  font-weight: 400;
+  margin: 0 0 40px 0;
+  max-width: 88%;
 }
 section.card-cover p {
-  font-size: 18pt;
-  color: var(--ink-sub);
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 15pt;
   font-family: var(--font-mono);
   margin: 0;
 }
+section.card-cover strong { color: #ffffff; }
 
 /* ==========================================================================
-   2) card-hook — 후크 (스와이프 유도)
-   pastel-yellow radial accent + 72pt hook
+   2) card-hook — 후크 + 좌하단 "스와이프 →" CTA
    ========================================================================== */
 section.card-hook {
   justify-content: center;
@@ -267,7 +295,7 @@ section.card-hook {
 }
 section.card-hook h1 {
   font-size: 72pt;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.04em;
   line-height: 1.05;
   color: var(--ink);
@@ -279,10 +307,25 @@ section.card-hook p {
   font-weight: 500;
   margin: 0;
 }
+section.card-hook::after {
+  content: '스와이프 →' !important;
+  position: absolute !important;
+  bottom: 64px !important;
+  left: 64px !important;
+  top: auto !important;
+  right: auto !important;
+  font-family: var(--font-mono) !important;
+  font-size: 17pt !important;
+  color: var(--purple) !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.04em !important;
+  background: none !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+}
 
 /* ==========================================================================
-   3) card-point — 요점 (반복)
-   좌상단 purple pill 번호 배지 + H2 + 본문
+   3) card-point — 번호 배지 + H2 + 본문
    ========================================================================== */
 section.card-point {
   justify-content: flex-start;
@@ -307,13 +350,14 @@ section.card-point > p:first-child:has(> code:only-child) {
 }
 section.card-point h2 {
   font-size: 36pt;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: -0.03em;
   margin: 0 0 28px 0;
   color: var(--ink);
 }
 section.card-point h1 {
   font-size: 36pt;
+  font-weight: 600;
   margin: 0 0 28px 0;
 }
 section.card-point p,
@@ -328,8 +372,7 @@ section.card-point ol {
 }
 
 /* ==========================================================================
-   4) card-quote — 인용 / 권위
-   pastel-lavender 배경 + 220pt Fraunces serif " 글리프
+   4) card-quote — 인용 (lavender 풀배경 + serif 220pt 옅게)
    ========================================================================== */
 section.card-quote {
   justify-content: center;
@@ -348,6 +391,7 @@ section.card-quote::before {
   top: 60px;
   left: 64px;
 }
+section.card-quote::after { display: none !important; }
 section.card-quote blockquote {
   background: transparent;
   border: none;
@@ -373,16 +417,16 @@ section.card-quote blockquote p:last-child {
 }
 
 /* ==========================================================================
-   5) card-list — 나열형 (decimal-leading-zero)
+   5) card-list — decimal-leading-zero 번호 리스트
    ========================================================================== */
 section.card-list {
   justify-content: flex-start;
-  padding-top: 80px;
+  padding-top: 96px;
 }
 section.card-list h1,
 section.card-list h2 {
   font-size: 32pt;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: -0.03em;
   color: var(--ink);
   margin: 0 0 40px 0;
@@ -412,7 +456,7 @@ section.card-list ol li::before {
   top: 0;
   font-family: var(--font-mono);
   font-size: 28pt;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--purple);
   letter-spacing: -0.02em;
   line-height: 1;
@@ -426,12 +470,11 @@ section.card-list ol li strong {
   background: none;
   padding: 0;
   margin-bottom: 4px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 /* ==========================================================================
-   6) card-cta — 행동 유도
-   풀배경 purple 그라데이션 + 화이트 H1 + mono 핸들
+   6) card-cta — 풀배경 purple + 화이트 H1
    ========================================================================== */
 section.card-cta {
   justify-content: center;
@@ -440,9 +483,10 @@ section.card-cta {
   background: linear-gradient(180deg, var(--purple) 0%, var(--purple-deep) 100%);
   color: #ffffff;
 }
+section.card-cta::after { display: none !important; }
 section.card-cta h1 {
-  font-size: 50pt;
-  font-weight: 800;
+  font-size: 54pt;
+  font-weight: 600;
   letter-spacing: -0.03em;
   line-height: 1.15;
   color: #ffffff;
@@ -450,8 +494,8 @@ section.card-cta h1 {
 }
 section.card-cta h2 {
   font-size: 24pt;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.9);
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.88);
   margin: 0 0 40px 0;
 }
 section.card-cta p {
@@ -467,10 +511,7 @@ section.card-cta p:last-child {
   margin-top: 32px;
 }
 section.card-cta strong {
-  background: rgba(255, 255, 255, 0.18);
   color: #ffffff;
-  padding: 2px 8px;
-  border-radius: 4px;
 }
 section.card-cta a {
   color: #ffffff;
@@ -478,7 +519,7 @@ section.card-cta a {
 }
 
 /* ==========================================================================
-   7) card-end — 엔딩 (navy 그라데이션 + purple 스트라이프)
+   7) card-end — navy + 좌상단 purple stripe
    ========================================================================== */
 section.card-end {
   justify-content: center;
@@ -497,9 +538,10 @@ section.card-end::before {
   background: var(--purple);
   border-radius: 3px;
 }
+section.card-end::after { display: none !important; }
 section.card-end h1 {
   font-size: 48pt;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: -0.03em;
   color: #ffffff;
   margin: 48px 0 32px 0;
@@ -511,10 +553,11 @@ section.card-end p {
 }
 section.card-end p:last-child {
   font-family: var(--font-mono);
-  font-size: 18pt;
+  font-size: 17pt;
   color: rgba(255, 255, 255, 0.55);
   margin-top: 24px;
 }
+section.card-end strong { color: #ffffff; }
 
 /* ==========================================================================
    ===== Notion 확장 7종 (수동 지정) =====
@@ -522,17 +565,16 @@ section.card-end p:last-child {
 
 /* ==========================================================================
    8) card-sticky-notes — 2×2 회전 pastel 카드
-   <ul><li>4개를 회전 sticky note로 변환
    ========================================================================== */
 section.card-sticky-notes {
   justify-content: flex-start;
-  padding: 80px 64px;
+  padding: 96px 64px;
   background: var(--canvas-soft);
 }
 section.card-sticky-notes h1,
 section.card-sticky-notes h2 {
   font-size: 30pt;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: -0.03em;
   color: var(--ink);
   margin: 0 0 48px 0;
@@ -569,7 +611,7 @@ section.card-sticky-notes ul li:nth-child(4) { background: var(--pastel-sky); tr
 section.card-sticky-notes ul li strong {
   display: block;
   color: var(--ink);
-  font-weight: 700;
+  font-weight: 600;
   background: none;
   padding: 0;
   font-size: 22pt;
@@ -577,17 +619,16 @@ section.card-sticky-notes ul li strong {
 }
 
 /* ==========================================================================
-   9) card-pastel-blocks — 2×3 (또는 3×2) 6색 pastel 블록 그리드
-   <ul><li>6개를 컬러 블록으로
+   9) card-pastel-blocks — 2×3 6색 pastel 블록
    ========================================================================== */
 section.card-pastel-blocks {
   justify-content: flex-start;
-  padding: 80px 64px;
+  padding: 96px 64px;
 }
 section.card-pastel-blocks h1,
 section.card-pastel-blocks h2 {
   font-size: 30pt;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: -0.03em;
   color: var(--ink);
   margin: 0 0 36px 0;
@@ -626,23 +667,22 @@ section.card-pastel-blocks ul li strong {
   color: var(--ink);
   background: none;
   padding: 0;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 19pt;
   margin-bottom: 4px;
 }
 
 /* ==========================================================================
-   10) card-database-rows — Notion DB mockup (5행, 이름 + 상태 태그)
-   <ol><li><strong>이름</strong> · <code>태그</code></li></ol>
+   10) card-database-rows — Notion DB mockup
    ========================================================================== */
 section.card-database-rows {
   justify-content: flex-start;
-  padding: 80px 64px;
+  padding: 96px 64px;
 }
 section.card-database-rows h1,
 section.card-database-rows h2 {
   font-size: 30pt;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: -0.03em;
   color: var(--ink);
   margin: 0 0 24px 0;
@@ -693,36 +733,28 @@ section.card-database-rows ol li:nth-child(5n+4) code { background: var(--pastel
 section.card-database-rows ol li:nth-child(5n+5) code { background: var(--pastel-sky);      color: #1758a3; }
 
 /* ==========================================================================
-   11) card-yellow-banner — 풀배경 pastel-yellow 콜아웃
+   11) card-yellow-banner — 풀배경 pastel-yellow 콜아웃 (slide.yellow-banner와 동일하게 center)
    ========================================================================== */
 section.card-yellow-banner {
   background: var(--pastel-yellow);
   color: var(--ink);
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
+  text-align: center;
   padding: 96px 80px;
 }
-section.card-yellow-banner::before {
-  content: '';
-  position: absolute;
-  top: 96px;
-  left: 80px;
-  width: 96px;
-  height: 6px;
-  background: var(--ink);
-  border-radius: 3px;
-}
+section.card-yellow-banner::after { display: none !important; }
 section.card-yellow-banner h1 {
-  font-size: 60pt;
-  font-weight: 800;
+  font-size: 56pt;
+  font-weight: 600;
   letter-spacing: -0.03em;
   color: var(--ink);
-  margin: 48px 0 24px 0;
+  margin: 0 0 20px 0;
   line-height: 1.1;
 }
 section.card-yellow-banner h2 {
-  font-size: 26pt;
-  font-weight: 500;
+  font-size: 24pt;
+  font-weight: 400;
   color: rgba(25, 25, 24, 0.7);
   margin: 0 0 28px 0;
 }
@@ -731,25 +763,19 @@ section.card-yellow-banner li {
   font-size: 20pt;
   color: rgba(25, 25, 24, 0.78);
 }
-section.card-yellow-banner strong {
-  color: var(--ink);
-  background: rgba(0, 0, 0, 0.08);
-  padding: 2px 6px;
-  border-radius: 4px;
-}
+section.card-yellow-banner strong { color: var(--ink); }
 
 /* ==========================================================================
-   12) card-toggle-list — Notion ▶ 토글 + 들여쓰기 ○ 본문
-   H2 + <ul><li>... 형태. 중첩 <ul>은 ○ 자식 항목.
+   12) card-toggle-list — Notion ▶ 토글 + ○ 자식
    ========================================================================== */
 section.card-toggle-list {
   justify-content: flex-start;
-  padding: 80px 72px;
+  padding: 96px 72px;
 }
 section.card-toggle-list h1,
 section.card-toggle-list h2 {
   font-size: 32pt;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: -0.03em;
   color: var(--ink);
   margin: 0 0 28px 0;
@@ -803,17 +829,16 @@ section.card-toggle-list > ul > li ul li::before {
 }
 
 /* ==========================================================================
-   13) card-block-features — 3개 세로 스택 (icon 원 + H3 + 본문)
-   <ul><li><strong>제목</strong> 본문</li></ul> 3개. nth-child로 컬러 사이클.
+   13) card-block-features — 세로 3 스택 (컬러 원 + H3 + 본문)
    ========================================================================== */
 section.card-block-features {
   justify-content: flex-start;
-  padding: 80px 64px;
+  padding: 96px 64px;
 }
 section.card-block-features h1,
 section.card-block-features h2 {
   font-size: 32pt;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: -0.03em;
   color: var(--ink);
   margin: 0 0 36px 0;
@@ -863,54 +888,58 @@ section.card-block-features ul li strong {
   color: var(--ink);
   background: none;
   padding: 0;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 22pt;
   margin-bottom: 6px;
 }
 
 /* ==========================================================================
-   14) card-pastel-quote — pastel-lavender 풀배경 + 거대 serif 인용
+   14) card-pastel-quote — slide.pastel-quote와 동일: white canvas 안에 rounded lavender 카드
    ========================================================================== */
 section.card-pastel-quote {
-  background: var(--pastel-lavender);
+  background: var(--canvas);
   justify-content: center;
-  align-items: flex-start;
-  padding: 100px 80px;
+  align-items: center;
+  padding: 96px 80px;
 }
-section.card-pastel-quote::before {
-  content: '\201C';
-  position: absolute;
-  top: 16px;
-  left: 56px;
-  font-family: var(--font-serif);
-  font-size: 280pt;
-  color: var(--purple);
-  opacity: 0.30;
-  line-height: 1;
-}
+section.card-pastel-quote::after { display: none !important; }
 section.card-pastel-quote h1 { display: none; }
 section.card-pastel-quote blockquote {
-  background: transparent;
+  background: var(--pastel-lavender);
   border: none;
-  padding: 0;
-  margin: 140px 0 0 0;
-  border-radius: 0;
+  border-radius: 16px;
+  padding: 80px 56px 56px;
+  width: 100%;
+  max-width: 880px;
+  position: relative;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
+}
+section.card-pastel-quote blockquote::before {
+  content: '\201C';
+  position: absolute;
+  top: 8px;
+  left: 32px;
+  font-family: var(--font-serif);
+  font-size: 110pt;
+  color: var(--purple);
+  opacity: 0.35;
+  line-height: 1;
 }
 section.card-pastel-quote blockquote p {
-  font-size: 30pt;
+  font-size: 26pt;
   line-height: 1.35;
   font-style: normal;
   font-weight: 500;
   color: var(--ink);
   letter-spacing: -0.015em;
-  margin: 0 0 28px 0;
+  margin: 0 0 24px 0;
 }
 section.card-pastel-quote blockquote p:last-child {
-  font-size: 18pt;
+  font-size: 17pt;
   font-style: normal;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--ink-mute);
-  margin: 40px 0 0 0;
+  margin: 28px 0 0 0;
   display: flex;
   align-items: center;
   gap: 14px;
@@ -918,15 +947,134 @@ section.card-pastel-quote blockquote p:last-child {
 section.card-pastel-quote blockquote p:last-child::before {
   content: '';
   display: inline-block;
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background: var(--purple);
   flex-shrink: 0;
 }
 
 /* ==========================================================================
-   Guards — disallow 16:9 layout classes (fail-safe outline)
+   ===== 카드뉴스 신규 2종 (v2) =====
+   ========================================================================== */
+
+/* ==========================================================================
+   15) card-summary — CTA 직전 요약 (navy + yellow stripe + 3 bullet)
+   ========================================================================== */
+section.card-summary {
+  background: linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 100%);
+  color: #ffffff;
+  padding: 96px 80px;
+  justify-content: center;
+  align-items: flex-start;
+}
+section.card-summary::before {
+  content: '';
+  position: absolute;
+  top: 96px;
+  left: 0;
+  width: 6px;
+  height: 96px;
+  background: var(--pastel-yellow);
+}
+section.card-summary::after { display: none !important; }
+section.card-summary h1,
+section.card-summary h2 {
+  color: #ffffff;
+  font-size: 36pt;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  margin: 0 0 40px 24px;
+  line-height: 1.15;
+}
+section.card-summary ol {
+  list-style: none;
+  counter-reset: sm;
+  padding: 0;
+  margin: 0 0 0 24px;
+}
+section.card-summary ol li {
+  counter-increment: sm;
+  padding: 18px 0 18px 80px;
+  font-size: 22pt;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.92);
+  position: relative;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  min-height: 60px;
+}
+section.card-summary ol li:last-child {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+section.card-summary ol li::marker { content: ''; }
+section.card-summary ol li::before {
+  content: counter(sm, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-mono);
+  font-size: 28pt;
+  font-weight: 700;
+  color: var(--pastel-yellow);
+  letter-spacing: -0.02em;
+}
+section.card-summary ol li strong {
+  color: #ffffff;
+  font-weight: 700;
+  background: none;
+  padding: 0;
+  margin-right: 8px;
+}
+
+/* ==========================================================================
+   16) card-callout — pastel 풀배경 + 좌측 purple stripe (중간 강조)
+   기본 mint. 클래스 추가로 컬러 변형: card-callout.peach / .rose / .lavender / .sky / .yellow
+   ========================================================================== */
+section.card-callout {
+  background: var(--pastel-mint);
+  color: var(--ink);
+  padding: 96px 80px;
+  justify-content: center;
+  align-items: flex-start;
+}
+section.card-callout::before {
+  content: '';
+  position: absolute;
+  top: 120px;
+  left: 0;
+  width: 8px;
+  height: calc(100% - 240px);
+  background: var(--purple);
+}
+section.card-callout::after { display: none !important; }
+section.card-callout h1,
+section.card-callout h2 {
+  font-size: 44pt;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  margin: 0 0 24px 24px;
+  line-height: 1.15;
+}
+section.card-callout p {
+  font-size: 22pt;
+  line-height: 1.5;
+  color: var(--ink-mute);
+  margin: 0 0 14px 24px;
+}
+section.card-callout strong { color: var(--purple); }
+section.card-callout.peach    { background: var(--pastel-peach); }
+section.card-callout.rose     { background: var(--pastel-rose); }
+section.card-callout.lavender { background: var(--pastel-lavender); }
+section.card-callout.sky      { background: var(--pastel-sky); }
+section.card-callout.yellow   { background: var(--pastel-yellow); }
+
+/* ==========================================================================
+   Guards — 16:9 클래스 사용 금지 시 시각 경고
    ========================================================================== */
 section.cover,
 section.section,

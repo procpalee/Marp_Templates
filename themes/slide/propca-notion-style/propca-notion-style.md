@@ -93,7 +93,7 @@ greeting = greet_user("Antigravity")
 
 ---
 
-# 공통 요소 5 — 콜아웃 5종
+# 공통 요소 5 — 콜아웃 4종
 정보의 중요도나 종류에 따라 알맞은 콜아웃을 자유롭게 활용할 수 있습니다.
 <div class="callout info">
 
@@ -110,10 +110,6 @@ greeting = greet_user("Antigravity")
 <div class="callout warn">
 
 **WARNING** 주의 사항. 잘못된 설정이나 실수로 결과가 비틀어질 수 있는 상황을 방지합니다.
-</div>
-<div class="callout danger">
-
-**DANGER** 경고 및 가이드. 되돌릴 수 없는 데이터 손실이나 중요 작업 시 필독을 요구합니다.
 </div>
 
 ---

@@ -162,8 +162,9 @@ blockquote {
   border-radius: 4px;
   color: var(--ink);
   font-size: 17pt;
+  line-height: 1.55;
 }
-blockquote p { color: var(--ink); margin: 0; font-style: italic; }
+blockquote p { color: var(--ink); margin: 0; font-size: 17pt; line-height: 1.55; font-style: italic; }
 
 table { border-collapse: collapse; width: 100%; font-size: 15pt; margin: 14px 0 24px; }
 th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--hairline); }
@@ -855,12 +856,17 @@ section.hero-quote blockquote p:last-child {
   margin-top: 24px;
 }
 
-/* ---------- Callouts (info / success / warn / danger) ---------- */
+/* ---------- Callouts (단일 톤 통일, 2026-05) ----------
+ * propca 시그니처 톤(--purple)으로 좌측 컬러바·라벨 색상 통일.
+ * 종류 구분은 좌측 컬러바·배경 알파가 아닌 **아이콘 + 굵은 라벨**(`**참고**`, `**예시**` 등)로 표현.
+ * .danger만 예외 — 진짜 위험 신호 필요 시 좌측바를 --danger로 유지.
+ */
 .callout {
   margin: 16px 0;
   padding: 16px 20px;
   border-radius: 8px;
   border: 1px solid var(--hairline);
+  border-left: 3px solid var(--purple);
   background: var(--canvas-card);
   font-size: 16pt;
   display: block;
@@ -872,7 +878,7 @@ section.hero-quote blockquote p:last-child {
   letter-spacing: 0.08em;
   font-size: 15pt;
   margin-right: 8px;
-  color: var(--info);
+  color: var(--purple);
   background: none;
   padding: 0;
 }
@@ -886,16 +892,26 @@ section.hero-quote blockquote p:last-child {
   color: var(--fg-muted);
   margin-bottom: 6px;
 }
-.callout.info { border-left: 4px solid var(--info); background: rgba(59, 130, 246, 0.06); }
-.callout.info strong:first-child { color: var(--info); }
-.callout.example { border-left: 4px solid var(--example); background: rgba(255, 100, 200, 0.06); }
-.callout.example strong:first-child { color: var(--example); }
-.callout.success { border-left: 4px solid var(--success); background: rgba(16, 185, 129, 0.06); }
-.callout.success strong:first-child { color: var(--success); }
-.callout.warn { border-left: 4px solid var(--warning); background: rgba(245, 158, 11, 0.06); }
-.callout.warn strong:first-child { color: var(--warning); }
-.callout.danger { border-left: 4px solid var(--danger); background: rgba(239, 68, 68, 0.06); }
-.callout.danger strong:first-child { color: var(--danger); }
+
+/* info / example / success / warn — 모두 시그니처 보라 단일 톤 */
+.callout.info,
+.callout.example,
+.callout.success,
+.callout.warn {
+  border-left: 3px solid var(--purple);
+  background: var(--canvas-card);
+}
+.callout.info strong,
+.callout.example strong,
+.callout.success strong,
+.callout.warn strong { color: var(--purple); }
+
+/* danger도 시그니처 보라 단일 톤 — 종류 구분은 아이콘+굵은 라벨로 */
+.callout.danger {
+  border-left: 3px solid var(--purple);
+  background: var(--canvas-card);
+}
+.callout.danger strong { color: var(--purple); }
 
 :root {
   --info: #3b82f6;
@@ -1537,8 +1553,8 @@ section.vertical-timeline ol li {
   counter-increment: vt;
   padding: 14px 0 14px 70px;
   position: relative;
-  font-size: 18pt;
-  line-height: 1.5;
+  font-size: 17pt;
+  line-height: 1.55;
 }
 section.vertical-timeline ol li::before {
   content: counter(vt, decimal-leading-zero);

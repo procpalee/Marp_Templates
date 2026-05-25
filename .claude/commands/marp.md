@@ -7,8 +7,7 @@ argument-hint: <파일경로> [watch] [용도 설명]
 
 이 명령은 **반드시 `md-to-marp` 스킬을 호출**하여 다음을 일괄 수행합니다:
 
-1. 옵시디언 마커 정리 (`obsidian-cleanup` 스킬)
-2. propca-notion-style 21 레이아웃 자동 매칭 (`md-to-marp-propca` 스킬)
+1. 옵시디언 마커 정리 + propca-notion-style 21 레이아웃 자동 매칭 (`md-to-marp-propca` 스킬, 통합)
 3. `npx @marp-team/marp-cli`로 HTML 빌드
 4. **`marp-reviewer` 에이전트(독립 컨텍스트)** 로 품질 QA
 5. 이슈 있으면 자동 수정 후 재빌드·재QA (최대 2회)

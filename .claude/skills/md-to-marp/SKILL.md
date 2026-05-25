@@ -1,13 +1,13 @@
 ---
 name: md-to-marp
-description: 마크다운 파일(옵시디언 또는 표준)을 받아 Marp 슬라이드 HTML로 한 번에 변환하는 오케스트레이터. 두 가지 모드 — (1) deck 모드: propca-notion-style 16:9 슬라이드 (강의·교육·발표 자료 기본), (2) card-news 모드: 4:5 Threads/Instagram 카드뉴스 (purpose에 인스타/카드뉴스/sns 키워드 매치 시). 파이프라인은 obsidian-cleanup → md-to-marp-propca → Marp HTML 빌드 → marp-reviewer QA → (선택) watch 모드. 출력은 output/<slug>/<slug>.html (+ cleaned.md, marp.md, qa.md, assets/). card-news 모드는 기존 output/<slug>-cards/*.png 구조 유지.
+description: 마크다운 파일(옵시디언 또는 표준)을 받아 Marp 슬라이드 HTML로 한 번에 변환하는 오케스트레이터. 두 가지 모드 — (1) deck 모드: propca-notion-style 16:9 슬라이드 (강의·교육·발표 자료 기본), (2) card-news 모드: 4:5 Threads/Instagram 카드뉴스 (purpose에 인스타/카드뉴스/sns 키워드 매치 시). 파이프라인은 md-to-marp-propca(옵시디언 전처리 + propca 자동매칭 통합) → Marp HTML 빌드 → marp-reviewer QA → (선택) watch 모드. 출력은 output/<slug>/<slug>.html (+ cleaned.md, marp.md, qa.md, assets/). card-news 모드는 기존 output/<slug>-cards/*.png 구조 유지.
 ---
 
-# md-to-marp (v2.0)
+# md-to-marp (v2.1)
 
-**End-to-end 워크플로**: 옵시디언 또는 표준 마크다운 → 모드 결정 → (옵시디언 전처리 →) Marp MD 변환 → HTML 빌드 → 독립 QA → (선택) watch 모드.
+**End-to-end 워크플로**: 옵시디언 또는 표준 마크다운 → 모드 결정 → Marp MD 변환(옵시디언 전처리 통합) → HTML 빌드 → 독립 QA → (선택) watch 모드.
 
-`obsidian-cleanup`, `md-to-marp-propca` 스킬과 `marp-reviewer` 에이전트를 오케스트레이션하는 상위 레이어.
+`md-to-marp-propca` 스킬(옵시디언 cleanup + propca 자동매칭 통합)과 `marp-reviewer` 에이전트를 오케스트레이션하는 상위 레이어.
 
 ---
 
@@ -29,8 +29,8 @@ description: 마크다운 파일(옵시디언 또는 표준)을 받아 Marp 슬�
 
 ```
 output/<slug>/
-  <slug>.cleaned.md       ← obsidian-cleanup 산출 (옵시디언이 아니어도 정리본)
-  <slug>.marp.md          ← md-to-marp-propca 산출
+  <slug>.cleaned.md       ← md-to-marp-propca 옵시디언 전처리 산출 (감사 추적용)
+  <slug>.marp.md          ← md-to-marp-propca 최종 산출
   <slug>.html             ← Marp HTML 빌드
   <slug>.qa.md            ← marp-reviewer 리포트
   assets/                 ← 옵시디언 이미지 복사본 (있을 때)
@@ -68,8 +68,8 @@ output/
      │  - 그 외 → mode=deck, theme=propca-notion-style
      ↓
 [3] deck 모드:
-     [3-1] Skill(obsidian-cleanup) → output/<slug>/<slug>.cleaned.md + assets/
-     [3-2] Skill(md-to-marp-propca) → output/<slug>/<slug>.marp.md
+     Skill(md-to-marp-propca) → output/<slug>/{cleaned.md, marp.md, assets/}
+       (옵시디언 전처리 + propca 자동매칭이 통합되어 한 번에 실행)
     card-news 모드:
      [3'] 카드뉴스 변환 (§5) → output/slides-<slug>-cards.md
      ↓
@@ -77,8 +77,16 @@ output/
      │  - deck: HTML 1-pass
      │  - card-news: HTML + PNG 2-pass
      ↓
-[5] Agent(marp-reviewer) 호출 (독립 컨텍스트)
-     │  - rule-based + visual
+[5] Agent(marp-reviewer) 호출 (독립 컨텍스트) — skip_qa=true 명시 안 한 한 **항상 실행 (의무)**
+     │  - Phase 1: rule-based (front matter, 어휘 방화벽, 빌드물)
+     │  - Phase 2: visual
+     │      · C-1 빈 콘텐츠
+     │      · C-2 텍스트 overflow (라인/글자 수)
+     │      · C-3 헤더/푸터 디렉티브 누락
+     │      · C-4 이미지 참조 무결성
+     │      · C-5 레이아웃 overflow (추정 높이) ★ 신규
+     │      · C-6 footer/header 충돌 (본문 마지막과 footer 간격) ★ 신규
+     │      · C-7 페이지당 강조 색상 종류 수 ★ 신규
      │  - PASS/FAIL + 이슈 목록 반환
      ↓
 [6] PASS면 산출 종료
@@ -127,23 +135,24 @@ keywords(purpose) → mode
 
 ## 3) deck 모드 파이프라인
 
-### 3-1) obsidian-cleanup 호출
+### 3-1) md-to-marp-propca 호출 (옵시디언 전처리 + propca 매칭 통합)
 
 ```
-Skill(obsidian-cleanup, args: "<source 경로> slug=<slug>")
+Skill(md-to-marp-propca, args: "<source 경로> slug=<slug> [header=...] [footer=...]")
 ```
 
-산출: `output/<slug>/<slug>.cleaned.md` + `output/<slug>/assets/` (이미지 복사본).
+이 한 번의 호출이 다음을 모두 수행:
+- 옵시디언 마커 정리(`[[wikilinks]]`, `![[embeds]]`, `> [!NOTE]` 콜아웃, frontmatter, `#tag` 블록)
+- vault 이미지 자산 `output/<slug>/assets/`로 복사
+- propca-notion-style 21 레이아웃 + 8 인라인 헬퍼 자동 매칭
+- 쇼케이스 패턴 준수 (cover의 H1+H2+연월, section의 #=숫자/##=제목 등)
 
-**옵시디언 마커가 없는 표준 MD도 그대로 통과** (cleanup은 멱등). 의미: 이 단계는 항상 안전하게 실행 가능.
+산출:
+- `output/<slug>/<slug>.cleaned.md` (감사 추적용)
+- `output/<slug>/<slug>.marp.md`
+- `output/<slug>/assets/` (이미지 복사본)
 
-### 3-2) md-to-marp-propca 호출
-
-```
-Skill(md-to-marp-propca, args: "<output/<slug>/<slug>.cleaned.md> slug=<slug> [header=...] [footer=...] [presenter=...]")
-```
-
-산출: `output/<slug>/<slug>.marp.md`.
+옵시디언 마커가 없는 표준 MD도 그대로 통과 (전처리 단계는 멱등).
 
 ### 3-3) Marp 빌드
 
@@ -298,6 +307,18 @@ for each issue in report.issues:
 retry build + QA
 ```
 
+**이슈 유형별 자동 수정 매핑** (marp-reviewer Phase 2 신규 체크 대응):
+
+| 이슈 | 자동 수정 |
+|---|---|
+| **C-5 overflow** (high/medium) | 해당 슬라이드 본문을 자동 분할 — H2/H3 그룹 단위로 2 슬라이드로 쪼개기. 그리드 레이아웃이면 카드 수를 줄이거나 2 슬라이드에 나눠 배치 |
+| **C-6 footer 충돌** (medium) | 본문 마지막 1~2행 축약 또는 슬라이드 끝 빈 줄 추가. footer 텍스트가 70자 초과면 단축 검토 |
+| **C-6 footer 텍스트 길이** (low) | front matter `footer:` 값을 50자 이내로 단축 (자동 단축 시 ... 추가) |
+| **C-7 색상 종류 초과** (medium/high) | 가장 약한 강조 요소부터 제거 — 우선순위 `chip` → `tag` → `callout`. 의미가 약한 강조 색상 1~2개를 평문 또는 굵은 글씨로 변환 |
+| **A-5 카드 개수 불일치** (high/medium) | 카드 수 보강 또는 다른 레이아웃(`pastel-blocks`/`block-features`)으로 전환 |
+| **A-7 div 빈 줄 누락** (medium) | `<div class>` 위·아래 빈 줄 추가 |
+| **C-3 헤더/푸터 디렉티브 누락** (medium) | 셸 슬라이드에 `<!-- _header: '' -->`, `<!-- _footer: '' -->`, `<!-- _paginate: false -->` 추가 |
+
 ### FAIL + retry ≥ max_retries
 
 ```
@@ -348,8 +369,9 @@ Claude:
   → Skill(md-to-marp)
   → 파싱: source=sample/2. 설치 및 기본설정.md, slug=2-설치-및-기본설정
   → 모드: deck / 테마: propca-notion-style
-  → Skill(obsidian-cleanup): 18 wikilinks, 4 image embeds, 1 callout 처리
-  → Skill(md-to-marp-propca): 14 slides, 3 cover/section, 2 timeline, 4 cards, ...
+  → Skill(md-to-marp-propca): 
+      - 옵시디언 전처리: 18 wikilinks, 4 image embeds, 1 callout 변환
+      - propca 매칭: 14 slides, 3 cover/section, 2 timeline, 4 cards, ...
   → 빌드: 142 KB HTML ✓
   → Agent(marp-reviewer): PASS (high=0, medium=1)
   → 출력:
@@ -386,8 +408,7 @@ Claude:
 
 ## 참고 자료
 
-- 옵시디언 전처리: [`../obsidian-cleanup/SKILL.md`](../obsidian-cleanup/SKILL.md)
-- propca 자동 매칭: [`../md-to-marp-propca/SKILL.md`](../md-to-marp-propca/SKILL.md)
+- 옵시디언 전처리 + propca 자동 매칭 (통합): [`../md-to-marp-propca/SKILL.md`](../md-to-marp-propca/SKILL.md)
 - 검수 에이전트: [`../../agents/marp-reviewer.md`](../../agents/marp-reviewer.md)
 - propca-notion-style 디자인: [`../../../themes/slide/propca-notion-style/design.md`](../../../themes/slide/propca-notion-style/design.md)
 - 카드뉴스 디자인: [`../../../themes/card-news/tech-modern/design.md`](../../../themes/card-news/tech-modern/design.md)

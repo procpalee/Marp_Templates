@@ -52,9 +52,8 @@ output/<slug>/
 
 | 컴포넌트 | 경로 | 역할 |
 |---|---|---|
-| 오케스트레이터 | `.claude/skills/md-to-marp/` | 모드 선택 + obsidian-cleanup·md-to-marp-propca 호출 + 빌드 + QA + 재시도 + watch |
-| 옵시디언 전처리 | `.claude/skills/obsidian-cleanup/` | 옵시디언 MD → 표준 MD (테마 무관) |
-| propca 자동매칭 | `.claude/skills/md-to-marp-propca/` | 표준 MD → propca-notion-style Marp MD (21 레이아웃 + 8 헬퍼) |
+| 오케스트레이터 | `.claude/skills/md-to-marp/` | 모드 선택 + md-to-marp-propca 호출 + 빌드 + QA + 재시도 + watch |
+| 변환 스킬 (통합) | `.claude/skills/md-to-marp-propca/` | 옵시디언 전처리 + propca-notion-style 21 레이아웃·8 헬퍼 자동 매칭 (한 스킬에서 일괄) |
 | 검증 에이전트 | `.claude/agents/marp-reviewer.md` | 독립 컨텍스트 QA. theme front matter로 propca/card-news 분기 |
 | 슬래시 명령 | `.claude/commands/marp.md` | `/marp <file> [watch] [용도]` 원샷 |
 | 카드뉴스 캡션 | `.claude/commands/caption.md` | `/caption <slug>` Threads/LinkedIn용 캡션 초안 |
@@ -140,8 +139,7 @@ deck 모드 기본 테마. 회계법인·자문사 강의/교육/발표 컨텍�
 │   │   └── caption.md                    # /caption 슬래시 명령 (카드뉴스용)
 │   └── skills/
 │       ├── md-to-marp/                   # 오케스트레이터
-│       ├── obsidian-cleanup/             # 옵시디언 전처리 (테마 무관)
-│       └── md-to-marp-propca/            # propca-notion-style 자동 매칭
+│       └── md-to-marp-propca/            # 옵시디언 전처리 + propca 자동 매칭 (통합)
 ├── themes/
 │   ├── slide/
 │   │   ├── propca-notion-style/          # 자동 매칭 가능 deck 테마
