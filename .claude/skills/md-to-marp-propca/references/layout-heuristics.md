@@ -10,17 +10,19 @@
 2. **네비게이션** — toc-split / section
 3. **시각 강조** — hero-quote / image-quote
 4. **2 컬럼 비교** — compare / two-image / before-after
-5. **카드 / 그리드** — cards / pastel-blocks
-6. **데이터 표시** — database-rows
-7. **순서 / 흐름** — timeline / vertical-timeline / roadmap
-8. **리스트 변형** — toggle-list / icon-list / block-features
-9. **폴백** — 평범 content (no `_class`)
+5. **카드 / 그리드** — cards / pastel-blocks / definition-cards
+6. **비교 / 정의** — feature-compare (특성 비교표) / definition-cards (개념 정의 카드)
+7. **튜토리얼** — step-image-guide (단계 + 이미지)
+8. **데이터 표시** — 일반 `<table>` + 인라인 `.tag` (database-rows 제거됨)
+9. **순서 / 흐름** — timeline / vertical-timeline / roadmap
+10. **리스트 변형** — toggle-list / icon-list / block-features
+11. **폴백** — 평범 content (no `_class`)
 
 각 슬라이드는 위 순서대로 매칭 시도. 첫 매치에서 확정.
 
 ---
 
-## 매핑 표 (전체 24행)
+## 매핑 표 (전체 37행)
 
 | # | 입력 패턴 | 출력 클래스 | 신뢰도 | 폴백 |
 |---|---|---|---|---|
@@ -33,7 +35,7 @@
 | 7 | 인라인 이미지 정확히 2 + 본문 ≤3행 | `two-image` | 高 | content |
 | 8 | 이미지 2 + `이전`/`이후`/`before`/`after`/`AS-IS`/`TO-BE` | `before-after` | 高 | `two-image` |
 | 9 | H3 카드 3~4 (각 + 1~2행 본문) | `cards` | 高 | grid 폴백 |
-| 10 | 표 + 상태 컬럼 (`진행중`/`완료`/`대기`/`예정`/`중단`) | `database-rows` + `.tag` 자동 주입 | 高 | inline 표 |
+| 10 | 표 + 상태 컬럼 (`진행중`/`완료`/`대기`/`예정`/`중단`) | 일반 `<table>` + 인라인 `.tag` 자동 주입 | 高 | content |
 | 11 | 2~6 개념 블록 단락형 (각 1~2행 본문, hero 톤) | `pastel-blocks` | 中 | cards |
 | 12 | ol 3~5 항목, 각 `**bold** —` 리드인 | `timeline` | 高 | content |
 | 13 | ol ≥5 항목, 각 부가 설명 1~2행 | `vertical-timeline` | 高 | timeline |
@@ -47,7 +49,20 @@
 | 21 | 마지막 H1 = `감사`/`Thanks`/`끝`/`The End` 솔로 | `end` | 高 | — |
 | 22 | 마지막 H1 누락 | `end` 자동 추가 | 高 | — |
 | 23 | 챕터 사이 `^\*\*\*$` 가로선 | `session-break` 슬라이드 자동 삽입 | 高 | — |
-| 24 | (기본) 인식 못한 H2 + 본문 | 평범 content (no `_class`) | — | — |
+| **24 (신규)** | 표 3+ 컬럼 + 상태 컬럼 없음 + 키워드 ✓/✗ 또는 특성 비교 ("협업"/"무료"/"한국어") | `feature-compare` (2~3 카드 그리드) | 高 | 일반 table |
+| **25 (신규)** | ol 3~5 단계 + 각 단계 1+ 이미지 (총 ≥3 이미지) | `step-image-guide` (좌 단계 / 우 이미지) | 高 | vertical-timeline |
+| **26 (신규)** | H3 2~6개 + 각 2~3행 본문 + 도구명·개념명 키워드 | `definition-cards` | 中 | cards / block-features |
+| **27 (신규)** | H2 + 2 항목 카드 비교 + `vs`/`대비`/`A vs B` 키워드 (각 카드 본문 2~5행) | `compare-cards` (2 카드 + VS 뱃지) | 高 | compare |
+| **28 (신규)** | 표 2 컬럼 + 첫 컬럼=속성 라벨, 나머지 2 컬럼=비교 대상 (행 4+) | `compare-table` | 高 | 일반 table |
+| **29 (신규)** | ol 5~10 항목 + 각 `**bold** —` 리드인 + 정의·설명 (개념 사전 톤) | `concept-list` | 高 | vertical-timeline |
+| **30 (신규)** | 표 2 컬럼 + 첫 컬럼=용어 + 둘째 컬럼=정의 (행 4+) | `concept-table` | 高 | concept-list |
+| **31 (신규)** | 3~4개 항목 카드 그리드 + 각 카드 ul 비교 항목 (3~4 항목) | `comparison-3up` | 高 | feature-compare |
+| **32 (신규)** | 본문 시작이 `최근`/`예전에`/`한 번은`/`경험` 같은 회상 톤 + 단락형 3개 (배경→사건→결과) | `story-arc` | 中 | content |
+| **33 (신규)** | 본문 시작이 `예를 들어`/`사례`/`Case` + 단일 시나리오 본문 + 보조 인용/설명 | `example-case` | 中 | content |
+| **34 (신규)** | blockquote 솔로 (≥2행) + 외부 출처 명시 (이메일·URL·`— 출처` 패턴) | `pull-quote` | 高 | hero-quote |
+| **35 (신규)** | H1 `장단점`/`Pros & Cons` + 2 ul 그룹 (좌측 ✓ 항목 / 우측 ✗ 항목) | `pros-cons` | 高 | compare |
+| **36 (신규)** | GFM 태스크 리스트 (`- [ ]` / `- [x]`) ≥3 항목 | `checklist` | 高 | icon-list |
+| 37 | (기본) 인식 못한 H2 + 본문 | 평범 content (no `_class`) | — | — |
 
 ---
 
@@ -185,20 +200,19 @@ H2가 `^\d+\.\s+`로 시작 (예: `## 1. 사전 준비`) 형제 챕터가 3+:
 | `cards` | H3 3~4개 + 각 1~2행 짧은 카드 | 균일한 카드 그리드 |
 | `pastel-blocks` | 단락형 2~6 hero 블록 | 시각적 임팩트 (개념 정리 / hero) |
 | `block-features` | H3 3~6개 + 각 1행 설명 + 1~2행 본문 | 기능 소개형 |
+| `definition-cards` (신규) | H3 2~6개 + 각 2~3행 본문 + 도구명·개념명 키워드 | 도구·개념 정의 카드 |
 
-매칭 우선: cards (가장 빈번) → pastel-blocks (개념 톤 매치 시) → block-features (기능 톤 매치 시) → fallback to plain content.
+매칭 우선: cards (가장 빈번, 짧음) → definition-cards (도구명·개념명 키워드 매치 시) → block-features (기능 톤) → pastel-blocks (단락형 hero) → fallback to plain content.
 
-### database-rows (+ tag 자동)
+### 표(table) + tag 자동 — 일반 table 사용 (database-rows 삭제됨)
 
-표가 다음 조건이면:
+표가 다음 조건이면 **일반 마크다운 table 그대로** 사용하고 상태 셀에만 `.tag` 인라인 자동 주입:
 - 컬럼 헤더에 `상태`/`Status` 포함
 - 셀에 `진행중`/`완료`/`대기`/`예정`/`중단` 값
 
-→ `database-rows` 클래스 + 상태 셀 값을 `<span class="tag {color}">..</span>`로 자동 래핑.
-
 마크다운 출력:
 ```markdown
-<!-- _class: database-rows -->
+# 작업 진행 상태
 
 | 작업 | 담당 | 상태 |
 |---|---|---|
@@ -206,6 +220,83 @@ H2가 `^\d+\.\s+`로 시작 (예: `## 1. 사전 준비`) 형제 챕터가 3+:
 | 모델 학습 | 박◯◯ | <span class="tag yellow">진행중</span> |
 | 결과 검토 | 이◯◯ | <span class="tag sky">예정</span> |
 ```
+
+### feature-compare — 특성 비교 (신규)
+
+표가 다음 조건이면 `feature-compare` 카드 그리드로 변환:
+- 컬럼 3+ 개 + 상태 컬럼 **없음**
+- 셀에 ✓/✗ 또는 특성 키워드(협업·무료·한국어·통합도구 등)
+
+마크다운 출력:
+```markdown
+<!-- _class: feature-compare -->
+
+# AI IDE 비교
+
+<div class="compare-grid">
+
+### Claude Cowork
+- 협업: 다중 에이전트
+- 무료: 없음
+- 한국어: 우수
+
+### Antigravity
+- 협업: 단일 에이전트
+- 무료: 있음
+- 한국어: 보통
+
+</div>
+```
+
+표 마크다운을 자동 변환할 수도 있고, 사용자가 명시적으로 `<div class="compare-grid">`를 작성해도 통과.
+
+### step-image-guide — 단계 + 이미지 (신규)
+
+ol 3~5 단계 + 각 단계 1+ 이미지(총 ≥3 이미지) 패턴 검출 시 `step-image-guide`로 변환:
+
+```markdown
+<!-- _class: step-image-guide -->
+
+# Step 1 — 설치
+
+<div class="step-grid">
+<div class="steps">
+
+1. `홈` → `추가기능` 메뉴
+2. Claude 검색 → **Add** 클릭
+3. 라이선스 확인
+
+</div>
+<div class="img">
+
+![설치 화면](assets/install.png)
+
+</div>
+</div>
+```
+
+본문 ol이 5+ 단계라도 한 슬라이드에 3~4 단계로 압축하고 나머지는 다음 슬라이드로 분할.
+
+### definition-cards — 개념 정의 (신규)
+
+H3 2~6개 + 각 2~3행 본문 + 도구명·개념명 키워드(`Gemini`, `Claude`, `Antigravity` 등) 검출 시:
+
+```markdown
+<!-- _class: definition-cards -->
+
+# AI 도구 카탈로그
+
+### Gemini
+Google의 멀티모달 AI. 1M 토큰 컨텍스트 지원.
+
+### Claude
+Anthropic의 코딩·문서 작업 특화 AI. Skills/MCP 생태계.
+```
+
+`cards`와 구분 기준:
+- 본문 1~2행 짧은 카드 → **cards**
+- 본문 2~3행 + 도구명·개념명 → **definition-cards**
+- 단락형 hero 톤 → **pastel-blocks**
 
 ### timeline vs vertical-timeline vs roadmap
 
@@ -270,7 +361,7 @@ imageCount(slide):
     block-features: 1
     image-quote   : 2
     vertical-timeline: 1
-    database-rows : 1
+    feature-compare: 1
     compare       : 1
     pastel-blocks : 2
     icon-list     : 2

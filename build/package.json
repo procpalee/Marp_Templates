@@ -21,6 +21,8 @@
     "build:nvidia": "marp ../themes/slide/nvidia/slides/nvidia.md --html --allow-local-files --theme-set ../themes/slide -o ../themes/slide/nvidia/slides/nvidia.html",
     "build:tesla": "marp ../themes/slide/tesla/slides/tesla.md --html --allow-local-files --theme-set ../themes/slide -o ../themes/slide/tesla/slides/tesla.html",
     "build:propca-notion-style": "marp ../themes/slide/propca-notion-style/propca-notion-style.md --html --allow-local-files --theme-set ../themes/slide -o ../themes/slide/propca-notion-style/propca-notion-style.html",
+    "build:cover-variants": "marp ../themes/slide/propca-notion-style/cover-variants.md --html --allow-local-files --theme-set ../themes/slide -o ../themes/slide/propca-notion-style/cover-variants.html",
+    "build:color-variants": "marp ../themes/slide/propca-notion-style/color-variants.md --html --allow-local-files --theme-set ../themes/slide -o ../themes/slide/propca-notion-style/color-variants.html",
     "build:propca-staging": "marp ../themes/slide/propca-staging/slides/propca-staging.md --html --allow-local-files --theme-set ../themes/slide -o ../themes/slide/propca-staging/slides/propca-staging.html",
     "watch:propca-staging": "marp ../themes/slide/propca-staging/slides/propca-staging.md --watch --html --allow-local-files --theme-set ../themes/slide",
     "watch:tech-modern": "marp ../themes/slide/tech-modern/slides/tech-modern.md --watch --html --allow-local-files --theme-set ../themes/slide",

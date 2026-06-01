@@ -30,7 +30,7 @@ footer: 'Notion-Style 테마 사용 가이드'
 
 1. **공통 지원 컴포넌트** <em>슬라이드 어디서나 호출 가능한 인라인 요소</em>
 2. **전용 레이아웃 — 콘텐츠 분할** <em>compare · two-image · before-after · cards</em>
-3. **전용 레이아웃 — 데이터 표시** <em>database-rows</em>
+3. **전용 레이아웃 — 비교 / 정의** <em>feature-compare · step-image-guide · definition-cards</em>
 4. **전용 레이아웃 — 시각 강조 / 인용** <em>image-quote · hero-quote · pastel-blocks</em>
 5. **전용 레이아웃 — 프로세스 / 리스트** <em>timeline · vertical-timeline · roadmap · toggle-list · icon-list · block-features</em>
 6. **마무리** <em>session-break · qa · thanks-contact · end</em>
@@ -292,24 +292,165 @@ Notion의 톤앤매너를 PPT/HTML 포맷으로 완벽히 통일하여 브랜드
 
 <!-- _class: section -->
 <!-- _header: '' -->
-<!-- header: '03. 전용 레이아웃 — 데이터 표시' -->
+<!-- header: '03. 전용 레이아웃 — 비교 / 정의' -->
 
 # 03
-## 데이터 표시 (Data Display)
+## 비교 / 정의 (Compare & Define)
 
 ---
 
-<!-- _class: database-rows -->
+<!-- _class: feature-compare -->
+<!-- header: '03. 전용 레이아웃 — 비교 / 정의' -->
 
-# 레이아웃 — database-rows
-클래스 `database-rows`는 노션 데이터베이스의 테이블 뷰 디자인을 정밀하게 모사하여 대시보드나 상태 요약에 적합합니다.
-<div class="db">
-<div class="head"><div>작업 항목</div><div>담당자</div><div>진행 상태</div><div>우선순위</div></div>
-<div class="row"><div>API 레이턴시 스파이크 모니터링</div><div>kai</div><div><span class="tag yellow">진행 중</span></div><div><span class="tag rose">P0</span></div></div>
-<div class="row"><div>결제 수단 연동 웹훅 검증</div><div>mira</div><div><span class="tag green">완료</span></div><div><span class="tag purple">P1</span></div></div>
-<div class="row"><div>보안 키 로테이션 가이드 작성</div><div>jess</div><div><span class="tag sky">검토 중</span></div><div><span class="tag purple">P2</span></div></div>
-<div class="row"><div>엘라스틱 서치 인덱스 재빌드</div><div>nori</div><div><span class="tag green">완료</span></div><div><span class="tag purple">P2</span></div></div>
+# 레이아웃 — feature-compare
+2~3 항목의 다중 특성을 카드 그리드로 비교합니다. 상태 컬럼이 없는 특성 비교에 적합 (제품/세대/플랜 비교).
+
+<div class="compare-grid">
+
+### Claude Cowork
+- 협업 모드: 다중 에이전트
+- 무료 플랜: 없음
+- 한국어 지원: 우수
+- 통합 도구: Skills, MCP
+
+### Antigravity
+- 협업 모드: 단일 에이전트
+- 무료 플랜: 있음
+- 한국어 지원: 보통
+- 통합 도구: Built-in
+
+### Cursor
+- 협업 모드: 단일 에이전트
+- 무료 플랜: 제한적
+- 한국어 지원: 보통
+- 통합 도구: 확장팩
+
 </div>
+
+---
+
+<!-- _class: step-image-guide -->
+<!-- header: '03. 전용 레이아웃 — 비교 / 정의' -->
+
+# 레이아웃 — step-image-guide
+좌측 단계별 설명 + 우측 스크린샷 슬롯. 튜토리얼·설치 가이드에 최적화된 2단 그리드 레이아웃.
+
+<div class="step-grid">
+<div class="steps">
+
+1. **추가기능 등록** — `홈` → `추가기능` 메뉴에서 검색 후 추가
+2. **로그인** — 리본 메뉴의 Claude 아이콘 클릭 → 계정 인증
+3. **Settings 확인** — 우측 톱니바퀴에서 User Instructions·세션 로그 활성화
+
+</div>
+<div class="img">
+
+![설치 화면](https://picsum.photos/seed/install/720/540)
+
+</div>
+</div>
+
+---
+
+<!-- _class: definition-cards -->
+<!-- header: '03. 전용 레이아웃 — 비교 / 정의' -->
+
+# 레이아웃 — definition-cards
+도구·개념을 카드형으로 정의합니다. 각 카드는 `### 제목` + 2~3행 설명 구조로 자동 카드화됩니다.
+
+### Gemini
+Google의 멀티모달 AI. 1M 토큰 컨텍스트와 강력한 이미지·동영상 이해력을 제공하며 무료 플랜에서도 활용도 높음.
+
+### Claude
+Anthropic의 코딩·문서 작업 특화 AI. Skills·MCP·Plugin 생태계를 통해 도메인 자동화에 강함.
+
+### Antigravity
+Cursor 대안 AI IDE. 무료이며 다중 에이전트 협업을 지원하는 신예 IDE로 떠오름.
+
+### ChatGPT
+OpenAI의 범용 AI 어시스턴트. GPTs·코드 인터프리터·웹 검색 기능을 통합 제공.
+
+---
+
+<!-- _class: compare-cards -->
+<!-- header: '03. 전용 레이아웃 — 비교 / 정의' -->
+
+# 레이아웃 — compare-cards
+A/B 두 항목을 카드 2개로 나란히 두고 가운데 **VS 뱃지**로 시각적 대비를 강조합니다.
+
+<div class="vs-grid">
+
+<div class="card">
+
+### Claude Cowork
+
+- 다중 AI 에이전트 협업
+- 회계·재무 도메인 통합 강력
+- Pro·Max 유료 플랜 필요
+- 한국어 응답 우수
+
+</div>
+
+<div class="vs"></div>
+
+<div class="card">
+
+### Antigravity
+
+- 단일 AI IDE
+- 일반 개발 작업에 강점
+- 무료 플랜 제공
+- 다중 에이전트 실험적 지원
+
+</div>
+
+</div>
+
+---
+
+<!-- _class: compare-table -->
+<!-- header: '03. 전용 레이아웃 — 비교 / 정의' -->
+
+# 레이아웃 — compare-table
+여러 속성을 두 항목에서 한눈에 비교합니다. 첫 컬럼은 속성, 나머지 컬럼은 비교 대상.
+
+| 속성 | Claude Cowork | Antigravity |
+|---|---|---|
+| 협업 모드 | 다중 에이전트 | 단일 에이전트 |
+| 무료 플랜 | 없음 | 있음 |
+| 한국어 지원 | 우수 | 보통 |
+| 통합 도구 | Skills · MCP | Built-in |
+| 회계 도메인 적합도 | 매우 높음 | 보통 |
+
+---
+
+<!-- _class: concept-list -->
+<!-- header: '03. 전용 레이아웃 — 비교 / 정의' -->
+
+# 레이아웃 — concept-list
+5~10개 개념을 큰 번호와 함께 간결하게 나열합니다. 각 항목은 굵은 제목 + 1~2행 설명으로 구성.
+
+1. **데이터 구조 분석** — 시트·범위·수식 관계를 파악해 전체 워크북의 논리를 이해
+2. **자연어 지시 처리** — 사용자 요구사항을 작업 계획으로 변환 후 모호한 부분 재질문
+3. **스킬 (Skills)** — 도메인 전문지식을 매뉴얼화해 일관된 작업 실행 보장
+4. **커넥터 (MCP)** — 외부 ERP·DART·내부 DB 등 실시간 데이터 연결 도구
+5. **클로드 파워포인트 연동** — 엑셀 결과를 그대로 PPT 보고서로 자동 변환
+6. **세션 로그 시트** — 작업 내역을 별도 시트에 기록해 컨텍스트 복기 가능
+
+---
+
+<!-- _class: concept-table -->
+<!-- header: '03. 전용 레이아웃 — 비교 / 정의' -->
+
+# 레이아웃 — concept-table
+용어 사전·개념 정의를 표 형태로 정리합니다. 좌측 용어(보라색 굵게) + 우측 설명.
+
+| 용어 | 설명 |
+|---|---|
+| 하네스 엔지니어링 | 단일 AI에게 통째로 맡기지 않고 여러 서브 에이전트로 역할 분리 후 상호 검증하는 설계 패턴 |
+| MCP | Model Context Protocol — AI 모델이 외부 도구·데이터에 표준화된 방식으로 접근하는 인터페이스 |
+| Skills | 도메인 전문지식·작업 절차를 AI에게 학습시켜 일관성 있게 실행하도록 만드는 기능 |
+| 토큰 컨텍스트 | AI가 한 번에 처리 가능한 텍스트 양. 클로드 4.6은 100만(1M) 토큰 지원 |
 
 ---
 
@@ -511,6 +652,124 @@ Notion의 톤앤매너를 PPT/HTML 포맷으로 완벽히 통일하여 브랜드
 팀 전체의 OKR과 이정표를 공유합니다.
 </div>
 </div>
+
+---
+
+<!-- _class: comparison-3up -->
+<!-- header: '03. 전용 레이아웃 — 비교 / 정의' -->
+
+# 레이아웃 — comparison-3up
+3개 이상 항목을 매트릭스 카드로 비교합니다. 카드 헤더에 항목명, 본문에 비교 속성.
+
+<div class="matrix">
+
+### Claude Cowork
+
+- 다중 에이전트 협업
+- 회계·재무 통합 강력
+- Pro·Max 유료
+- 한국어 우수
+
+### Antigravity
+
+- 단일 에이전트
+- 일반 개발 강점
+- 무료 플랜
+- 한국어 보통
+
+### Cursor
+
+- 단일 에이전트
+- 익숙한 IDE UX
+- 제한적 무료
+- 한국어 보통
+
+</div>
+
+---
+
+<!-- _class: story-arc -->
+<!-- header: '04. 전용 레이아웃 — 시각 강조 / 인용' -->
+
+# 한공회 AI 간담회의 충격
+
+최근 운이 좋게도 한공회 AI 활용사례 간담회에 참석해 다양한 사례를 접했습니다.
+
+특히 인상 깊었던 분은 기장 업무 전체를 하네스 엔지니어링으로 자동화한 개업 회계사였습니다. 단일 AI에 통째로 맡기지 않고 계정과목별 서브 에이전트를 배치해 상호 검증까지 자동화한 구조였습니다.
+
+이 모든 변화의 끝에서, 회계사라는 직업이 앞으로 어떻게 재정의될지 깊이 생각하게 된 하루였습니다.
+
+---
+
+<!-- _class: example-case -->
+<!-- header: '04. 전용 레이아웃 — 시각 강조 / 인용' -->
+
+# 예를 들어, 회계감사 실무에 대입한다면
+
+기존 감사는 계정과목별로 담당 회계사(Staff)들이 회사 제공 데이터를 검증한 후, 인차지·매니저·파트너가 순차 검토하는 구조였습니다.
+
+이제는 각 계정별 업무를 수행하는 AI 에이전트(`Agent.md`로 역할 정의)를 배치하고 Skills·MCP로 필요 도구를 쥐여주면, 에이전트들이 스스로 작업을 수행할 수 있습니다.
+
+> 통제 기능을 담당하는 **독립 검증 에이전트**까지 연결해 교차 검증을 마치면, 사람은 최종 결과물 검토와 서명(Sign-off)만 수행하면 됩니다.
+
+---
+
+<!-- _class: pull-quote -->
+<!-- header: '04. 전용 레이아웃 — 시각 강조 / 인용' -->
+
+> 회계감사 업무 중 일부가 자동화될 수는 있지만, 감사 제도 자체는 사라지지 않습니다. 본질이 제3자로서의 독립성에 있기 때문입니다.
+
+ProcPA — 최신 AI 인사이트 #1
+
+---
+
+<!-- _class: pros-cons -->
+<!-- header: '05. 전용 레이아웃 — 프로세스 / 리스트' -->
+
+# 레이아웃 — pros-cons
+장점·단점을 좌·우 2 컬럼으로 명확히 대비. 좌측 ✓ (녹색), 우측 ✗ (빨강) 자동 강조.
+
+<div class="pc-grid">
+
+<div class="pros">
+
+### 장점
+
+- 자연어 지시만으로 복잡한 작업 수행
+- Skills로 일관된 업무 매뉴얼 자동화
+- 외부 데이터(MCP) 실시간 연동
+- 회계·재무 도메인에서 검증된 퍼포먼스
+
+</div>
+
+<div class="cons">
+
+### 단점
+
+- 유료 플랜 필수 (Pro 이상)
+- 비일관성·환각 가능성 잔존
+- 민감 데이터는 별도 보안 설정 필요
+- 한국 ERP·법령 MCP 생태계 미흡
+
+</div>
+
+</div>
+
+---
+
+<!-- _class: checklist -->
+<!-- header: '05. 전용 레이아웃 — 프로세스 / 리스트' -->
+
+# 레이아웃 — checklist
+"할 일"·"확인 항목"을 체크박스로 시각화. GFM `- [ ]` / `- [x]` 문법 자동 변환.
+
+- [x] 클로드 엑셀 애드인 설치 완료
+- [x] Pro 이상 플랜 활성화 확인
+- [ ] User Instructions에 회사 작업 가이드 입력
+- [ ] Session Logging 활성화
+- [ ] 회계 도메인 Skills 1개 이상 등록
+- [ ] DART MCP 또는 ERP 커넥터 연결 테스트
+- [ ] 민감 데이터 처리 보안 정책 합의
 
 ---
 

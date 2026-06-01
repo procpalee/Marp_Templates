@@ -167,20 +167,25 @@ output/<slug>/
 | `cards` | 3~4개의 짧은 카드 (제목 + 1~2행 본문) |
 | `block-features` | 3~6개의 기능 소개형 (아이콘/번호 + 제목 + 설명) |
 | `pastel-blocks` | 2~6개 개념 hero (단락형 / 강조 톤) |
-| `database-rows` | 표 형태 + 상태/카테고리 컬럼 |
+| `feature-compare` (신규) | 2~3 항목 다중 특성 비교 카드 그리드 (상태 컬럼 없음) |
+| `step-image-guide` (신규) | 좌 단계 ol + 우 스크린샷 (튜토리얼·설치 가이드) |
+| `definition-cards` (신규) | 도구·개념을 카드형으로 정의 (H3 2~6 + 본문 2~3행) |
 | `toggle-list` | 2단계 들여쓰기형 (펼침) |
 | `icon-list` | 이모지/아이콘 + 콜론 시작 항목 ≥3 |
 
 **판단 가이드**:
 - 카드성 짧은 항목 3~4 → **cards**
 - 기능 소개·번호 매김 3~6 → **block-features**
-- 카테고리 + 상태 표시 → **database-rows**
+- 카테고리 + 상태 표시 → **일반 table + 인라인 .tag**
+- 상태 컬럼 없는 특성 비교(✓/✗, "협업"/"무료"/"한국어" 등) → **feature-compare**
+- 도구·개념 정의 (도구명 + 2~3행 설명) → **definition-cards**
+- 단계 + 스크린샷 튜토리얼 → **step-image-guide**
 - 그 외 단순 ul 나열이 길어지면 → **icon-list** 또는 분할
 
 #### 규칙 7: 태그 색상은 정말 필요할 때만
 
 - `.tag green/yellow/rose/sky/peach/purple/navy`는 **상태 표시·카테고리 구분**처럼 의미가 명확할 때만 사용
-- 슬라이드당 **태그 최대 2~3종 색상**까지. 그 이상은 표 안(`database-rows`)으로 한정
+- 슬라이드당 **태그 최대 2~3종 색상**까지. 그 이상은 일반 표 셀 안으로 한정
 - 단순 강조 목적은 **굵은 글씨** 또는 인라인 `` `code` ``로 충분 — 색상 태그 ❌
 - 본문 평문 단어의 우발적 매치(`완료`/`진행중` 등)도 슬라이드 의미상 상태가 아니면 wrapping 금지
 - 자동 주입은 표 셀 / 괄호 안 / ul·ol 항목 끝 컨텍스트에서만 적용 (§2.D 참고)
@@ -197,19 +202,91 @@ output/<slug>/
 
 **알록달록한 페이지는 propca 톤과 어울리지 않음.** 의심스러우면 강조색 1개 제거하는 쪽으로 보수적 결정.
 
-### 2.B) 21 레이아웃 매핑 우선순위
+### 2.B) 33 레이아웃 매핑 우선순위
 
 1. **셸 강제 매칭** — 첫/마지막 슬라이드, `***` 가로선
 2. **네비게이션** — toc-split / section
-3. **시각 강조** — hero-quote / image-quote (규칙 4 준수)
-4. **2 컬럼 비교** — compare / two-image / before-after
-5. **카드 / 블록** — cards / pastel-blocks / block-features
-6. **데이터** — database-rows (+ .tag 자동 주입)
-7. **순서 / 흐름** — timeline / vertical-timeline / roadmap
-8. **리스트 변형** — toggle-list / icon-list
-9. **폴백** — 평범 content (no `_class`)
+3. **시각 강조·인용** — hero-quote / image-quote / **pull-quote** (규칙 4 준수)
+4. **2개 비교** — compare / two-image / before-after / **compare-cards** / **compare-table**
+5. **3+ 비교** — feature-compare / **comparison-3up**
+6. **개념 정의** — definition-cards / **concept-list** / **concept-table**
+7. **일화·사례·예시** — **story-arc** / **example-case**
+8. **카드 / 블록** — cards / pastel-blocks / block-features
+9. **데이터** — 일반 `<table>` (상태 셀에 .tag 자동 주입)
+10. **튜토리얼** — step-image-guide
+11. **순서 / 흐름** — timeline / vertical-timeline / roadmap
+12. **리스트 변형** — toggle-list / icon-list / **checklist** / **pros-cons**
+13. **폴백** — 평범 content (no `_class`)
 
-세부 표는 [references/layout-heuristics.md](references/layout-heuristics.md) §매핑 표 24행.
+세부 표는 [references/layout-heuristics.md](references/layout-heuristics.md) §매핑 표 (현재 36행).
+
+### 2.D) 용도별 결정 트리 ★ AI가 가장 먼저 참고
+
+> 입력 슬라이드를 받았을 때 다음 3 질문을 순차로 던져 최적 레이아웃을 결정한다.
+
+#### 질문 1 — 슬라이드 핵심 의도?
+
+```
+A. 2개 항목 비교         → compare / two-image / compare-cards / compare-table
+B. 3개 이상 항목 비교    → comparison-3up / feature-compare
+C. 개념 정의·설명        → definition-cards / concept-list / concept-table
+D. 단계·절차·튜토리얼    → timeline / vertical-timeline / step-image-guide / roadmap
+E. 시각 강조·인용        → hero-quote / image-quote / pull-quote / pastel-blocks
+F. 일화·사례·예시        → story-arc / example-case
+G. 리스트 변형          → icon-list / toggle-list / checklist / block-features / cards / pros-cons
+H. 셸 (입출구)           → cover / section / session-break / qa / thanks-contact / end
+```
+
+#### 질문 2 — 항목 수?
+
+```
+1개  → hero-quote / pull-quote / story-arc (단일 키 메시지)
+2개  → compare / two-image / compare-cards / compare-table / pros-cons
+3-4개 → cards / block-features / comparison-3up / definition-cards
+5-7개 → vertical-timeline / concept-list / icon-list / checklist
+8+   → 분할 검토 또는 concept-table
+```
+
+#### 질문 3 — 형식?
+
+```
+카드 그리드   → cards / block-features / definition-cards / compare-cards / comparison-3up
+표 형태      → compare-table / concept-table / feature-compare
+ol/ul 리스트  → concept-list / icon-list / checklist / timeline / vertical-timeline
+단락형       → pastel-blocks / story-arc / example-case
+좌-우 분할   → compare / two-image / cover-split
+인용형       → hero-quote / image-quote / pull-quote
+```
+
+#### 각 레이아웃 "언제 사용 / 피해야 할 경우" 가이드
+
+| 레이아웃 | 언제 사용 | 피해야 할 경우 |
+|---|---|---|
+| `compare` | 2 그룹의 ul/ol 본문이 길고 텍스트 위주 비교 | 항목별 속성이 다양하고 표가 더 자연스러울 때 (→ compare-table) |
+| `two-image` | 시각 1:1 비교 (사진·차트 2장) | 본문 길이가 4행+ (→ before-after 또는 일반 image-quote) |
+| `compare-cards` | 2 카드형 비교에 VS 강조가 필요할 때 | 속성 행이 5+개 (→ compare-table) |
+| `compare-table` | 다양한 속성을 행별로 두 항목 비교 | 본문이 단락형 텍스트 위주 (→ compare-cards) |
+| `comparison-3up` | 3~4개 항목 매트릭스 카드 비교 | 5+ 항목 (→ feature-compare 또는 분할) |
+| `feature-compare` | 3+ 항목 + ✓/✗ 키워드 비교 | 자유 텍스트 비교 (→ comparison-3up) |
+| `definition-cards` | 도구·개념 카드형 정의 (2~6개) | 사전식 용어집 (→ concept-table) |
+| `concept-list` | 5~10개 개념 큰 번호 나열 | 정의가 길어 표가 더 적합 (→ concept-table) |
+| `concept-table` | 행별 용어 + 정의 표 (사전식) | 시각 임팩트 필요 (→ definition-cards) |
+| `story-arc` | 개인 경험·일화·회상 톤 | 객관적 사실 전달 (→ 일반 content) |
+| `example-case` | "예를 들어 ~" 구체적 사례 1건 | 사례 3+개 (→ cards / comparison-3up) |
+| `pull-quote` | 외부 출처 인용 강조 (저자·출처 명시) | 본문 일부 강조 (→ 굵게 또는 hero-quote) |
+| `pros-cons` | 장단점 명시 비교 (✓/✗) | 3개 이상 옵션 (→ feature-compare) |
+| `checklist` | 할 일·확인 항목 (GFM `- [ ]`/`- [x]`) | 단순 ul 나열 (→ icon-list) |
+| `hero-quote` | 한 줄 강조 인용 (저자 표기 옵션) | 외부 출처 있음 (→ pull-quote) |
+| `image-quote` | 이미지 + 인용 결합 (좌 이미지 / 우 텍스트) | 이미지·인용 둘 다 강할 때 (→ 별도 슬라이드 분할) |
+| `pastel-blocks` | 2~6 개념 hero 블록 단락형 | 표 비교 (→ concept-table) |
+| `step-image-guide` | 단계 + 이미지 튜토리얼 | 이미지 없는 절차 (→ vertical-timeline) |
+| `cards` | 3~4 짧은 카드 (1~2행) | 본문 2~3행+ (→ definition-cards 또는 block-features) |
+| `block-features` | 3~6 기능 소개 (아이콘 + 제목 + 본문) | 정의 사전 (→ definition-cards) |
+| `timeline` | 3~5 단계 수평 흐름 | 단계 5+ (→ vertical-timeline) |
+| `vertical-timeline` | 5+ 단계 수직 흐름 + 부가 설명 | 짧은 단계 (→ timeline) |
+| `roadmap` | 분기/Phase 기반 일정 | 단순 ol 절차 (→ vertical-timeline) |
+| `toggle-list` | 2단계 들여쓰기 펼침형 | 평탄 ul (→ icon-list) |
+| `icon-list` | 이모지·아이콘 + 콜론 형식 | GFM 체크박스 (→ checklist) |
 
 ### 2.C) 인라인 헬퍼 자동 주입
 
@@ -339,7 +416,9 @@ npx --yes @marp-team/marp-cli ^
     cards         : 2
     image-quote   : 0   ← 인용문구 없으므로 사용 안 함 (규칙 4)
     vertical-timeline: 1
-    database-rows : 1
+    feature-compare: 1
+    definition-cards: 1
+    step-image-guide: 1
     pastel-blocks : 2
     icon-list     : 2
     end           : 1

@@ -27,7 +27,7 @@ watch 모드 (수정할 때마다 HTML 자동 재빌드):
 자동으로 다음이 일괄 수행됩니다:
 
 1. **옵시디언 전처리** — `[[wikilinks]]`, `![[embeds]]`, `> [!NOTE]` 콜아웃, frontmatter, `#tag` 블록 등 정리 + 이미지 자산을 `output/<slug>/assets/`로 복사
-2. **레이아웃 자동 매칭** — propca-notion-style 21 전용 레이아웃 + 8 인라인 헬퍼(`.callout`/`.tag`/`.kbd` 등) 휴리스틱 매칭
+2. **레이아웃 자동 매칭** — propca-notion-style 33 전용 레이아웃 + 8 인라인 헬퍼(`.callout`/`.tag`/`.kbd` 등) 휴리스틱 매칭
 3. **Marp HTML 빌드** — `npx @marp-team/marp-cli`
 4. **품질 QA** — 독립 컨텍스트 에이전트(marp-reviewer)가 검증
 5. **자동 수정 재시도** — 이슈 발견 시 최대 2회 재빌드·재QA
@@ -53,7 +53,7 @@ output/<slug>/
 | 컴포넌트 | 경로 | 역할 |
 |---|---|---|
 | 오케스트레이터 | `.claude/skills/md-to-marp/` | 모드 선택 + md-to-marp-propca 호출 + 빌드 + QA + 재시도 + watch |
-| 변환 스킬 (통합) | `.claude/skills/md-to-marp-propca/` | 옵시디언 전처리 + propca-notion-style 21 레이아웃·8 헬퍼 자동 매칭 (한 스킬에서 일괄) |
+| 변환 스킬 (통합) | `.claude/skills/md-to-marp-propca/` | 옵시디언 전처리 + propca-notion-style 33 레이아웃·8 헬퍼 자동 매칭 (한 스킬에서 일괄) |
 | 검증 에이전트 | `.claude/agents/marp-reviewer.md` | 독립 컨텍스트 QA. theme front matter로 propca/card-news 분기 |
 | 슬래시 명령 | `.claude/commands/marp.md` | `/marp <file> [watch] [용도]` 원샷 |
 | 카드뉴스 캡션 | `.claude/commands/caption.md` | `/caption <slug>` Threads/LinkedIn용 캡션 초안 |
@@ -67,7 +67,7 @@ output/<slug>/
 
 | 테마 | 톤 | 자동 매칭 |
 |---|---|---|
-| `propca-notion-style` | 노션 + Navy + 보라색 액센트 (강의·교육·발표) | ✅ md-to-marp-propca (21 레이아웃) |
+| `propca-notion-style` | 노션 + Navy + 보라색 액센트 (강의·교육·발표) | ✅ md-to-marp-propca (33 레이아웃) |
 | `tech-modern` | 라이트 블루 (베이스, 일반 테크 발표) | ❌ 수동 `<!-- _class -->` |
 | `vercel` | 모노크롬 블랙앤화이트 + 0070f3 (프론트엔드·배포·Next.js) | ❌ 수동 |
 | `notion` | 퍼플 + 파스텔 카드 (문서·위키·워크스페이스) | ❌ 수동 |
@@ -145,7 +145,7 @@ deck 모드 기본 테마. 회계법인·자문사 강의/교육/발표 컨텍�
 │   │   ├── propca-notion-style/          # 자동 매칭 가능 deck 테마
 │   │   │   ├── design.md
 │   │   │   ├── propca-notion-style.css
-│   │   │   ├── propca-notion-style.md    # 쇼케이스 (모든 21 레이아웃 데모)
+│   │   │   ├── propca-notion-style.md    # 쇼케이스 (모든 33 레이아웃 데모)
 │   │   │   └── propca-notion-style.html
 │   │   ├── tech-modern/                  # 베이스 (수동 _class만)
 │   │   └── <14 브랜드 테마>/              # vercel / notion / claude / spotify 등

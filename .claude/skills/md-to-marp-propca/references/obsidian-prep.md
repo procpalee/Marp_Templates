@@ -24,16 +24,35 @@
 | 3 | `[[Page#Heading]]` / `[[Page#^block]]` | `\[\[([^\|\]#^]+)[#^][^\|\]]+\]\]` | `\1` (Page) | 앵커 제거 |
 | 4 | `![[image.png]]` | `!\[\[([^\|\]]+\.(png\|jpg\|jpeg\|gif\|webp\|svg))(\|[^\]]+)?\]\]` | `![](assets/\1)` + vault 복사 | basename 매칭. 자세히는 vault-resolution.md |
 | 5 | `![[other.pdf]]` 비이미지 임베드 | `!\[\[([^\]]+)\]\]` (rule 4 매치 후 잔존) | `> 📎 Embedded: \1` | Marp 렌더 불가 |
-| 6 | `> [!NOTE]` / `> [!INFO]` / `> [!ABSTRACT]` / `> [!SUMMARY]` | 멀티라인 블록 | `<div class="callout info">...</div>` | 마커 행 제거 후 본문 래핑 |
-| 7 | `> [!TIP]` / `> [!EXAMPLE]` / `> [!HINT]` / `> [!IMPORTANT]` | 멀티라인 블록 | `<div class="callout example">` | propca example variant |
-| 8 | `> [!SUCCESS]` / `> [!DONE]` / `> [!CHECK]` | 멀티라인 블록 | `<div class="callout success">` | |
-| 9 | `> [!WARNING]` / `> [!CAUTION]` / `> [!ATTENTION]` / `> [!QUESTION]` / `> [!HELP]` / `> [!FAQ]` | 멀티라인 블록 | `<div class="callout warn">` | |
-| 10 | `> [!DANGER]` / `> [!ERROR]` / `> [!BUG]` / `> [!FAILURE]` / `> [!FAIL]` / `> [!MISSING]` | 멀티라인 블록 | `<div class="callout danger">` | |
+| 6 | `> [!NOTE]` / `> [!INFO]` / `> [!ABSTRACT]` / `> [!SUMMARY]` | 멀티라인 블록 | `<div class="callout info">` + 첫 줄 `**참고**` / `**요약**` 라벨 | |
+| 7 | `> [!TIP]` / `> [!EXAMPLE]` / `> [!HINT]` | 멀티라인 블록 | `<div class="callout example">` + `**예시**` / `**팁**` 라벨 | propca example variant |
+| 7b | `> [!IMPORTANT]` / `> [!important]` | 멀티라인 블록 | `<div class="callout info">` + `**중요**` 라벨 | 라벨로 강조 |
+| 8 | `> [!SUCCESS]` / `> [!DONE]` / `> [!CHECK]` | 멀티라인 블록 | `<div class="callout success">` + `**완료**` 라벨 | |
+| 9 | `> [!WARNING]` / `> [!CAUTION]` / `> [!ATTENTION]` | 멀티라인 블록 | `<div class="callout warn">` + `**경고**` 라벨 | |
+| 9b | `> [!QUESTION]` / `> [!HELP]` / `> [!FAQ]` | 멀티라인 블록 | `<div class="callout warn">` + `**질문**` 라벨 | |
+| 10 | `> [!DANGER]` / `> [!ERROR]` / `> [!BUG]` / `> [!FAILURE]` / `> [!FAIL]` / `> [!MISSING]` | 멀티라인 블록 | `<div class="callout danger">` + `**위험**` 라벨 | |
+| 10b | `> [!QUOTE]` / `> [!CITE]` | 멀티라인 블록 | 일반 `<blockquote>` (콜아웃 ❌ — 그냥 인용) | |
+| 10c | `[[TIP()]]` ~ `[[/TIP]]` 비표준 블록 | 멀티라인 블록 (시작·종료 마커 사이 본문) | `<div class="callout example">` + `**TIP**` 라벨 | Obsidian 커스텀 플러그인 출신 마커 |
+| 10d | `[[NOTE()]]` ~ `[[/NOTE]]` | 멀티라인 블록 | `<div class="callout info">` + `**참고**` 라벨 | |
+| 10e | `[[WARN()]]` ~ `[[/WARN]]` 또는 `[[WARNING()]]` ~ `[[/WARNING]]` | 멀티라인 블록 | `<div class="callout warn">` + `**경고**` 라벨 | |
+| 10f | `[[INFO()]]` ~ `[[/INFO]]` | 멀티라인 블록 | `<div class="callout info">` + `**참고**` 라벨 | |
 | 11 | YAML frontmatter 옵시디언 전용 키 | `^(tags\|aliases\|cssclass\|publish\|permalink\|date created\|date modified\|obsidianUIMode\|cssclasses):` | 제거 | `title`/`author`/`series`/`date`는 보존 |
 | 12 | 파일 상단 `#tag #tag2` 해시태그 블록 | 첫 비-frontmatter 라인이 `^(#\w+\s*)+$` 패턴 | 라인 통째 제거 | frontmatter `tags:` 키로 승격 (frontmatter 존재 시) |
 | 13 | 행 끝 `^block-id` | `\s+\^[a-zA-Z0-9-]+\s*$` | 제거 | suffix만 |
 | 14 | Dataview / Templater 블록 | ```` ```dataview\|dataviewjs ```` 또는 `<%[\s\S]+?%>` | 블록 통째 제거 + 리포트 경고 | Marp 실행 불가 |
 | 15 | 풋노트 + HTML 주석 | `\[\^[^\]]+\]` , `<!--[\s\S]*?-->` | 보존 | Marp/markdown-it 처리 |
+
+### `[[TYPE()]]` ~ `[[/TYPE]]` 비표준 블록 파싱
+
+일부 옵시디언 사용자(특히 한국 커뮤니티 + 커스텀 플러그인)는 표준 `> [!TYPE]` 대신 `[[TYPE()]]` 시작 + `[[/TYPE]]` 종료 마커로 콜아웃을 표현한다. 정규화 알고리즘:
+
+1. 라인 스캔 중 `^\[\[(\w+)\(\)\]\]$` 매치 → 블록 시작 (TYPE 캡처)
+2. 다음 `^\[\[/\1\]\]$` 매치까지 본문 누적
+3. 매핑 표(10c~10f)에 따라 타입별 `<div class="callout {info|example|warn|danger|success}">`로 래핑
+4. 본문 첫 줄은 `**라벨**`(TIP/참고/경고 등) 자동 삽입
+5. 블록 안의 마크다운(ul/ol/굵게/링크 등)은 그대로 유지
+
+**중요**: `[[TYPE()]]` 블록은 옵시디언이 인식하지 못해 평문으로 보이지만, 사용자의 vault 내에서는 커스텀 CSS·플러그인으로 시각화되는 경우가 많다. 변환 시 propca의 `.callout`으로 표준화하면 동일한 강조 효과를 얻는다.
 
 ---
 

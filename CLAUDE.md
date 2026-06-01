@@ -142,7 +142,7 @@ npx --yes @marp-team/marp-cli ^
 
 자세한 정의는 각 [`themes/slide/<theme>/design.md`](./themes/) §5 참조.
 
-**자동 매칭 가능 deck 테마**: `propca-notion-style` (md-to-marp-propca 스킬, 21 전용 레이아웃 + 8 인라인 헬퍼). 강의·교육·발표 컨텍스트 특화.
+**자동 매칭 가능 deck 테마**: `propca-notion-style` (md-to-marp-propca 스킬, 33 전용 레이아웃 + 8 인라인 헬퍼). 강의·교육·발표 컨텍스트 특화.
 
 기존 14 브랜드 테마(`vercel`/`notion`/`claude`/`spotify`/`stripe`/`figma`/`apple`/`linear`/`cursor`/`raycast`/`supabase`/`airbnb`/`nvidia`/`tesla`)는 **자동 매칭 부재** — 사용자가 `<!-- _class -->`를 수동으로 작성한 MD에서만 사용 가능. `tech-modern`은 이번 워크플로 개편으로 자동 매칭 대상에서 제외됨 (구 `md-to-marp` tech-modern 휴리스틱 제거).
 

@@ -61,13 +61,24 @@ Grep `<!-- _class: (grid-3|stats|bg-full|split|agenda|flow-arrow|big-number|gall
 하나라도 매치 시 high 이슈 — propca-notion-style 어휘 위반
 ```
 
-#### A-4. 21 propca 어휘 검증
+#### A-4. 33 propca 어휘 검증
 ```
 변환물에서 모든 _class 값을 추출
-허용 목록: cover, toc-split, section, hero-quote, image-quote, compare, two-image, before-after,
-           cards, database-rows, pastel-blocks, timeline, vertical-timeline, roadmap,
-           toggle-list, icon-list, block-features, session-break, qa, thanks-contact, end
+허용 목록 (33종):
+  [기본 13종]
+  cover, toc-split, section, hero-quote, image-quote, compare, two-image, before-after,
+  cards, pastel-blocks, timeline, vertical-timeline, roadmap, toggle-list, icon-list, block-features,
+  [3종 — 2026-05 1차]
+  feature-compare, step-image-guide, definition-cards,
+  [신규 10종 — 2026-05 2차]
+  compare-cards, compare-table, concept-list, concept-table,
+  comparison-3up, story-arc, example-case, pull-quote, pros-cons, checklist,
+  [Cover 변형 5종]
+  cover-image, cover-split, cover-minimal, cover-band, cover-photo-full,
+  [셸]
+  session-break, qa, thanks-contact, end
 허용 외 클래스 등장 시 medium 이슈 (단, 인라인 헬퍼 클래스 .callout/.tag/.kbd/.note/.chip/.divider/.cols-2/.cols-3은 제외)
+`database-rows`는 삭제된 클래스 — 등장 시 medium 이슈 ("database-rows is deprecated → 일반 <table> + .tag 사용")
 ```
 
 #### A-5. 레이아웃 DOM 검증 표
@@ -83,7 +94,24 @@ Grep `<!-- _class: (grid-3|stats|bg-full|split|agenda|flow-arrow|big-number|gall
 | `two-image` | 이미지 정확히 2개 |
 | `before-after` | 이미지 정확히 2개 + before/after 키워드 |
 | `cards` | H3 카드 3~4개 |
-| `database-rows` | `<table>` 또는 `<div class="db-row">` + `.tag` 칩 N개 |
+| `feature-compare` | `<div class="compare-grid">` 또는 H3 2~3개 카드 + 각 카드 ul 비교 항목 |
+| `step-image-guide` | `<div class="step-grid">` (steps + img) 또는 ol + 인접 이미지 ≥1 |
+| `definition-cards` | H3 2~6개 + 각 본문 2~3행 |
+| `compare-cards` | `<div class="vs-grid">` + 2 카드 (좌/우) + 중앙 `<div class="vs">` 뱃지 |
+| `compare-table` | `<table>` 2~3 컬럼, 첫 행 헤더 (navy), 좌측 컬럼 속성 라벨 |
+| `concept-list` | `<ol>` 5~10 항목, 각 항목 굵은 제목 + 부가 설명 |
+| `concept-table` | `<table>` 2 컬럼 (용어/정의), 좌측 보라색 굵게 |
+| `comparison-3up` | `<div class="matrix">` + 3~4 카드 (보라 헤더 + ul) |
+| `story-arc` | H1 + 단락 3개 (배경→사건→결과), 좌측 거대 따옴표 ::before |
+| `example-case` | H1 + 본문 + `<blockquote>` 또는 `<div class="case-aside">` 보조 박스 |
+| `pull-quote` | `<blockquote>` (≥1행) + 출처 단락 (작은 글씨, `—` 출처) |
+| `pros-cons` | `<div class="pc-grid">` + `<div class="pros">` + `<div class="cons">` 2개 카드, 각 H3 + ul |
+| `checklist` | `<ul>` + 각 항목 GFM `<input type="checkbox">` (`- [ ]` / `- [x]`) |
+| `cover-image` | 배경 이미지 + navy 오버레이 (CSS 변수 또는 Marp `_backgroundImage`) |
+| `cover-split` | Marp `![bg left:50%]` 디렉티브 + navy 우측 텍스트 |
+| `cover-minimal` | 흰 배경 + H1 88pt + 좌하단 부제·메타 |
+| `cover-band` | 상단 8px purple 띠 + H1 + 우하단 연월 |
+| `cover-photo-full` | Marp `![bg]` 풀블리드 이미지 + 하단 그라데이션 텍스트 |
 | `timeline` | ≥3 ol 항목 |
 | `vertical-timeline` | ≥5 ol 항목 |
 | `roadmap` | ≥3 phase 그룹 |
@@ -210,7 +238,7 @@ Grep `!\[.*\]\(([^)]+)\)` 변환물에서 이미지 경로 추출
 **휴리스틱**:
 1. 슬라이드별 본문 라인 수 × 추정 행 높이(40~50px) 누적
 2. `block-features`/`cards`/`pastel-blocks` 같은 그리드 레이아웃은 카드 개수 × 카드 최소 높이(180~220px) 적용
-3. `database-rows` / 표는 행 수 × 행 높이(48px) + 헤더 60px 누적
+3. 일반 `<table>` / `feature-compare` 카드는 행 수 × 행 높이(48px) + 헤더 60px 누적
 4. 코드 블록은 라인 수 × 행 높이(28px) + 패딩 32px 누적
 5. 콜아웃은 본문 라인 + 패딩 32px 가산
 
@@ -287,7 +315,7 @@ Grep `!\[.*\]\(([^)]+)\)` 변환물에서 이미지 경로 추출
   - 원인: H3 카드 wrapping 누락
   - 권장 수정: H3 3개로 보강 또는 pastel-blocks로 전환
 
-### Slide 14 — database-rows
+### Slide 14 — feature-compare
 - A-5 .tag 칩 자동 주입 OK (5건)
 - A-7 `<div>` 위 빈 줄 누락 — medium
 

@@ -52,7 +52,7 @@
 | `--pastel-sky` | `#dcecfa` | 5 |
 | `--pastel-yellow` | `#f9e79f` | 6 |
 
-`yellow-banner` 와 `database-rows` 의 status 태그도 동일 펠릿 사용.
+`yellow-banner` 와 일반 `<table>` 셀의 인라인 `.tag` 헬퍼도 동일 펠릿 사용.
 
 ---
 
@@ -95,7 +95,7 @@
 | 1 | `navy-cover` | navy 그라데이션 hero 표지 + 우상단 mockup glyph |
 | 2 | `purple-section` | 풀 보라 챕터 디바이더 |
 | 3 | `sticky-notes` | 4장 회전 파스텔 메모 카드 |
-| 4 | `database-rows` | 노션 DB 행 mockup (header + 4 rows, 상태 태그 컬러) |
+| 4 | `feature-compare` | 2~3 항목 다중 특성 비교표 (상태 컬럼 없음, ✓/✗ 자동 강조) |
 | 5 | `pastel-blocks` | 6 파스텔 블록 그리드 |
 | 6 | `yellow-banner` | 풀블리드 노란 강조 슬라이드 |
 | 7 | `workspace-split` | 좌 280px 사이드바 + 우 본문 — 워크스페이스 mockup |
@@ -104,6 +104,18 @@
 | 10 | `pastel-quote` | 파스텔 카드 안의 인용 + author block (avatar + name) |
 | 11 | `pricing-blocks` | 3 가격 블록 (직사각 8px, featured 2px 보라) |
 | 12 | `signup-end` | navy 폐막 + 보라 알약 CTA + 핸들/URL pill |
+| 13 | `step-image-guide` | 좌 단계 ol + 우 스크린샷 (튜토리얼·설치 가이드) |
+| 14 | `definition-cards` | 도구·개념 카드형 정의 (H3 자동 카드화 + 좌측 보라 라인) |
+| 15 | `compare-cards` | 2 항목 카드 비교 + 중앙 **VS 뱃지** (좌우 카드 사이) |
+| 16 | `compare-table` | 2 항목 표 비교 (행=속성, 컬럼=A/B, navy 헤더) |
+| 17 | `concept-list` | 5~10 개념 큰 번호 (좌측 28pt 보라) + 우측 제목·본문 |
+| 18 | `concept-table` | 용어 사전 표 (좌측 30% 용어 보라 / 우측 정의) |
+| 19 | `comparison-3up` | 3~4 항목 매트릭스 카드 (보라 헤더 + ul 비교 항목) |
+| 20 | `story-arc` | 좌측 거대 따옴표 인용부호 + 본문 3단락 + 우하단 마무리 |
+| 21 | `example-case` | 좌상단 `CASE` 라벨 + 본문 + 우측 보조 박스 (시나리오 1건) |
+| 22 | `pull-quote` | 중앙 큰 따옴표 + 32pt 인용 + 출처 (외부 인용 강조) |
+| 23 | `pros-cons` | 장단점 2 컬럼 (좌 ✓ 녹색 / 우 ✗ 빨강 자동 강조) |
+| 24 | `checklist` | GFM 태스크 리스트 시각화 (`- [ ]`→☐ / `- [x]`→☑) |
 
 ### 셸 3개 (shell)
 - `cover` — 부드러운 캔버스 + 잉크 (기본 표지)
@@ -144,8 +156,8 @@ Russell-cell PPT-Design-Prompt 7 universal type을 Notion 어휘에 매핑.
 | Cover | `navy-cover` (다크 hero) / `cover` (plain) |
 | Divider | `purple-section` (purple chapter) / `section` (plain) |
 | Concept | `block-features` (3 블록 컨셉) / `toggle-list` (toggle 확장) |
-| Comparison | `workspace-split` (좌/우 50/50) / `database-rows` (속성 비교) |
-| Data | `database-rows` (테이블) / `pricing-blocks` (3 컬럼 KPI) |
+| Comparison | `workspace-split` (좌/우 50/50) / `feature-compare` (속성 비교) |
+| Data | 일반 `<table>` (테이블) / `pricing-blocks` (3 컬럼 KPI) |
 | System | `workspace-split` (sidebar + content mockup) / `sticky-notes` (회전 카드 보드) |
 | Closing | `signup-end` (CTA + ul) / `end` (plain) / `pastel-quote` (manifesto) |
 | **Lecture: Definition** | `lecture-definition` — 큰 용어 + 정의 + 예시 카드 |
@@ -167,7 +179,7 @@ Russell-cell PPT-Design-Prompt 7 universal type을 Notion 어휘에 매핑.
 [Divider — Notion] full-bleed purple #5645d4, white 96pt numeral, 12px radius
 [Concept — Notion] 3 blocks with ▸ toggle, orange eyebrow + ink heading
 [Comparison — Notion] workspace-split sidebar(35%) + content(65%), pastel status pills
-[Data — Notion] database-rows table OR pricing-blocks 3-col; one orange highlight
+[Data — Notion] 일반 table OR pricing-blocks 3-col; one orange highlight
 [System — Notion] workspace mockup: sidebar pages + main block stack + coral callout
 [Closing — Notion] signup-end warm canvas + 64pt + orange pill CTA + links ul
 ```
@@ -192,7 +204,7 @@ Russell-cell PPT-Design-Prompt 7 universal type을 Notion 어휘에 매핑.
 | 클래스 | 용도 |
 |---|---|
 | `.callout info/success/example/warn/danger` | 5단계 콜아웃 — **단일 톤 통일**: 좌측 컬러바·라벨 모두 `--purple`(시그니처 보라). 종류 구분은 좌측 4px 색상이 아닌 **아이콘 + 굵은 라벨**(`**참고**`/`**예시**`/`**중요**`/`**경고**`)로 표현. `.danger`만 예외적으로 `--danger` 좌측바 유지 (정말 위험 신호 시) |
-| `.tag green/yellow/purple/rose/sky/peach/navy` | 인라인 상태 배지 (database-rows 스코프에서 전역으로 승격) |
+| `.tag green/yellow/purple/rose/sky/peach/navy` | 전역 인라인 상태 배지 (표 셀·괄호·ul 항목 끝 어디서나 사용) |
 | `.chip` / `.chip.solid` / `.chip.outline` | 풀필(pill) 라벨 |
 | `.kbd` | 키보드 키 캡 |
 | `.divider` / `.divider.strong` / `.divider.purple` | 가로 구분선 3종 |
@@ -211,7 +223,7 @@ Russell-cell PPT-Design-Prompt 7 universal type을 Notion 어휘에 매핑.
 |---|---|---|---|
 | 01 | 공통 지원 컴포넌트 | `01. 공통 지원 컴포넌트` | 텍스트강조·리스트·테이블·코드·콜아웃·태그·칩+kbd·디바이더+노트·cols·figure |
 | 02 | 콘텐츠 분할 | `02. 전용 레이아웃 — 콘텐츠 분할` | `compare` · `two-image` · `before-after` · `cards` |
-| 03 | 데이터 표시 | `03. 전용 레이아웃 — 데이터 표시` | `database-rows` |
+| 03 | 비교 / 정의 | `03. 전용 레이아웃 — 비교 / 정의` | `feature-compare` · `step-image-guide` · `definition-cards` |
 | 04 | 시각 강조 / 인용 | `04. 전용 레이아웃 — 시각 강조 / 인용` | `image-quote` · `hero-quote` · `pastel-blocks` |
 | 05 | 프로세스 / 리스트 | `05. 전용 레이아웃 — 프로세스 / 리스트` | `timeline` · `vertical-timeline` · `roadmap` · `toggle-list` · `icon-list` · `block-features` |
 | 06 | 마무리 | `06. 마무리` | `session-break` · `qa` · `thanks-contact` · `end` |
@@ -229,3 +241,56 @@ Russell-cell PPT-Design-Prompt 7 universal type을 Notion 어휘에 매핑.
 - `--font-serif`: `'Fraunces', 'Georgia', serif` (pastel-quote 큰따옴표 한정)
 
 CSS의 `var(--font-mono)` 호출은 그대로 두고 토큰 정의만 sans로 재할당했다. 모노스페이스가 필요해지면 한 줄 복원만으로 전체 모노스페이스 사용처가 동시에 살아난다.
+
+---
+
+## §11. Cover 변형 6종 (2026-05)
+
+기본 `cover` 외 5종의 표지 디자인을 추가. 모두 propca 시그니처(좌상단 procpa 흰 로고 + 우하단 연월) 유지.
+
+| # | 클래스 | 톤 | 적합 컨텍스트 |
+|---|---|---|---|
+| 1 | `cover` (기본) | Navy 그라데이션 | 회계법인·자문사 정통 발표 |
+| 2 | `cover-image` | 배경 이미지 + Navy 오버레이 (72~82% alpha) | 키노트 컨퍼런스·런칭 |
+| 3 | `cover-split` | 좌 50% 이미지 / 우 50% navy 텍스트 | 인물·제품 비주얼 표지 |
+| 4 | `cover-minimal` | 흰 배경 + 거대 H1 (88pt) + 좌하단 부제·메타 | 메시지 강조·아카이브 |
+| 5 | `cover-band` | 상단 8px purple 띠 + 흰 배경 + H1 위 보라 액센트 바 | 회계법인·정통 보고서 |
+| 6 | `cover-photo-full` | 풀블리드 사진 + 하단 navy 그라데이션 텍스트 | 브랜드 캠페인·시리즈 첫 화 |
+
+시각 카탈로그: [`cover-variants.md`](cover-variants.md) / [`cover-variants.html`](cover-variants.html). `cover-image`는 `--cover-bg-image` CSS 변수 또는 Marp `_backgroundImage` 디렉티브로 배경 지정. `cover-photo-full`은 Marp `![bg](url)` 디렉티브 사용.
+
+---
+
+## §12. 색상 테마 변형 6종 (카탈로그)
+
+시각 카탈로그: [`color-variants.md`](color-variants.md) / [`color-variants.html`](color-variants.html). 실제 테마 적용은 별도 .css 파일 분기로 후속 작업.
+
+| 톤 | 시그니처 (--purple) | Hero (--navy) | 적합 컨텍스트 |
+|---|---|---|---|
+| **CURRENT** | `#5645d4` | `#0a1530` | 회계·자문·기본 (시그니처) |
+| **ROSE** | `#d14d72` | `#1f1018` | 마케팅·라이프스타일 |
+| **EMERALD** | `#10a37f` | `#0a1f1a` | 환경·헬스케어 |
+| **AMBER** | `#e09b3d` | `#1f1607` | 출판·저널·문화 |
+| **SLATE** | `#64748b` | `#1e293b` | 법률·미니멀·B2B |
+| **OCEAN** | `#0072c6` | `#062335` | 테크·SaaS·핀테크 |
+
+핵심 swap 토큰 7개: `--purple`, `--navy`, `--navy-deep`, `--canvas-card`, `--pastel-*` 6 펠릿 중 강조 1~3개. 이 토큰만 변경하면 다른 레이아웃 영향 없이 톤 전환 가능.
+
+---
+
+## §13. 용도별 레이아웃 분류 (8 메가 카테고리)
+
+AI 변환 시 가장 먼저 참고할 결정 트리는 [`.claude/skills/md-to-marp-propca/SKILL.md`](../../../.claude/skills/md-to-marp-propca/SKILL.md) §2.D 참조.
+
+| 카테고리 | 포함 레이아웃 |
+|---|---|
+| **A. 2개 비교** | `compare` / `two-image` / `compare-cards` / `compare-table` |
+| **B. 3+ 비교** | `comparison-3up` / `feature-compare` |
+| **C. 개념 정의·설명** | `definition-cards` / `concept-list` / `concept-table` |
+| **D. 단계·튜토리얼** | `timeline` / `vertical-timeline` / `step-image-guide` / `roadmap` |
+| **E. 시각 강조·인용** | `hero-quote` / `image-quote` / `pull-quote` / `pastel-blocks` / `pastel-quote` |
+| **F. 일화·사례·예시** | `story-arc` / `example-case` |
+| **G. 리스트 변형** | `icon-list` / `toggle-list` / `checklist` / `block-features` / `cards` / `pros-cons` |
+| **H. 셸 (입출구)** | `cover` (+5 변형) / `section` / `session-break` / `qa` / `thanks-contact` / `end` / `signup-end` |
+
+각 레이아웃의 "언제 사용 / 피해야 할 경우" 가이드는 SKILL.md §2.D 표 참조.
