@@ -29,11 +29,11 @@
 | 컴포넌트 | 경로 | 역할 |
 |---|---|---|
 | 오케스트레이터 | `.claude/skills/md-to-marp/` | 모드 선택 + md-to-marp-propca 호출 + 빌드 + QA + 재시도 + watch |
-| 변환 스킬 (통합) | `.claude/skills/md-to-marp-propca/` | 옵시디언 전처리(`[[wikilinks]]`/`![[embeds]]`/콜아웃/frontmatter/태그 + 이미지 자산 복사) + propca-notion-style 21 레이아웃·8 인라인 헬퍼 자동 매칭. 변환은 [`themes/slide/propca-notion-style/propca-notion-style.md`](themes/slide/propca-notion-style/propca-notion-style.md) 쇼케이스 패턴 준수 — cover의 H1+H2+연월, section의 #=숫자/##=제목, 본문 슬라이드 # 헤더 우선, 인용 신중 사용, 여백 최소화 |
+| 변환 스킬 (통합) | `.claude/skills/md-to-marp-propca/` | 옵시디언 전처리(`[[wikilinks]]`/`![[embeds]]`/콜아웃/frontmatter/태그 + 이미지 자산 복사) + propca-notion-style 레이아웃(43 매칭 규칙)·8 인라인 헬퍼·톤 프리셋 3종(tone-exec/tone-lecture/tone-seminar) 자동 매칭. 변환은 [`themes/slide/propca-notion-style/propca-notion-style.md`](themes/slide/propca-notion-style/propca-notion-style.md) 쇼케이스 패턴 준수 — cover의 H1+H2+연월, section의 #=숫자/##=제목, 본문 슬라이드 # 헤더 우선, 인용 신중 사용, 여백 최소화 |
 | 검증 에이전트 | `.claude/agents/marp-reviewer.md` | 독립 컨텍스트 QA. theme front matter로 propca/card-news 분기 |
 | 슬래시 명령 | `.claude/commands/marp.md` | `/marp <file> [watch] [용도]` — 원샷 빌드 + 선택 watch |
 | 테마 폴더 | `themes/slide/<theme>/` | 테마별 design.md + slides/{css,md,html} 트리플 |
-| 카드뉴스 폴더 | `themes/card-news/tech-modern/` | 4:5 카드뉴스 design.md + tech-modern-cards.css + sample.md |
+| 카드뉴스 폴더 | `themes/card-news/propca-notion-style/` | 4:5 카드뉴스 design.md + propca-notion-style-cards.css + sample.md |
 | 빌드 인프라 | `build/` | `package.json` + `build.cmd` (marp-cli 래퍼) |
 
 ---
@@ -142,23 +142,24 @@ npx --yes @marp-team/marp-cli ^
 
 자세한 정의는 각 [`themes/slide/<theme>/design.md`](./themes/) §5 참조.
 
-**자동 매칭 가능 deck 테마**: `propca-notion-style` (md-to-marp-propca 스킬, 33 전용 레이아웃 + 8 인라인 헬퍼). 강의·교육·발표 컨텍스트 특화.
+**자동 매칭 가능 deck 테마**: `propca-notion-style` (md-to-marp-propca 스킬, 40 전용 레이아웃 + 8 인라인 헬퍼 + 톤 프리셋 3종). 강의·교육·발표 컨텍스트 특화. 2026-06 신규 6종: `faq`/`code-focus`/`step-text`/`gallery-grid`/`content-sidebar`/`schedule`. 톤 프리셋(`tone-exec`/`tone-lecture`/`tone-seminar`)은 purpose 키워드(임원/강의/세미나)로 자동 선택 — [`themes/slide/propca-notion-style/design.md`](themes/slide/propca-notion-style/design.md) §14·§15 참조.
 
 기존 14 브랜드 테마(`vercel`/`notion`/`claude`/`spotify`/`stripe`/`figma`/`apple`/`linear`/`cursor`/`raycast`/`supabase`/`airbnb`/`nvidia`/`tesla`)는 **자동 매칭 부재** — 사용자가 `<!-- _class -->`를 수동으로 작성한 MD에서만 사용 가능. `tech-modern`은 이번 워크플로 개편으로 자동 매칭 대상에서 제외됨 (구 `md-to-marp` tech-modern 휴리스틱 제거).
 
-카드뉴스 모드는 `tech-modern-cards` 단일 테마 + 7 카드 레이아웃, `md-to-marp` 오케스트레이터에 내장된 휴리스틱으로 매칭.
+카드뉴스 모드는 `propca-notion-style-cards` 단일 테마 + 7 표준 카드 레이아웃(+ 14 확장), `md-to-marp` 오케스트레이터에 내장된 휴리스틱으로 매칭. 링크드인 키워드 매치 시 PDF 캐러셀 추가 산출.
 
 ---
 
-## 카드뉴스 모드 (4:5 Threads/Instagram)
+## 카드뉴스 모드 (4:5 Threads/Instagram/LinkedIn)
 
-위 16:9 deck 모드와 **별개의 파이프라인**. tech-modern 디자인 토큰(§2 Color, §3 Typography)을 그대로 계승하면서 1080×1350 세로 카드를 산출한다.
+위 16:9 deck 모드와 **별개의 파이프라인**. propca-notion-style 디자인 토큰(purple/navy/파스텔)을 그대로 계승하면서 1080×1350 세로 카드를 산출한다.
 
 ### 트리거 키워드
 
 `purpose`에 다음 중 하나라도 매치되면 자동으로 `mode: card-news` 분기:
 - 인스타 / insta / instagram / 쓰레드 / threads
 - 카드뉴스 / card news / sns / 소셜 / social 카드
+- 링크드인 / linkedin — 추가로 `output=pdf` (LinkedIn 문서 캐러셀용 PDF 병행 산출)
 
 명시적 `/deck` 호출 시 `mode=card-news` 인자로도 지정 가능.
 
@@ -181,30 +182,28 @@ npx --yes @marp-team/marp-cli ^
 | 변환물 | `output/slides-<slug>-cards.md` |
 | 검수 HTML | `output/<slug>-cards.html` |
 | 카드 PNG (1080×1350) | `output/<slug>-cards/<slug>-cards.NNN.png` |
+| LinkedIn PDF (output=pdf) | `output/<slug>-cards.pdf` |
 | QA 리포트 | `output/<slug>-cards.qa.md` |
-| 디자인 출처 | `themes/card-news/tech-modern/design.md` |
-| CSS | `themes/card-news/tech-modern/tech-modern-cards.css` |
-| 샘플 원본 | `themes/card-news/tech-modern/sample.md` |
+| 디자인 출처 | `themes/card-news/propca-notion-style/design.md` |
+| CSS | `themes/card-news/propca-notion-style/propca-notion-style-cards.css` |
+| 샘플 원본 | `themes/card-news/propca-notion-style/sample.md` |
 
-### 2-pass 빌드 명령 (`build/`에서)
+### 빌드 명령 (`build/`에서 — Windows/Linux 공통 한 줄)
 
-```cmd
-cd build
+```
+# 1) HTML (검수용)
+npx --yes @marp-team/marp-cli ../output/slides-<slug>-cards.md --html --allow-local-files -o ../output/<slug>-cards.html --theme-set ../themes/card-news/propca-notion-style
 
-:: 1) HTML (검수용)
-npx --yes @marp-team/marp-cli ../output/slides-<slug>-cards.md ^
-    --html --allow-local-files ^
-    -o ../output/<slug>-cards.html ^
-    --theme-set ../themes/card-news/tech-modern
+# 2) PNG 카드 (Threads/Instagram 업로드)
+npx --yes @marp-team/marp-cli ../output/slides-<slug>-cards.md --images png --allow-local-files -o ../output/<slug>-cards/<slug>-cards.png --theme-set ../themes/card-news/propca-notion-style
 
-:: 2) PNG 카드 (소셜 업로드용)
-npx --yes @marp-team/marp-cli ../output/slides-<slug>-cards.md ^
-    --images png --allow-local-files ^
-    -o ../output/<slug>-cards/<slug>-cards.png ^
-    --theme-set ../themes/card-news/tech-modern
+# 3) PDF (LinkedIn 문서 캐러셀 — output=pdf일 때)
+npx --yes @marp-team/marp-cli ../output/slides-<slug>-cards.md --pdf --allow-local-files -o ../output/<slug>-cards.pdf --theme-set ../themes/card-news/propca-notion-style
 ```
 
-`--theme-set`은 16:9 deck 모드와 **다른 경로**(`themes/card-news/tech-modern/`)를 사용. 두 CSS는 같은 폴더에 두지 않는다.
+npm 스크립트(샘플 대상): `npm run build:cards` / `npm run cards:png` / `npm run cards:pdf` / `npm run watch:cards`.
+
+`--theme-set`은 16:9 deck 모드와 **다른 경로**(`themes/card-news/propca-notion-style/`)를 사용. 두 CSS는 같은 폴더에 두지 않는다.
 
 ### 카드뉴스 모드 금지
 

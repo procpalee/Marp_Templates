@@ -368,29 +368,47 @@ section.yellow-banner p  { font-size: 16pt; color: rgba(25,25,24,0.65); }
 
 /* 7) workspace-split — sidebar + content */
 
-/* 8) toggle-list — notion toggle mock */
-
-
-section.toggle-list .toggle {
-  border-bottom: 1px solid var(--hairline);
-  padding: 14px 0;
+/* 8) toggle-list — notion toggle mock
+ * 2026-06 고도화: hairline 행 → canvas-card 카드 그룹화 (definition-cards 이음 기법).
+ * heading = 카드 상단(하단 border 없음) / item = 좌우 border 연속 / 그룹 마지막 item = 하단 radius.
+ */
+section.toggle-list .toggle.heading {
+  background: var(--canvas-card);
+  border: 1px solid var(--hairline);
+  border-bottom: none;
+  border-radius: 10px 10px 0 0;
+  padding: 14px 18px 8px;
+  margin: 12px 0 0;
   font-size: 17pt;
+  font-weight: 600;
   color: var(--ink);
 }
+section.toggle-list .toggle.heading:first-child { margin-top: 0; }
 section.toggle-list .toggle.heading::before {
   content: '▶';
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
   margin-right: 12px;
-  color: var(--ink-sub);
-  font-size: 12pt;
-  width: 16px;
+  color: var(--purple);
+  background: rgba(86,69,212,0.10);
+  border-radius: 6px;
+  font-size: 10pt;
+  vertical-align: -4px;
 }
-section.toggle-list .toggle.heading { font-weight: 600; }
+section.toggle-list .toggle.heading:not(:has(+ .toggle.item)) {
+  border-bottom: 1px solid var(--hairline);
+  border-radius: 10px;
+  padding-bottom: 14px;
+}
 section.toggle-list .toggle.item {
-  padding-left: 36px;
+  background: var(--canvas-card);
+  border: 1px solid var(--hairline);
+  border-top: none;
   border-bottom: none;
-  padding-top: 4px;
-  padding-bottom: 4px;
+  padding: 4px 18px 4px 56px;
   font-size: 15pt;
   color: var(--ink-mute);
 }
@@ -399,6 +417,11 @@ section.toggle-list .toggle.item::before {
   margin-right: 10px;
   color: var(--ink-sub);
   font-size: 10pt;
+}
+section.toggle-list .toggle.item:not(:has(+ .toggle.item)) {
+  border-bottom: 1px solid var(--hairline);
+  border-radius: 0 0 10px 10px;
+  padding-bottom: 14px;
 }
 
 /* 9) block-features — icon circle + title + body */
@@ -507,10 +530,10 @@ section.lecture-definition .def-example::before { content: '예시'; display: in
 /* L2) lecture-objective */
 
 section.lecture-objective h2 { font-size: 15pt; font-weight: 500; font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-sub); margin: 0 0 36px; }
-section.lecture-objective ol, section.lecture-objective ul { list-style: none; padding: 0; margin: 0; }
-section.lecture-objective li { font-size: 24pt; line-height: 1.4; color: var(--ink-mute); padding: 18px 0 18px 52px; border-top: 1px solid var(--hairline); position: relative; margin: 0; }
-section.lecture-objective li:last-child { border-bottom: 1px solid var(--hairline); }
-section.lecture-objective li::before { content: '→'; position: absolute; left: 0; top: 18px; font-family: var(--font-mono); font-size: 24pt; color: var(--orange); font-weight: 500; }
+/* 2026-06 고도화: hairline 행 → canvas-card 카드 스택 + orange 칩 화살표 (강의 계열 orange accent 유지) */
+section.lecture-objective ol, section.lecture-objective ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+section.lecture-objective li { font-size: 24pt; line-height: 1.4; color: var(--ink-mute); background: var(--canvas-card); border: 1px solid var(--hairline); border-radius: 12px; padding: 18px 24px 18px 86px; position: relative; margin: 0; }
+section.lecture-objective li::before { content: '→'; position: absolute; left: 18px; top: 50%; transform: translateY(-50%); width: 46px; height: 46px; display: flex; align-items: center; justify-content: center; background: rgba(221,91,0,0.10); border-radius: 10px; font-family: var(--font-mono); font-size: 22pt; color: var(--orange); font-weight: 500; }
 section.lecture-objective li strong { color: var(--ink); font-weight: 700; }
 
 /* L3) lecture-example */
@@ -1007,21 +1030,29 @@ figcaption {
   letter-spacing: 0.02em;
 }
 
-/* ---------- Agenda (large numbered list) ---------- */
+/* ---------- Agenda (large numbered list) ----------
+ * 2026-06 고도화: 레거시 별칭 토큰(--fg-default/--border/--accent) → notion 토큰 직접 참조,
+ * hairline 행 → canvas-card 카드 + purple 칩 번호. toc(흰 카드 + 번호)보다 한 단계 무거운 위계.
+ */
 section.agenda ol {
   list-style: none;
   counter-reset: agenda;
   padding: 0;
   margin: 24px 0 0 0;
+  display: grid;
+  gap: 12px;
 }
 section.agenda ol li {
   counter-increment: agenda;
-  padding: 16px 0 16px 90px;
+  padding: 18px 24px 18px 104px;
   position: relative;
   font-size: 22pt;
-  color: var(--fg-default);
-  border-bottom: 1px solid var(--border);
+  color: var(--ink);
   font-weight: 500;
+  background: var(--canvas-card);
+  border: 1px solid var(--hairline);
+  border-radius: 12px;
+  margin: 0;
 }
 section.agenda ol li::marker {
   content: '';
@@ -1029,18 +1060,21 @@ section.agenda ol li::marker {
 section.agenda ol li::before {
   content: counter(agenda, decimal-leading-zero);
   position: absolute;
-  left: 0;
+  left: 20px;
   top: 50%;
   transform: translateY(-50%);
+  width: 64px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(86,69,212,0.08);
+  border-radius: 10px;
   font-family: var(--font-mono);
-  font-size: 28pt;
+  font-size: 22pt;
   font-weight: 800;
-  color: var(--accent);
-  opacity: 0.85;
+  color: var(--purple);
   letter-spacing: -0.02em;
-}
-section.agenda ol li:last-child {
-  border-bottom: none;
 }
 
 /* ---------- End slide (Thanks / Q&A) ---------- */
@@ -2640,25 +2674,32 @@ section.concept-list ol {
 section.concept-list ol li {
   counter-increment: concept;
   position: relative;
-  padding: 12px 0 12px 80px;
+  padding: 12px 0 12px 72px;
   border-bottom: 1px solid var(--hairline);
   font-size: 16pt;
   line-height: 1.5;
   color: var(--ink-mute);
 }
 section.concept-list ol li:last-child { border-bottom: none; }
+/* 2026-06 고도화: 텍스트 번호 → pastel-lavender 라운드 사각 배지 (행 hairline은 절제 톤 유지) */
 section.concept-list ol li::before {
   content: counter(concept, decimal-leading-zero);
   position: absolute;
   left: 0;
-  top: 12px;
-  width: 56px;
-  text-align: right;
-  font-size: 28pt;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--pastel-lavender);
+  border-radius: 10px;
+  font-size: 17pt;
   font-weight: 700;
-  color: var(--purple);
+  color: var(--purple-deep);
   font-family: var(--font-sans);
-  letter-spacing: -0.04em;
+  letter-spacing: -0.02em;
   line-height: 1;
 }
 section.concept-list ol li strong {
@@ -3282,3 +3323,343 @@ section.cover-photo-full > p:not(:has(img)) {
 }
 section.cover-photo-full header,
 section.cover-photo-full footer { display: none; }
+/* ======================================================================
+   NEW LAYOUTS (2026-06) — 글 구조 갭 보강 핵심 6종
+   faq / code-focus / step-text / gallery-grid / content-sidebar / schedule
+   모두 propca 시그니처 톤(navy + purple + 무채 + 파스텔 절제) 유지.
+   padding / h1 은 기본 section 스타일 상속.
+   ====================================================================== */
+
+/* ---------- faq — Q&A 쌍 나열 (### 질문? + p/ul 답변) ----------
+ * definition-cards 자동 카드화 기법 재사용: h3 = 카드 상단 / 인접 p·ul = 카드 하단.
+ * 셸 `qa`(단일 마감 Q&A 슬라이드)와 구분 — faq는 본문용 다건 Q&A.
+ */
+section.faq > h3 {
+  background: var(--canvas-card);
+  border: 1px solid var(--hairline);
+  border-bottom: none;
+  border-radius: 10px 10px 0 0;
+  padding: 14px 18px 6px;
+  margin: 0;
+  font-size: 16.5pt;
+  font-weight: 700;
+  color: var(--ink);
+}
+section.faq > h3::before {
+  content: 'Q';
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 12pt;
+  font-weight: 700;
+  color: var(--purple);
+  background: rgba(86,69,212,0.10);
+  border-radius: 6px;
+  padding: 2px 9px;
+  margin-right: 10px;
+  vertical-align: 1px;
+}
+section.faq > h3 + p,
+section.faq > h3 + ul {
+  background: var(--canvas-card);
+  border: 1px solid var(--hairline);
+  border-top: none;
+  border-radius: 0 0 10px 10px;
+  padding: 0 18px 14px 54px;
+  margin: 0 0 14px;
+  font-size: 14.5pt;
+  line-height: 1.5;
+  color: var(--ink-mute);
+}
+section.faq > h3 + ul { list-style: none; }
+section.faq > h3 + ul li {
+  font-size: 14.5pt;
+  color: var(--ink-mute);
+  margin: 0 0 4px;
+}
+section.faq > h3 + ul li::before {
+  content: '·';
+  color: var(--purple);
+  font-weight: 700;
+  margin-right: 8px;
+}
+
+/* ---------- code-focus — 코드 중심 슬라이드 (fenced code 지배) ----------
+ * 기존 GitHub-light hljs 팔레트 상속. pre 확대 + 에디터 헤더 바 장식.
+ */
+section.code-focus pre {
+  flex: 1;
+  min-height: 0;
+  font-size: 14pt;
+  line-height: 1.6;
+  margin: 8px 0 0;
+  padding: 52px 28px 26px;
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+}
+section.code-focus pre::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 34px;
+  background: var(--canvas-card);
+  border-bottom: 1px solid var(--hairline);
+}
+section.code-focus pre::after {
+  content: '\25CF \25CF \25CF';
+  position: absolute;
+  top: 9px;
+  left: 18px;
+  font-size: 9pt;
+  color: var(--hairline-strong);
+  letter-spacing: 2px;
+}
+section.code-focus pre code { font-size: 14pt; }
+section.code-focus > ul {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+}
+section.code-focus > ul li {
+  font-size: 13.5pt;
+  color: var(--ink-mute);
+  margin: 0 0 4px;
+}
+section.code-focus > ul li::before {
+  content: '#';
+  font-family: var(--font-mono);
+  color: var(--purple);
+  font-weight: 700;
+  margin-right: 10px;
+}
+section.code-focus > p:last-child {
+  margin: 12px 0 0;
+  font-size: 13pt;
+  color: var(--ink-sub);
+}
+
+/* ---------- step-text — 텍스트 단계 가이드 (이미지 없는 절차 3~5단계) ----------
+ * timeline(수평 한 줄) / vertical-timeline(레일)과 달리 카드 스택 + 강한 번호 배지.
+ * DOM: ol 3~5 항목, 각 `**단계 제목** — 설명`.
+ */
+section.step-text ol {
+  list-style: none;
+  counter-reset: step;
+  padding: 0;
+  margin: 8px 0 0;
+  display: grid;
+  gap: 14px;
+}
+section.step-text ol li {
+  counter-increment: step;
+  position: relative;
+  background: var(--canvas-card);
+  border: 1px solid var(--hairline);
+  border-radius: 12px;
+  padding: 18px 24px 18px 88px;
+  font-size: 15pt;
+  line-height: 1.5;
+  color: var(--ink-mute);
+  margin: 0;
+}
+section.step-text ol li::marker { content: ''; }
+section.step-text ol li::before {
+  content: counter(step);
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 46px;
+  height: 46px;
+  background: var(--purple);
+  color: #ffffff;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 19pt;
+  font-weight: 700;
+}
+section.step-text ol li strong {
+  color: var(--ink);
+  font-size: 16.5pt;
+  font-weight: 700;
+}
+
+/* ---------- gallery-grid — 이미지 3~6장 가변 그리드 ----------
+ * gallery-4(2x2 고정)와 병존 — 가변 장수용. 이미지들을 한 단락에 연속 작성.
+ */
+section.gallery-grid p:has(img) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+  flex: 1;
+  min-height: 0;
+  margin: 8px 0 0;
+  align-items: stretch;
+}
+section.gallery-grid p img {
+  width: 100%;
+  height: 100%;
+  min-height: 190px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid var(--hairline);
+}
+section.gallery-grid p:not(:has(img)) {
+  font-size: 12.5pt;
+  color: var(--ink-sub);
+  text-align: center;
+  margin: 10px 0 0;
+}
+
+/* ---------- content-sidebar — 본문 + 우측 사이드 박스 ----------
+ * DOM: # 제목 + <div class="main">본문</div> + <div class="side">### 라벨 + ul/p</div>
+ * (step-image-guide의 명시 div 관례)
+ */
+section.content-sidebar {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  grid-template-rows: auto 1fr;
+  column-gap: 30px;
+  align-content: start;
+}
+section.content-sidebar h1 { grid-column: 1 / -1; }
+section.content-sidebar .main { min-width: 0; }
+section.content-sidebar .main p,
+section.content-sidebar .main li {
+  font-size: 15.5pt;
+  line-height: 1.6;
+}
+section.content-sidebar .side {
+  background: var(--canvas-card);
+  border: 1px solid var(--hairline);
+  border-top: 3px solid var(--purple);
+  border-radius: 12px;
+  padding: 20px 22px;
+  align-self: start;
+}
+section.content-sidebar .side h3 {
+  font-family: var(--font-mono);
+  font-size: 11.5pt;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--purple);
+  margin: 0 0 10px;
+}
+section.content-sidebar .side p,
+section.content-sidebar .side li {
+  font-size: 13.5pt;
+  line-height: 1.5;
+  color: var(--ink-mute);
+  margin: 0 0 6px;
+}
+section.content-sidebar .side ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+/* ---------- schedule — 날짜 기반 일정/마일스톤 ----------
+ * roadmap(분기/Phase 그룹), milestone-timeline(수직 마커)과 달리 구체 날짜 행 단위.
+ * 주형: 표 | 날짜 | 일정 | 비고 | / 부형: ul 각 `**날짜** — 항목`. 상태 칩은 기존 .tag 조합.
+ */
+section.schedule table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 15pt;
+  margin: 14px 0 0;
+}
+section.schedule thead th {
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: 11pt;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-sub);
+  border-bottom: 2px solid var(--hairline-strong);
+  padding: 10px 16px;
+}
+section.schedule tbody td {
+  padding: 13px 16px;
+  font-size: 15pt;
+  color: var(--ink);
+  border-bottom: 1px solid var(--hairline);
+}
+section.schedule tbody td:first-child {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--purple);
+  white-space: nowrap;
+  width: 1%;
+  padding-right: 28px;
+}
+section.schedule tbody tr:nth-child(even) td { background: var(--canvas-soft); }
+/* ul 폴백 — `**날짜** — 항목` */
+section.schedule > ul {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+}
+section.schedule > ul li {
+  position: relative;
+  border-bottom: 1px solid var(--hairline);
+  padding: 13px 0 13px 130px;
+  font-size: 15.5pt;
+  color: var(--ink);
+  margin: 0;
+}
+section.schedule > ul li:last-child { border-bottom: none; }
+section.schedule > ul li strong {
+  position: absolute;
+  left: 0;
+  top: 13px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--purple);
+}
+
+/* ======================================================================
+   TONE PRESETS (2026-06) — 발표 대상별 톤 3종. 레이아웃과 자유 조합.
+   적용: front matter `class: tone-X` + 슬라이드별 `_class: <layout> tone-X` 합성.
+   토큰 오버라이드만으로 전 레이아웃 재톤화. cover/section/end 셸의
+   --navy + procpa 로고는 3톤 공통 불변 (PROCPA 정체성 가드).
+   color-variants(§12, 브랜드 색 축 카탈로그)와 별개의 "발표 대상" 축.
+   ====================================================================== */
+
+/* tone-exec — 임원/이사회 보고: navy 계열 절제, 파스텔 저채도화 */
+section.tone-exec {
+  --purple: #22307a;
+  --purple-pressed: #1a2560;
+  --purple-deep: #131c4e;
+  --pastel-peach:    #ece9e4;
+  --pastel-rose:     #eae6e8;
+  --pastel-mint:     #e2e9e6;
+  --pastel-lavender: #e4e7f2;
+  --pastel-sky:      #e0e7f0;
+  --pastel-yellow:   #efeadb;
+}
+section.tone-exec em { background: #eef0f4; }
+section.tone-exec code { background: rgba(34,48,122,0.08); color: #22307a; }
+section.tone-exec strong { color: #22307a; }
+
+/* tone-lecture — 강의/교육: orange accent 전덱 확장 (기존 lecture-* 톤 계승) */
+section.tone-lecture {
+  --purple: #dd5b00;
+  --purple-pressed: #b84c00;
+  --purple-deep: #9a3f00;
+  --pastel-lavender: #ffe8d4;
+}
+section.tone-lecture code { background: rgba(221,91,0,0.10); color: var(--orange); }
+section.tone-lecture strong { color: var(--orange); }
+section.tone-lecture blockquote { border-left-color: var(--orange); }
+
+/* tone-seminar — 대외 세미나/컨퍼런스: purple 유지 + 파스텔 활성 */
+section.tone-seminar {
+  --canvas-card: #f7f5fc;
+  --hairline: #e2ddf0;
+}
+section.tone-seminar blockquote { border-left-color: var(--pink); }
