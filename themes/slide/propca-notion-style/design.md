@@ -261,20 +261,29 @@ CSS의 `var(--font-mono)` 호출은 그대로 두고 토큰 정의만 sans로 �
 
 ---
 
-## §12. 색상 테마 변형 6종 (카탈로그)
+## §12. 색상 테마 변형 6종 (3종 구현 완료 — 2026-06)
 
-시각 카탈로그: [`color-variants.md`](color-variants.md) / [`color-variants.html`](color-variants.html). 실제 테마 적용은 별도 .css 파일 분기로 후속 작업.
+시각 카탈로그: [`color-variants.md`](color-variants.md) / [`color-variants.html`](color-variants.html).
 
-| 톤 | 시그니처 (--purple) | Hero (--navy) | 적합 컨텍스트 |
-|---|---|---|---|
-| **CURRENT** | `#5645d4` | `#0a1530` | 회계·자문·기본 (시그니처) |
-| **ROSE** | `#d14d72` | `#1f1018` | 마케팅·라이프스타일 |
-| **EMERALD** | `#10a37f` | `#0a1f1a` | 환경·헬스케어 |
-| **AMBER** | `#e09b3d` | `#1f1607` | 출판·저널·문화 |
-| **SLATE** | `#64748b` | `#1e293b` | 법률·미니멀·B2B |
-| **OCEAN** | `#0072c6` | `#062335` | 테크·SaaS·핀테크 |
+| 톤 | 시그니처 (--purple) | Hero (--navy) | 적합 컨텍스트 | 구현 |
+|---|---|---|---|---|
+| **CURRENT** | `#5645d4` | `#0a1530` | 회계·자문·기본 (시그니처) | `propca-notion-style` (베이스) |
+| **ROSE** | `#d14d72` | `#1f1018` | 마케팅·라이프스타일 | 카탈로그만 |
+| **EMERALD** | `#10a37f` | `#0a1f1a` | 환경·헬스케어 | ✅ [`propca-notion-style-emerald.css`](propca-notion-style-emerald.css) |
+| **AMBER** | `#e09b3d` | `#1f1607` | 출판·저널·문화 | 카탈로그만 |
+| **SLATE** | `#64748b` | `#1e293b` | 법률·미니멀·B2B | ✅ [`propca-notion-style-slate.css`](propca-notion-style-slate.css) |
+| **OCEAN** | `#0072c6` | `#062335` | 테크·SaaS·핀테크 | ✅ [`propca-notion-style-ocean.css`](propca-notion-style-ocean.css) |
 
 핵심 swap 토큰 7개: `--purple`, `--navy`, `--navy-deep`, `--canvas-card`, `--pastel-*` 6 펠릿 중 강조 1~3개. 이 토큰만 변경하면 다른 레이아웃 영향 없이 톤 전환 가능.
+
+### 구현 방식 — Marpit @import 상속 (의도적 예외)
+
+구현된 3 변형은 **베이스 CSS를 복제하지 않는다**. Marpit의 테마 상속(`@import 'propca-notion-style'`)으로 전 레이아웃을 물려받고, 토큰 + purple 파생 rgba 리터럴 몇 줄만 오버라이드한다 — propca 베이스가 갱신되면 변형 3종에 자동 전파된다. (브랜드 14 테마의 "자기완결형, @import 금지" 규칙의 의도적 예외 — 같은 패밀리 변형이므로 자동 전파가 목적에 부합.)
+
+- 사용: front matter `theme: propca-notion-style-emerald` 등으로 지정. 모든 레이아웃·인라인 헬퍼·톤 프리셋이 그대로 동작
+- 데모: `propca-notion-style-{emerald,slate,ocean}.md` / 빌드: `npm run build:propca-{emerald,slate,ocean}`
+- **자동 매칭 무관**: md-to-marp 자동 변환은 항상 베이스(`propca-notion-style`)를 사용 — 변형은 사용자가 front matter로 직접 선택
+- 변형 × 톤 프리셋 조합 가능 (예: OCEAN + tone-exec)
 
 ---
 

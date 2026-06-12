@@ -1,0 +1,24 @@
+/* @theme propca-notion-style-emerald */
+/* ============================================================
+   propca-notion-style — EMERALD 색상 변형 (design.md §12)
+   환경·헬스케어·지속가능 컨텍스트. 시그니처 #10a37f + deep green navy.
+   베이스(propca-notion-style)를 Marpit @import로 상속 — 레이아웃 전부 공유,
+   아래 토큰/리터럴 오버라이드만 유지보수하면 된다.
+   ============================================================ */
+@import 'propca-notion-style';
+
+:root {
+  --purple: #10a37f;
+  --purple-pressed: #0c8266;
+  --purple-deep: #096a54;
+  --navy: #0a1f1a;
+  --navy-deep: #061410;
+  --pastel-lavender: #d9efe6;   /* 강조 인접 파스텔을 에메랄드 틴트로 */
+  --accent-soft: rgba(16,163,127,0.08);
+}
+
+/* purple 파생 rgba 리터럴 오버라이드 (tone 프리셋과 동일 패턴) */
+code { background: rgba(16,163,127,0.10); }
+section.faq > h3::before { background: rgba(16,163,127,0.10); }
+section.toggle-list .toggle.heading::before { background: rgba(16,163,127,0.10); }
+section.agenda ol li::before { background: rgba(16,163,127,0.08); }

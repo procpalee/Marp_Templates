@@ -1,0 +1,21 @@
+/* @theme propca-notion-style-ocean */
+/* ============================================================
+   propca-notion-style — OCEAN 색상 변형 (design.md §12)
+   테크·SaaS·핀테크 컨텍스트. 시그니처 #0072c6 + deep ocean navy.
+   ============================================================ */
+@import 'propca-notion-style';
+
+:root {
+  --purple: #0072c6;
+  --purple-pressed: #005ea3;
+  --purple-deep: #004d86;
+  --navy: #062335;
+  --navy-deep: #041826;
+  --pastel-lavender: #d9e9f7;   /* 강조 인접 파스텔을 오션 틴트로 */
+  --accent-soft: rgba(0,114,198,0.08);
+}
+
+code { background: rgba(0,114,198,0.10); }
+section.faq > h3::before { background: rgba(0,114,198,0.10); }
+section.toggle-list .toggle.heading::before { background: rgba(0,114,198,0.10); }
+section.agenda ol li::before { background: rgba(0,114,198,0.08); }

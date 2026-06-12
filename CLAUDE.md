@@ -104,6 +104,7 @@ npx --yes @marp-team/marp-cli ^
 ## CSS 변경 시 주의
 
 - 각 테마는 **자기완결형** (`@import` 사용 안 함). 베이스 변경이 다른 테마로 자동 전파되지 않음
+  - **예외**: propca 색상 변형 3종(`propca-notion-style-{emerald,slate,ocean}.css`)은 Marpit `@import` 상속으로 베이스를 공유 — propca 변경이 자동 전파됨 (design.md §12)
 - 베이스(`themes/slide/tech-modern/slides/tech-modern.css`) 수정 시 다른 테마 파생본도 함께 갱신해야 회귀 일관성 보장
 - 새 레이아웃 추가 위치:
   - 모든 테마 공용 → `tech-modern.css` 끝에 append + 다른 테마들에도 동일 append
@@ -142,7 +143,7 @@ npx --yes @marp-team/marp-cli ^
 
 자세한 정의는 각 [`themes/slide/<theme>/design.md`](./themes/) §5 참조.
 
-**자동 매칭 가능 deck 테마**: `propca-notion-style` (md-to-marp-propca 스킬, 40 전용 레이아웃 + 8 인라인 헬퍼 + 톤 프리셋 3종). 강의·교육·발표 컨텍스트 특화. 2026-06 신규 6종: `faq`/`code-focus`/`step-text`/`gallery-grid`/`content-sidebar`/`schedule`. 톤 프리셋(`tone-exec`/`tone-lecture`/`tone-seminar`)은 purpose 키워드(임원/강의/세미나)로 자동 선택 — [`themes/slide/propca-notion-style/design.md`](themes/slide/propca-notion-style/design.md) §14·§15 참조.
+**자동 매칭 가능 deck 테마**: `propca-notion-style` (md-to-marp-propca 스킬, 40 전용 레이아웃 + 8 인라인 헬퍼 + 톤 프리셋 3종). 강의·교육·발표 컨텍스트 특화. 2026-06 신규 6종: `faq`/`code-focus`/`step-text`/`gallery-grid`/`content-sidebar`/`schedule`. 톤 프리셋(`tone-exec`/`tone-lecture`/`tone-seminar`)은 purpose 키워드(임원/강의/세미나)로 자동 선택. 색상 변형 3종(EMERALD/SLATE/OCEAN)은 front matter `theme:` 수동 지정 — [`themes/slide/propca-notion-style/design.md`](themes/slide/propca-notion-style/design.md) §14·§15 참조.
 
 기존 14 브랜드 테마(`vercel`/`notion`/`claude`/`spotify`/`stripe`/`figma`/`apple`/`linear`/`cursor`/`raycast`/`supabase`/`airbnb`/`nvidia`/`tesla`)는 **자동 매칭 부재** — 사용자가 `<!-- _class -->`를 수동으로 작성한 MD에서만 사용 가능. `tech-modern`은 이번 워크플로 개편으로 자동 매칭 대상에서 제외됨 (구 `md-to-marp` tech-modern 휴리스틱 제거).
 

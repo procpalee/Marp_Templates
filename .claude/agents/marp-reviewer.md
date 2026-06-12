@@ -30,7 +30,7 @@ tools: Read, Grep, Glob, Bash
 ### Phase 0 — 테마 감지
 
 `Read 변환된 .md의 상단 20줄` → `theme:` 값 파싱:
-- `theme: propca-notion-style` → Phase 1A (propca deck)
+- `theme: propca-notion-style` (또는 색상 변형 `propca-notion-style-emerald/-slate/-ocean`) → Phase 1A (propca deck)
 - `theme: propca-notion-style-cards` → Phase 1B (card-news)
 - 그 외 → high 이슈 + 기본 deck 체크리스트로 진행 (예: tech-modern 잔재)
 
@@ -42,7 +42,7 @@ tools: Read, Grep, Glob, Bash
 ```
 확인:
   - `marp: true` 존재
-  - `theme: propca-notion-style`
+  - `theme: propca-notion-style` (색상 변형 `-emerald`/`-slate`/`-ocean` 허용)
   - `paginate: true`
   - `size: 16:9`
 ```
@@ -212,17 +212,17 @@ Bash: ls <slug>-cards/*.png | wc -l → PNG 수 == 슬라이드 수
 다르면 high
 ```
 
+#### B-5. 컬러 토큰 강제
+```
+Grep `#[0-9a-fA-F]{3,8}` 변환물 .md에서
+인라인 HEX 색상 매치되면 medium (CSS 토큰 사용 권장)
+```
+
 #### B-6. PDF 검증 (output=pdf일 때만)
 ```
 <slug>-cards.pdf 존재 확인
 PDF 페이지 수 == 슬라이드 수 (pdfinfo 또는 grep -c '/Type[ ]*/Page[^s]' 추정)
 페이지 수 불일치 또는 파일 0바이트 → high
-```
-
-#### B-5. 컬러 토큰 강제
-```
-Grep `#[0-9a-fA-F]{3,8}` 변환물 .md에서
-인라인 HEX 색상 매치되면 medium (CSS 토큰 사용 권장)
 ```
 
 ---

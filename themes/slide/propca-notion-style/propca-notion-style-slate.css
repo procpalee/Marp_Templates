@@ -1,0 +1,28 @@
+/* @theme propca-notion-style-slate */
+/* ============================================================
+   propca-notion-style — SLATE 색상 변형 (design.md §12)
+   법률·미니멀·B2B 컨텍스트. 시그니처 #64748b + slate navy.
+   파스텔 6색은 저채도 그레이시로 통일 (절제 톤).
+   ============================================================ */
+@import 'propca-notion-style';
+
+:root {
+  --purple: #64748b;
+  --purple-pressed: #526075;
+  --purple-deep: #445163;
+  --navy: #1e293b;
+  --navy-deep: #15202f;
+  --pastel-peach:    #eceae7;
+  --pastel-rose:     #eae8ea;
+  --pastel-mint:     #e4e8e6;
+  --pastel-lavender: #e4e7ec;
+  --pastel-sky:      #e1e6eb;
+  --pastel-yellow:   #efece2;
+  --accent-soft: rgba(100,116,139,0.08);
+}
+
+code { background: rgba(100,116,139,0.10); }
+em { background: #eef0f3; }
+section.faq > h3::before { background: rgba(100,116,139,0.10); }
+section.toggle-list .toggle.heading::before { background: rgba(100,116,139,0.10); }
+section.agenda ol li::before { background: rgba(100,116,139,0.08); }
