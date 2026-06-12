@@ -803,43 +803,41 @@ section.bg-full h2 {
 }
 
 /* ---------- Hero quote (full screen big blockquote) ---------- */
+/* 카드형 미니멀 (2026-06) — 거대 따옴표 장식 제거,
+   canvas-card 카드 + 좌측 4px purple 바 (lecture-takeaway 패밀리) */
 section.hero-quote {
   justify-content: center;
   align-items: center;
-  text-align: center;
-  padding: 90px 140px;
+  padding: 80px 120px;
 }
 section.hero-quote blockquote {
-  background: transparent;
-  border: none;
+  background: var(--canvas-card);
+  border: 1px solid var(--hairline);
+  border-left: 4px solid var(--purple);
+  border-radius: 12px;
   box-shadow: none;
-  padding: 0;
+  padding: 40px 48px;
   margin: 0;
+  width: 100%;
+  font-style: normal;
   position: relative;
 }
-section.hero-quote blockquote::before {
-  content: '\201C';
-  font-family: 'Inter', serif;
-  font-size: 120pt;
-  color: var(--accent);
-  line-height: 0.6;
-  display: block;
-  margin-bottom: 16px;
-  opacity: 0.5;
-}
 section.hero-quote blockquote p {
-  font-size: 30pt;
+  font-size: 25pt;
   font-style: normal;
   font-weight: 500;
-  color: var(--fg-default);
-  line-height: 1.4;
+  color: var(--ink);
+  line-height: 1.5;
   letter-spacing: -0.01em;
+  margin: 0;
 }
-section.hero-quote blockquote p:last-child {
-  font-size: 16pt;
-  color: var(--fg-subtle);
+section.hero-quote blockquote p:last-child:not(:first-child) {
+  font-size: 14pt;
+  color: var(--ink-sub);
   font-weight: 600;
-  margin-top: 24px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--hairline);
 }
 
 /* ---------- Callouts (단일 톤 통일, 2026-05) ----------
@@ -1255,9 +1253,9 @@ section.image-quote blockquote {
   padding: 60px 56px;
   background: var(--canvas);
   font-family: var(--font-sans);
-  font-size: 20pt;
-  line-height: 1.55;
-  color: var(--fg-default);
+  font-size: 19pt;
+  line-height: 1.6;
+  color: var(--ink);
   font-weight: 500;
   font-style: normal;
   border-left: none;
@@ -1265,28 +1263,32 @@ section.image-quote blockquote {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
-  text-align: center;
+  align-items: flex-start;
+  text-align: left;
   box-sizing: border-box;
 }
-section.image-quote blockquote::before {
-  content: '\201C';
-  font-family: 'Georgia', serif;
-  font-size: 110pt;
-  color: var(--accent);
-  position: absolute;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  opacity: 0.15;
-  line-height: 1;
-}
-section.image-quote blockquote p:last-child {
-  font-size: 14pt;
+section.image-quote blockquote p {
   font-style: normal;
-  color: var(--fg-muted);
+  font-size: 19pt;
+  line-height: 1.6;
+  color: var(--ink);
+}
+/* 카드형 미니멀 (2026-06) — 거대 따옴표 대신 짧은 purple 액센트 바 */
+section.image-quote blockquote::before {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--purple);
+  margin-bottom: 24px;
+}
+section.image-quote blockquote p:last-child:not(:first-child) {
+  font-size: 13pt;
+  font-style: normal;
+  color: var(--ink-sub);
+  font-weight: 600;
   margin-top: 20px;
-  font-family: var(--font-mono);
 }
 
 /* ---------- 7) gallery-4 — 2x2 image grid ---------- */
@@ -2399,34 +2401,38 @@ section:not([class]) h1 {
 /* ---------- feature-compare — 2~3 항목 다중 특성 비교 ---------- */
 section.feature-compare .compare-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-  gap: 18px;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  column-gap: 18px;
+  row-gap: 0;
   margin-top: 8px;
 }
-section.feature-compare .compare-grid > * {
-  background: var(--canvas-card);
-  border: 1px solid var(--hairline);
-  border-radius: 10px;
-  padding: 14px 16px;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
+/* h3 = 카드 상단, ul/ol = 카드 하단 — 한 컬럼에서 한 장의 카드로 이어짐.
+   본문 레이아웃 다크 헤더 금지 정책: canvas-card + 상단 3px purple 액센트 */
 section.feature-compare .compare-grid h3 {
-  background: var(--navy);
-  color: #ffffff;
-  margin: -14px -16px 10px;
-  padding: 10px 16px;
+  background: var(--canvas-card);
+  color: var(--ink);
+  border: 1px solid var(--hairline);
+  border-bottom: none;
+  border-top: 3px solid var(--purple);
   border-radius: 10px 10px 0 0;
+  margin: 0;
+  padding: 12px 16px 8px;
   font-size: 15pt;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: -0.01em;
 }
 section.feature-compare .compare-grid ul,
 section.feature-compare .compare-grid ol {
+  background: var(--canvas-card);
+  border: 1px solid var(--hairline);
+  border-top: none;
+  border-radius: 0 0 10px 10px;
   margin: 0;
-  padding-left: 0;
+  padding: 0 16px 12px;
   list-style: none;
+  overflow: hidden;
 }
 section.feature-compare .compare-grid li {
   padding: 6px 0;
@@ -2576,13 +2582,15 @@ section.compare-cards .vs-grid > .card {
   flex-direction: column;
 }
 section.compare-cards .vs-grid > .card h3 {
-  background: var(--navy);
-  color: #ffffff;
+  background: var(--canvas-soft);
+  color: var(--ink);
   margin: -16px -20px 12px;
   padding: 12px 20px;
   font-size: 17pt;
   font-weight: 700;
   border-radius: 12px 12px 0 0;
+  border-top: 3px solid var(--purple);
+  border-bottom: 1px solid var(--hairline);
   letter-spacing: -0.01em;
 }
 section.compare-cards .vs-grid > .card p,
@@ -2632,22 +2640,25 @@ section.compare-table table {
   font-size: 16pt;
   margin: 14px 0 0;
 }
+/* schedule/concept-table과 같은 라이트 표 패밀리 — 다크 헤더 금지 */
 section.compare-table thead th {
-  background: var(--navy);
-  color: #ffffff;
+  background: transparent;
+  color: var(--ink);
   font-weight: 700;
-  padding: 14px 18px;
+  padding: 12px 18px;
   text-align: left;
-  font-size: 16pt;
+  font-size: 15pt;
   letter-spacing: -0.01em;
+  border-bottom: 2px solid var(--hairline-strong);
 }
 section.compare-table thead th:first-child {
-  background: var(--canvas-card);
-  color: var(--ink-mute);
+  background: transparent;
+  color: var(--ink-sub);
+  font-family: var(--font-mono);
   font-weight: 600;
   text-transform: uppercase;
-  font-size: 13pt;
-  letter-spacing: 0.04em;
+  font-size: 11pt;
+  letter-spacing: 0.06em;
 }
 section.compare-table tbody tr:nth-child(even) td { background: var(--canvas-soft); }
 section.compare-table tbody td {
@@ -2660,7 +2671,7 @@ section.compare-table tbody td {
 section.compare-table tbody td:first-child {
   font-weight: 600;
   color: var(--ink-mute);
-  background: var(--canvas-card);
+  background: var(--canvas-soft);
   border-right: 1px solid var(--hairline);
 }
 
@@ -2740,177 +2751,49 @@ section.concept-table tbody tr:last-child td { border-bottom: none; }
 
 /* ======================================================================
    NEW LAYOUTS — 자동 발견 6종 (2026-05)
-   comparison-3up / story-arc / example-case / pull-quote / pros-cons / checklist
+   comparison-3up / pros-cons / checklist (story-arc·example-case·pull-quote는 2026-06 제거)
    ====================================================================== */
 
 /* ---------- comparison-3up — 3~4개 항목 매트릭스 비교 ---------- */
 section.comparison-3up .matrix {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-  gap: 14px;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  column-gap: 14px;
+  row-gap: 0;
   margin-top: 8px;
 }
-section.comparison-3up .matrix > * {
-  background: var(--canvas-card);
-  border: 1px solid var(--hairline);
-  border-radius: 10px;
-  padding: 14px 16px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
+/* feature-compare와 동일한 카드 이음 — h3 상단 + ul 하단 한 장 카드 */
 section.comparison-3up .matrix h3 {
-  background: var(--purple);
-  color: #ffffff;
-  margin: -14px -16px 10px;
-  padding: 10px 16px;
+  background: var(--canvas-card);
+  color: var(--ink);
+  border: 1px solid var(--hairline);
+  border-bottom: none;
+  border-top: 3px solid var(--purple);
+  border-radius: 10px 10px 0 0;
+  margin: 0;
+  padding: 12px 16px 8px;
   font-size: 15pt;
   font-weight: 700;
-  border-radius: 10px 10px 0 0;
 }
 section.comparison-3up .matrix ul,
-section.comparison-3up .matrix ol { margin: 0; padding-left: 18px; list-style: disc; }
+section.comparison-3up .matrix ol {
+  background: var(--canvas-card);
+  border: 1px solid var(--hairline);
+  border-top: none;
+  border-radius: 0 0 10px 10px;
+  margin: 0;
+  padding: 0 16px 12px 34px;
+  list-style: disc;
+  overflow: hidden;
+}
 section.comparison-3up .matrix li {
   font-size: 14pt;
   line-height: 1.45;
   color: var(--ink);
   margin-bottom: 4px;
 }
-
-/* ---------- story-arc — 개인 경험담·일화 (배경 → 사건 → 결과) ---------- */
-section.story-arc {
-  position: relative;
-}
-section.story-arc::before {
-  content: '"';
-  position: absolute;
-  top: 56px;
-  left: 64px;
-  font-family: var(--font-sans);
-  font-size: 140pt;
-  line-height: 1;
-  color: var(--purple);
-  opacity: 0.12;
-  font-weight: 700;
-}
-section.story-arc h1 {
-  margin-left: 80px;
-  position: relative;
-  z-index: 1;
-}
-section.story-arc p {
-  margin-left: 80px;
-  font-size: 17pt;
-  line-height: 1.65;
-  color: var(--ink-mute);
-  position: relative;
-  z-index: 1;
-}
-section.story-arc p:first-of-type {
-  color: var(--ink);
-  font-size: 18pt;
-  font-weight: 500;
-}
-section.story-arc p:last-of-type {
-  margin-top: 18px;
-  padding-left: 16px;
-  border-left: 3px solid var(--purple);
-  color: var(--ink);
-  font-style: italic;
-}
-
-/* ---------- example-case — 예시 시나리오 카드 ---------- */
-section.example-case::before {
-  content: 'CASE';
-  position: absolute;
-  top: 56px;
-  left: 88px;
-  font-size: 13pt;
-  font-weight: 700;
-  color: var(--purple);
-  letter-spacing: 0.16em;
-}
-section.example-case {
-  position: relative;
-  padding-top: 96px;
-}
-section.example-case h1 {
-  font-size: 26pt;
-  line-height: 1.25;
-  color: var(--ink);
-  margin-bottom: 18px;
-}
-section.example-case .case-body,
-section.example-case > p {
-  font-size: 17pt;
-  line-height: 1.6;
-  color: var(--ink-mute);
-}
-section.example-case > .case-body > p:first-child,
-section.example-case > p:nth-of-type(1) {
-  color: var(--ink);
-  font-size: 18pt;
-  font-weight: 500;
-}
-section.example-case .case-aside,
-section.example-case blockquote {
-  background: var(--canvas-card);
-  border: 1px solid var(--hairline);
-  border-left: 3px solid var(--purple);
-  border-radius: 8px;
-  padding: 14px 18px;
-  margin-top: 18px;
-  font-size: 15pt;
-  line-height: 1.5;
-  color: var(--ink);
-  font-style: normal;
-}
-
-/* ---------- pull-quote — 외부 인용 + 출처 ---------- */
-section.pull-quote {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 72px 120px;
-}
-section.pull-quote blockquote {
-  font-size: 32pt;
-  line-height: 1.35;
-  color: var(--ink);
-  font-weight: 600;
-  border: none;
-  background: none;
-  padding: 0;
-  margin: 0 0 24px;
-  letter-spacing: -0.01em;
-  position: relative;
-  font-style: normal;
-}
-section.pull-quote blockquote::before {
-  content: '"';
-  display: block;
-  font-size: 110pt;
-  line-height: 0.6;
-  color: var(--purple);
-  margin-bottom: 12px;
-  font-weight: 700;
-}
-section.pull-quote blockquote p {
-  font-size: 32pt;
-  font-weight: 600;
-  font-style: normal;
-  color: var(--ink);
-  margin: 0;
-  line-height: 1.35;
-}
-section.pull-quote > p,
-section.pull-quote .source {
-  font-size: 15pt;
-  color: var(--ink-sub);
-  letter-spacing: 0.02em;
-}
-section.pull-quote > p::before { content: '— '; color: var(--purple); }
 
 /* ---------- pros-cons — 장단점 2 컬럼 (좌측 ✓ / 우측 ✗) ---------- */
 section.pros-cons .pc-grid {
@@ -2999,20 +2882,14 @@ section.checklist ul li::before {
   color: var(--ink-sub);
   line-height: 1;
 }
-/* GFM task list — Marp가 input[checked] 처리 */
-section.checklist ul li input[type='checkbox'] {
-  display: none;
-}
-section.checklist ul li input[type='checkbox'] + * { display: inline; }
-section.checklist ul li:has(input[checked])::before,
-section.checklist ul li.completed::before {
+/* Marp Core는 GFM 태스크 리스트(`- [ ]`/`- [x]`)를 렌더링하지 않으므로
+   변환기가 <li class="todo"> / <li class="done">으로 치환하는 것이 DOM 계약 */
+section.checklist ul li.done::before {
   content: '☑';
-  color: var(--success);
+  color: var(--green);
 }
-section.checklist ul li:has(input[checked]),
-section.checklist ul li.completed {
+section.checklist ul li.done {
   color: var(--ink-mute);
-  text-decoration: line-through;
 }
 
 /* ======================================================================

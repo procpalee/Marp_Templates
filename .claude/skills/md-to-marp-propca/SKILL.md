@@ -1,6 +1,6 @@
 ---
 name: md-to-marp-propca
-description: 옵시디언 또는 표준 마크다운을 propca-notion-style 테마의 Marp 슬라이드 마크다운으로 한 번에 변환. 강의·교육·발표 컨텍스트(한국 회계법인 톤)에 특화. 내부 2단계 — (1) 옵시디언 전처리(wikilinks/embeds/콜아웃/frontmatter/태그 블록 정리 + 이미지 자산 복사), (2) propca-notion-style 전용 레이아웃(43 매칭 규칙) + 8 인라인 헬퍼 자동 매칭 + 톤 프리셋 3종(tone-exec/tone-lecture/tone-seminar) 합성. 변환은 propca-notion-style.md(테마 쇼케이스)의 패턴을 그대로 따른다 — cover의 H1+H2+연월 구조, section의 #=숫자/##=제목 패턴, 본문 슬라이드의 # 헤더 우선, 인용 신중 사용, 여백 최소화. 출력은 output/<slug>/<slug>.marp.md + <slug>.cleaned.md(감사 추적) + assets/(이미지 복사본).
+description: 옵시디언 또는 표준 마크다운을 propca-notion-style 테마의 Marp 슬라이드 마크다운으로 한 번에 변환. 강의·교육·발표 컨텍스트(한국 회계법인 톤)에 특화. 내부 2단계 — (1) 옵시디언 전처리(wikilinks/embeds/콜아웃/frontmatter/태그 블록 정리 + 이미지 자산 복사), (2) propca-notion-style 전용 레이아웃(40 매칭 규칙) + 8 인라인 헬퍼 자동 매칭 + 톤 프리셋 3종(tone-exec/tone-lecture/tone-seminar) 합성. 변환은 propca-notion-style.md(테마 쇼케이스)의 패턴을 그대로 따른다 — cover의 H1+H2+연월 구조, section의 #=숫자/##=제목 패턴, 본문 슬라이드의 # 헤더 우선, 인용 신중 사용, 여백 최소화. 출력은 output/<slug>/<slug>.marp.md + <slug>.cleaned.md(감사 추적) + assets/(이미지 복사본).
 ---
 
 # md-to-marp-propca (v2.0)
@@ -41,7 +41,7 @@ output/<slug>/
 1. 옵시디언 마커(`[[`, `![[`, `> [!`, `#tag` 블록, `^block-id`) 잔재 0
 2. front matter는 **고정 스키마** (§3)
 3. 첫 슬라이드 = `cover`, 마지막 슬라이드 ∈ `{end, qa, thanks-contact}`
-4. propca 어휘(43 매칭 규칙의 출력 클래스 + 톤 프리셋 3종) 외 클래스명 출력 금지 (tech-modern의 `grid-3`/`stats` 등 0회)
+4. propca 어휘(40 매칭 규칙의 출력 클래스 + 톤 프리셋 3종) 외 클래스명 출력 금지 (tech-modern의 `grid-3`/`stats` 등 0회)
 5. **쇼케이스 패턴 준수** — 5가지 핵심 규칙 (§2.A)
 6. 결과 디렉토리는 자기완결적 — 다른 폴더로 옮겨도 이미지 깨지지 않음
 7. 멱등성: source mtime ≤ cleaned.md mtime이면 skip (force=true 제외)
@@ -60,7 +60,7 @@ output/<slug>/
      ↓
 [3] 슬라이드 분절 (구분자: `^# `, `^---$`, `^\*\*\*$`)
      ↓
-[4] 슬라이드별 레이아웃 휴리스틱 적용 (43 매칭 규칙 — references/layout-heuristics.md)
+[4] 슬라이드별 레이아웃 휴리스틱 적용 (40 매칭 규칙 — references/layout-heuristics.md)
      ↓
 [5] 인라인 헬퍼 자동 주입 (8 헬퍼 — references/inline-helpers.md)
      ↓
@@ -89,7 +89,7 @@ output/<slug>/
 
 ## 2) 레이아웃 휴리스틱 + 쇼케이스 패턴
 
-전체 레이아웃 매핑(43 규칙)은 [references/layout-heuristics.md](references/layout-heuristics.md), 인라인 헬퍼 주입은 [references/inline-helpers.md](references/inline-helpers.md).
+전체 레이아웃 매핑(40 규칙)은 [references/layout-heuristics.md](references/layout-heuristics.md), 인라인 헬퍼 주입은 [references/inline-helpers.md](references/inline-helpers.md).
 
 ### 2.A) 쇼케이스 5 핵심 규칙 (반드시 준수)
 
@@ -207,21 +207,20 @@ output/<slug>/
 
 1. **셸 강제 매칭** — 첫/마지막 슬라이드, `***` 가로선
 2. **네비게이션** — toc-split / section
-3. **시각 강조·인용** — hero-quote / image-quote / **pull-quote** (규칙 4 준수) / **gallery-grid** (이미지 3~6)
+3. **시각 강조·인용** — hero-quote (출처 유무 무관 blockquote 솔로) / image-quote / **gallery-grid** (이미지 3~6)
 4. **코드 중심** — **code-focus** (fenced code ≥6행 + 기타 본문 ≤3행)
 5. **2개 비교** — compare / two-image / before-after / **compare-cards** / **compare-table**
 6. **3+ 비교** — feature-compare / **comparison-3up**
 7. **개념 정의 / Q&A** — definition-cards / **concept-list** / **concept-table** / **faq** (의문문 H3 쌍)
-8. **일화·사례·예시** — **story-arc** / **example-case**
-9. **카드 / 블록** — cards / pastel-blocks / block-features
-10. **데이터** — 일반 `<table>` (상태 셀에 .tag 자동 주입) / **schedule** (첫 컬럼 날짜 패턴)
-11. **튜토리얼** — step-image-guide (이미지) / **step-text** (텍스트만)
-12. **순서 / 흐름** — timeline / vertical-timeline / roadmap
-13. **리스트 변형** — toggle-list / icon-list / **checklist** / **pros-cons**
-14. **사이드바** — **content-sidebar** (본문 ≥4행 + 보조 블록)
-15. **폴백** — 평범 content (no `_class`)
+8. **카드 / 블록** — cards / pastel-blocks / block-features
+9. **데이터** — 일반 `<table>` (상태 셀에 .tag 자동 주입) / **schedule** (첫 컬럼 날짜 패턴)
+10. **튜토리얼** — step-image-guide (이미지) / **step-text** (텍스트만)
+11. **순서 / 흐름** — timeline / vertical-timeline / roadmap
+12. **리스트 변형** — toggle-list / icon-list / **checklist** / **pros-cons**
+13. **사이드바** — **content-sidebar** (본문 ≥4행 + 보조 블록)
+14. **폴백** — 평범 content (no `_class`)
 
-세부 표는 [references/layout-heuristics.md](references/layout-heuristics.md) §매핑 표 (현재 43행, 경합 정리 절 포함).
+세부 표는 [references/layout-heuristics.md](references/layout-heuristics.md) §매핑 표 (현재 40행, 경합 정리 절 포함).
 
 ### 2.D) 용도별 결정 트리 ★ AI가 가장 먼저 참고
 
@@ -234,9 +233,8 @@ A. 2개 항목 비교         → compare / two-image / compare-cards / compare-
 B. 3개 이상 항목 비교    → comparison-3up / feature-compare
 C. 개념 정의·설명        → definition-cards / concept-list / concept-table
 D. 단계·절차·튜토리얼    → timeline / vertical-timeline / step-image-guide / step-text / roadmap
-E. 시각 강조·인용        → hero-quote / image-quote / pull-quote / pastel-blocks / gallery-grid
-F. 일화·사례·예시        → story-arc / example-case
-G. 리스트 변형          → icon-list / toggle-list / checklist / block-features / cards / pros-cons
+E. 시각 강조·인용        → hero-quote / image-quote / pastel-blocks / gallery-grid
+F. 리스트 변형          → icon-list / toggle-list / checklist / block-features / cards / pros-cons
 H. 셸 (입출구)           → cover / section / session-break / qa / thanks-contact / end
 I. 코드 중심            → code-focus
 J. 질문-답변 나열        → faq (본문 Q&A 쌍 — 마감 Q&A는 셸 qa)
@@ -247,7 +245,7 @@ L. 본문 + 보조 박스      → content-sidebar
 #### 질문 2 — 항목 수?
 
 ```
-1개  → hero-quote / pull-quote / story-arc (단일 키 메시지)
+1개  → hero-quote (단일 키 메시지)
 2개  → compare / two-image / compare-cards / compare-table / pros-cons
 2-5개 → faq (의문문 H3 쌍)
 3-4개 → cards / block-features / comparison-3up / definition-cards
@@ -263,9 +261,9 @@ L. 본문 + 보조 박스      → content-sidebar
 카드 스택    → step-text / faq
 표 형태      → compare-table / concept-table / feature-compare / schedule (첫 컬럼 날짜)
 ol/ul 리스트  → concept-list / icon-list / checklist / timeline / vertical-timeline
-단락형       → pastel-blocks / story-arc / example-case / content-sidebar (보조 블록 동반)
+단락형       → pastel-blocks / content-sidebar (보조 블록 동반)
 좌-우 분할   → compare / two-image / cover-split / content-sidebar
-인용형       → hero-quote / image-quote / pull-quote
+인용형       → hero-quote / image-quote
 코드 블록    → code-focus
 이미지 그리드 → gallery-grid (가변 3~6) / gallery-4 (2x2 고정, 수동)
 ```
@@ -283,12 +281,9 @@ ol/ul 리스트  → concept-list / icon-list / checklist / timeline / vertical-
 | `definition-cards` | 도구·개념 카드형 정의 (2~6개) | 사전식 용어집 (→ concept-table) |
 | `concept-list` | 5~10개 개념 큰 번호 나열 | 정의가 길어 표가 더 적합 (→ concept-table) |
 | `concept-table` | 행별 용어 + 정의 표 (사전식) | 시각 임팩트 필요 (→ definition-cards) |
-| `story-arc` | 개인 경험·일화·회상 톤 | 객관적 사실 전달 (→ 일반 content) |
-| `example-case` | "예를 들어 ~" 구체적 사례 1건 | 사례 3+개 (→ cards / comparison-3up) |
-| `pull-quote` | 외부 출처 인용 강조 (저자·출처 명시) | 본문 일부 강조 (→ 굵게 또는 hero-quote) |
 | `pros-cons` | 장단점 명시 비교 (✓/✗) | 3개 이상 옵션 (→ feature-compare) |
 | `checklist` | 할 일·확인 항목 (GFM `- [ ]`/`- [x]`) | 단순 ul 나열 (→ icon-list) |
-| `hero-quote` | 한 줄 강조 인용 (저자 표기 옵션) | 외부 출처 있음 (→ pull-quote) |
+| `hero-quote` | 한 줄 강조 인용 — 출처(`— 출처`) 유무 무관 | 이미지 동반 (→ image-quote) |
 | `image-quote` | 이미지 + 인용 결합 (좌 이미지 / 우 텍스트) | 이미지·인용 둘 다 강할 때 (→ 별도 슬라이드 분할) |
 | `pastel-blocks` | 2~6 개념 hero 블록 단락형 | 표 비교 (→ concept-table) |
 | `step-image-guide` | 단계 + 이미지 튜토리얼 | 이미지 없는 절차 (→ vertical-timeline) |
@@ -497,7 +492,7 @@ npx --yes @marp-team/marp-cli ^
 - propca CSS: [`../../../themes/slide/propca-notion-style/propca-notion-style.css`](../../../themes/slide/propca-notion-style/propca-notion-style.css)
 - 옵시디언 전처리 규칙: [references/obsidian-prep.md](references/obsidian-prep.md)
 - 이미지 vault 경로 해석: [references/vault-resolution.md](references/vault-resolution.md)
-- 레이아웃 매핑 표 (43 규칙) + 이미지 결정 트리: [references/layout-heuristics.md](references/layout-heuristics.md)
+- 레이아웃 매핑 표 (40 규칙) + 이미지 결정 트리: [references/layout-heuristics.md](references/layout-heuristics.md)
 - 톤 프리셋 카탈로그: [`../../../themes/slide/propca-notion-style/tone-variants.md`](../../../themes/slide/propca-notion-style/tone-variants.md)
 - 8 인라인 헬퍼 자동 주입 규칙: [references/inline-helpers.md](references/inline-helpers.md)
 - 오케스트레이터: [`../md-to-marp/SKILL.md`](../md-to-marp/SKILL.md)

@@ -95,7 +95,7 @@
 | 1 | `navy-cover` | navy 그라데이션 hero 표지 + 우상단 mockup glyph |
 | 2 | `purple-section` | 풀 보라 챕터 디바이더 |
 | 3 | `sticky-notes` | 4장 회전 파스텔 메모 카드 |
-| 4 | `feature-compare` | 2~3 항목 다중 특성 비교표 (상태 컬럼 없음, ✓/✗ 자동 강조) |
+| 4 | `feature-compare` | 2~3 항목 다중 특성 비교 카드 (라이트 카드 헤더 + 상단 3px 보라, ✓/✗ 자동 강조) |
 | 5 | `pastel-blocks` | 6 파스텔 블록 그리드 |
 | 6 | `yellow-banner` | 풀블리드 노란 강조 슬라이드 |
 | 7 | `workspace-split` | 좌 280px 사이드바 + 우 본문 — 워크스페이스 mockup |
@@ -107,15 +107,12 @@
 | 13 | `step-image-guide` | 좌 단계 ol + 우 스크린샷 (튜토리얼·설치 가이드) |
 | 14 | `definition-cards` | 도구·개념 카드형 정의 (H3 자동 카드화 + 좌측 보라 라인) |
 | 15 | `compare-cards` | 2 항목 카드 비교 + 중앙 **VS 뱃지** (좌우 카드 사이) |
-| 16 | `compare-table` | 2 항목 표 비교 (행=속성, 컬럼=A/B, navy 헤더) |
+| 16 | `compare-table` | 2 항목 표 비교 (행=속성, 컬럼=A/B, 라이트 헤더 + 2px 하단 보더) |
 | 17 | `concept-list` | 5~10 개념 큰 번호 (좌측 28pt 보라) + 우측 제목·본문 |
 | 18 | `concept-table` | 용어 사전 표 (좌측 30% 용어 보라 / 우측 정의) |
-| 19 | `comparison-3up` | 3~4 항목 매트릭스 카드 (보라 헤더 + ul 비교 항목) |
-| 20 | `story-arc` | 좌측 거대 따옴표 인용부호 + 본문 3단락 + 우하단 마무리 |
-| 21 | `example-case` | 좌상단 `CASE` 라벨 + 본문 + 우측 보조 박스 (시나리오 1건) |
-| 22 | `pull-quote` | 중앙 큰 따옴표 + 32pt 인용 + 출처 (외부 인용 강조) |
-| 23 | `pros-cons` | 장단점 2 컬럼 (좌 ✓ 녹색 / 우 ✗ 빨강 자동 강조) |
-| 24 | `checklist` | GFM 태스크 리스트 시각화 (`- [ ]`→☐ / `- [x]`→☑) |
+| 19 | `comparison-3up` | 3~4 항목 매트릭스 카드 (라이트 카드 헤더 + 상단 3px 보라 + ul) |
+| 20 | `pros-cons` | 장단점 2 컬럼 (좌 ✓ 녹색 / 우 ✗ 빨강 자동 강조) |
+| 21 | `checklist` | 체크리스트 시각화 — 변환기가 GFM `- [ ]`/`- [x]`를 `<li class="todo|done">`으로 치환 (☐/☑) |
 
 ### 셸 3개 (shell)
 - `cover` — 부드러운 캔버스 + 잉크 (기본 표지)
@@ -130,6 +127,8 @@
 - 알약 라벨에 음의 자간 사용 금지 (Notion은 자연 정렬)
 - pastel-cards/sticky-notes를 6장 초과하지 말 것 (회전 펠릿 한 사이클)
 - navy hero를 일반 콘텐츠 슬라이드 배경으로 사용 금지 (cover/signup-end 한정)
+- **본문 레이아웃에 navy/purple 솔리드 배경 헤더 금지** (2026-06) — 카드·표 헤더는 라이트 톤(canvas-card/canvas-soft + 상단 3px `--purple` 액센트)으로 통일. navy 솔리드는 셸(cover/section/end/session-break)과 lecture-example 결과 카드 한정
+- 인용 레이아웃(hero-quote/image-quote)에 거대 장식 따옴표 금지 (2026-06) — 카드형 미니멀(canvas-card + purple 액센트 바)로 통일
 - Yellow banner는 한 데크당 1회만 사용 (강조의 강조)
 - 카드에 강한 그림자 사용 금지 — hairline + soft elevation만 (sticky-notes 예외)
 
@@ -297,11 +296,10 @@ AI 변환 시 가장 먼저 참고할 결정 트리는 [`.claude/skills/md-to-ma
 | **B. 3+ 비교** | `comparison-3up` / `feature-compare` |
 | **C. 개념 정의·설명·Q&A** | `definition-cards` / `concept-list` / `concept-table` / `faq` (의문문 H3 쌍) |
 | **D. 단계·튜토리얼·일정** | `timeline` / `vertical-timeline` / `step-image-guide` / `step-text` (텍스트 절차) / `roadmap` / `schedule` (날짜 행) |
-| **E. 시각 강조·인용** | `hero-quote` / `image-quote` / `pull-quote` / `pastel-blocks` / `pastel-quote` / `gallery-grid` (이미지 3~6) |
-| **F. 일화·사례·예시** | `story-arc` / `example-case` |
-| **G. 리스트 변형** | `icon-list` / `toggle-list` / `checklist` / `block-features` / `cards` / `pros-cons` |
-| **H. 셸 (입출구)** | `cover` (+5 변형) / `section` / `session-break` / `qa` / `thanks-contact` / `end` / `signup-end` |
-| **I. 코드·사이드바** | `code-focus` (코드 중심) / `content-sidebar` (본문 + 보조 박스) |
+| **E. 시각 강조·인용** | `hero-quote` (출처 유무 무관) / `image-quote` / `pastel-blocks` / `pastel-quote` / `gallery-grid` (이미지 3~6) |
+| **F. 리스트 변형** | `icon-list` / `toggle-list` / `checklist` / `block-features` / `cards` / `pros-cons` |
+| **G. 셸 (입출구)** | `cover` (+5 변형) / `section` / `session-break` / `qa` / `thanks-contact` / `end` / `signup-end` |
+| **H. 코드·사이드바** | `code-focus` (코드 중심) / `content-sidebar` (본문 + 보조 박스) |
 
 각 레이아웃의 "언제 사용 / 피해야 할 경우" 가이드는 SKILL.md §2.D 표 참조.
 
@@ -359,3 +357,37 @@ md-to-marp-propca의 `tone=` 인자가 이를 자동 수행 (SKILL.md §3.F). pu
 - 톤 클래스가 일부 슬라이드에만 합성되면 marp-reviewer가 medium 이슈로 검출
 
 참고: 신규/톤 클래스는 base `h1`(28pt) 스타일을 상속하므로 LAYOUT HEADERS UNIFICATION 블록에 추가하지 않는다 — 톤 클래스를 그 블록에 넣으면 cover의 56pt h1이 28pt로 강제되는 부작용이 있다.
+
+---
+
+## §16. 쇼케이스 QA 개선 (2026-06) — 라이트 헤더 통일 + 레이아웃 3종 제거
+
+빌드된 쇼케이스 전수 검수 피드백 반영.
+
+### 제거된 레이아웃 3종
+
+`story-arc` · `example-case` · `pull-quote` — 일화·사례 톤이 테마 정체성과 어울리지 않아 CSS·쇼케이스·매칭 규칙·리뷰어 어휘에서 모두 삭제 (매칭 규칙 43→40, 어휘 40→37종). 외부 출처 인용은 `hero-quote`가 흡수 (출처 유무 무관 blockquote 솔로).
+
+### 라이트 헤더 통일 (다크 솔리드 헤더 폐기)
+
+| 레이아웃 | 변경 전 | 변경 후 |
+|---|---|---|
+| `feature-compare` | navy 솔리드 h3 + `> *` 셀렉터가 h3/ul을 별개 카드로 분리(버그) | `grid-auto-flow: column` 2행 그리드로 h3·ul을 한 장 카드로 이음 + canvas-card 헤더 + 상단 3px purple |
+| `comparison-3up` | purple 솔리드 h3 + 동일 분리 버그 | feature-compare와 동일한 카드 이음 + 라이트 헤더 |
+| `compare-cards` | navy 솔리드 h3 | canvas-soft 헤더 + 상단 3px purple + 하단 hairline |
+| `compare-table` | navy 솔리드 thead | transparent + 하단 2px hairline-strong (schedule 표 패밀리와 통일), 첫 컬럼 mono uppercase |
+
+### 인용 2종 카드형 미니멀
+
+- `hero-quote`: 120pt 거대 따옴표 제거 → canvas-card 카드 + 좌측 4px purple 바 + 본문 25pt + 출처 행(상단 hairline 구분)
+- `image-quote`: 110pt Georgia 따옴표 제거 → 40×4px purple 액센트 바 + 본문 19pt 좌정렬
+
+### checklist DOM 계약 교체
+
+Marp Core는 GFM 태스크 리스트를 렌더링하지 않음 (`- [ ]` 리터럴 노출 버그). 변환기가 `- [ ]`/`- [x]`를 `<ul>` raw HTML의 `<li class="todo">`/`<li class="done">`으로 치환하는 것이 새 계약. CSS는 `li.todo`(☐)/`li.done`(☑ green + ink-mute) 셀렉터 사용.
+
+### 백로그 (미착수)
+
+- `roadmap` `.tier.featured::before`의 `'진행 중'` 한글 하드코딩 토큰화
+- `two-image` 캡션 스타일 정교화
+- KPI/big-number 계열 레이아웃 재도입 검토

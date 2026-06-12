@@ -29,7 +29,7 @@
 | 컴포넌트 | 경로 | 역할 |
 |---|---|---|
 | 오케스트레이터 | `.claude/skills/md-to-marp/` | 모드 선택 + md-to-marp-propca 호출 + 빌드 + QA + 재시도 + watch |
-| 변환 스킬 (통합) | `.claude/skills/md-to-marp-propca/` | 옵시디언 전처리(`[[wikilinks]]`/`![[embeds]]`/콜아웃/frontmatter/태그 + 이미지 자산 복사) + propca-notion-style 레이아웃(43 매칭 규칙)·8 인라인 헬퍼·톤 프리셋 3종(tone-exec/tone-lecture/tone-seminar) 자동 매칭. 변환은 [`themes/slide/propca-notion-style/propca-notion-style.md`](themes/slide/propca-notion-style/propca-notion-style.md) 쇼케이스 패턴 준수 — cover의 H1+H2+연월, section의 #=숫자/##=제목, 본문 슬라이드 # 헤더 우선, 인용 신중 사용, 여백 최소화 |
+| 변환 스킬 (통합) | `.claude/skills/md-to-marp-propca/` | 옵시디언 전처리(`[[wikilinks]]`/`![[embeds]]`/콜아웃/frontmatter/태그 + 이미지 자산 복사) + propca-notion-style 레이아웃(40 매칭 규칙)·8 인라인 헬퍼·톤 프리셋 3종(tone-exec/tone-lecture/tone-seminar) 자동 매칭. 변환은 [`themes/slide/propca-notion-style/propca-notion-style.md`](themes/slide/propca-notion-style/propca-notion-style.md) 쇼케이스 패턴 준수 — cover의 H1+H2+연월, section의 #=숫자/##=제목, 본문 슬라이드 # 헤더 우선, 인용 신중 사용, 여백 최소화 |
 | 검증 에이전트 | `.claude/agents/marp-reviewer.md` | 독립 컨텍스트 QA. theme front matter로 propca/card-news 분기 |
 | 슬래시 명령 | `.claude/commands/marp.md` | `/marp <file> [watch] [용도]` — 원샷 빌드 + 선택 watch |
 | 테마 폴더 | `themes/slide/<theme>/` | 테마별 design.md + slides/{css,md,html} 트리플 |
@@ -105,6 +105,7 @@ npx --yes @marp-team/marp-cli ^
 
 - 각 테마는 **자기완결형** (`@import` 사용 안 함). 베이스 변경이 다른 테마로 자동 전파되지 않음
   - **예외**: propca 색상 변형 3종(`propca-notion-style-{emerald,slate,ocean}.css`)은 Marpit `@import` 상속으로 베이스를 공유 — propca 변경이 자동 전파됨 (design.md §12)
+- **propca 옵션 카탈로그 동기화 (필수)**: propca-notion-style의 옵션(레이아웃/색상 변형/톤 프리셋/커버 변형/인라인 헬퍼)을 추가·제거·변경하면 [`themes/slide/propca-notion-style/README.md`](themes/slide/propca-notion-style/README.md)의 해당 표를 같은 커밋에서 갱신할 것
 - 베이스(`themes/slide/tech-modern/slides/tech-modern.css`) 수정 시 다른 테마 파생본도 함께 갱신해야 회귀 일관성 보장
 - 새 레이아웃 추가 위치:
   - 모든 테마 공용 → `tech-modern.css` 끝에 append + 다른 테마들에도 동일 append
@@ -143,7 +144,7 @@ npx --yes @marp-team/marp-cli ^
 
 자세한 정의는 각 [`themes/slide/<theme>/design.md`](./themes/) §5 참조.
 
-**자동 매칭 가능 deck 테마**: `propca-notion-style` (md-to-marp-propca 스킬, 40 전용 레이아웃 + 8 인라인 헬퍼 + 톤 프리셋 3종). 강의·교육·발표 컨텍스트 특화. 2026-06 신규 6종: `faq`/`code-focus`/`step-text`/`gallery-grid`/`content-sidebar`/`schedule`. 톤 프리셋(`tone-exec`/`tone-lecture`/`tone-seminar`)은 purpose 키워드(임원/강의/세미나)로 자동 선택. 색상 변형 3종(EMERALD/SLATE/OCEAN)은 front matter `theme:` 수동 지정 — [`themes/slide/propca-notion-style/design.md`](themes/slide/propca-notion-style/design.md) §14·§15 참조.
+**자동 매칭 가능 deck 테마**: `propca-notion-style` (md-to-marp-propca 스킬, 37 전용 레이아웃 + 8 인라인 헬퍼 + 톤 프리셋 3종). 강의·교육·발표 컨텍스트 특화. 2026-06 신규 6종: `faq`/`code-focus`/`step-text`/`gallery-grid`/`content-sidebar`/`schedule`. 톤 프리셋(`tone-exec`/`tone-lecture`/`tone-seminar`)은 purpose 키워드(임원/강의/세미나)로 자동 선택. 색상 변형 3종(EMERALD/SLATE/OCEAN)은 front matter `theme:` 수동 지정 — [`themes/slide/propca-notion-style/design.md`](themes/slide/propca-notion-style/design.md) §14·§15 참조.
 
 기존 14 브랜드 테마(`vercel`/`notion`/`claude`/`spotify`/`stripe`/`figma`/`apple`/`linear`/`cursor`/`raycast`/`supabase`/`airbnb`/`nvidia`/`tesla`)는 **자동 매칭 부재** — 사용자가 `<!-- _class -->`를 수동으로 작성한 MD에서만 사용 가능. `tech-modern`은 이번 워크플로 개편으로 자동 매칭 대상에서 제외됨 (구 `md-to-marp` tech-modern 휴리스틱 제거).
 
