@@ -1,6 +1,6 @@
-# propca-notion-style — 21 레이아웃 매핑 휴리스틱
+# propca-notion-style — 레이아웃 매핑 휴리스틱 (43 규칙)
 
-표준 마크다운의 슬라이드 단위 콘텐츠를 분석해 21 propca-notion-style 레이아웃 중 하나로 매칭한다. 우선순위는 셸(cover/end/qa/section/session-break) → 네비게이션(toc-split) → 콘텐츠.
+표준 마크다운의 슬라이드 단위 콘텐츠를 분석해 propca-notion-style 레이아웃 중 하나로 매칭한다. 우선순위는 셸(cover/end/qa/section/session-break) → 네비게이션(toc-split) → 콘텐츠.
 
 ---
 
@@ -8,21 +8,23 @@
 
 1. **셸 강제 매칭** — 첫 슬라이드 / 마지막 H1 / `***` 가로선
 2. **네비게이션** — toc-split / section
-3. **시각 강조** — hero-quote / image-quote
-4. **2 컬럼 비교** — compare / two-image / before-after
-5. **카드 / 그리드** — cards / pastel-blocks / definition-cards
-6. **비교 / 정의** — feature-compare (특성 비교표) / definition-cards (개념 정의 카드)
-7. **튜토리얼** — step-image-guide (단계 + 이미지)
-8. **데이터 표시** — 일반 `<table>` + 인라인 `.tag` (database-rows 제거됨)
-9. **순서 / 흐름** — timeline / vertical-timeline / roadmap
-10. **리스트 변형** — toggle-list / icon-list / block-features
-11. **폴백** — 평범 content (no `_class`)
+3. **시각 강조** — hero-quote / image-quote / gallery-grid (이미지 3~6)
+4. **코드 중심** — code-focus (fenced code 지배)
+5. **2 컬럼 비교** — compare / two-image / before-after
+6. **카드 / 그리드** — cards / pastel-blocks / definition-cards
+7. **비교 / 정의 / Q&A** — feature-compare (특성 비교표) / definition-cards (개념 정의 카드) / faq (의문문 H3 쌍)
+8. **튜토리얼** — step-image-guide (단계 + 이미지) / step-text (단계 텍스트만)
+9. **데이터 표시** — 일반 `<table>` + 인라인 `.tag` / schedule (날짜 첫 컬럼)
+10. **순서 / 흐름** — timeline / vertical-timeline / roadmap
+11. **리스트 변형** — toggle-list / icon-list / block-features
+12. **사이드바** — content-sidebar (본문 + 보조 블록)
+13. **폴백** — 평범 content (no `_class`)
 
 각 슬라이드는 위 순서대로 매칭 시도. 첫 매치에서 확정.
 
 ---
 
-## 매핑 표 (전체 37행)
+## 매핑 표 (전체 43행)
 
 | # | 입력 패턴 | 출력 클래스 | 신뢰도 | 폴백 |
 |---|---|---|---|---|
@@ -62,7 +64,22 @@
 | **34 (신규)** | blockquote 솔로 (≥2행) + 외부 출처 명시 (이메일·URL·`— 출처` 패턴) | `pull-quote` | 高 | hero-quote |
 | **35 (신규)** | H1 `장단점`/`Pros & Cons` + 2 ul 그룹 (좌측 ✓ 항목 / 우측 ✗ 항목) | `pros-cons` | 高 | compare |
 | **36 (신규)** | GFM 태스크 리스트 (`- [ ]` / `- [x]`) ≥3 항목 | `checklist` | 高 | icon-list |
-| 37 | (기본) 인식 못한 H2 + 본문 | 평범 content (no `_class`) | — | — |
+| **37 (2026-06)** | H3 2~5개가 의문문 (`\?$`·`인가요`·`나요`·`까요`·`어떻게`·`왜`) + 각 1~3행 답변 | `faq` | 高 | definition-cards |
+| **38 (2026-06)** | fenced code block ≥6행 + 기타 본문 ≤3행 (코드가 슬라이드 지배) | `code-focus` | 高 | content |
+| **39 (2026-06)** | ol 3~5 + `**제목** —` 리드인 + 각 설명 ≥2행 + 절차 키워드(`단계`/`Step`/`먼저`/`다음`) + 이미지 0 | `step-text` | 中 | timeline |
+| **40 (2026-06)** | 이미지 3~6 + 본문 ≤2행 | `gallery-grid` | 高 | 슬라이드 분할 |
+| **41 (2026-06)** | 본문 ≥4행 + 보조 블록 동반 (`참고`/`Tip`/`주의`/`관련` 헤더의 짧은 ul·blockquote) | `content-sidebar` (main/side div 생성) | 中 | content + callout |
+| **42 (2026-06)** | 표 첫 컬럼 날짜 패턴 (`\d{1,2}/\d{1,2}`·`\d{4}-\d{2}`·`N월 N일`·`D-\d+`) 행 3+, 또는 ul 각 `**날짜** —` | `schedule` | 高 | roadmap / 일반 table |
+| 43 | (기본) 인식 못한 H2 + 본문 | 평범 content (no `_class`) | — | — |
+
+### 경합 정리 (2026-06 신규 규칙 ↔ 기존 규칙)
+
+- **규칙 12 timeline vs 39 step-text** — 각 항목 설명이 2행 이상이고 절차 키워드가 있으면 `step-text`(카드 스택), 한 줄 요약형이면 `timeline`(수평 흐름).
+- **규칙 14 roadmap vs 42 schedule** — 분기/Phase **그룹** 단위면 `roadmap`, 구체 **날짜 행** 단위면 `schedule`.
+- **규칙 25 step-image-guide vs 39 step-text** — 단계에 이미지가 있으면 `step-image-guide`, 텍스트만이면 `step-text`.
+- **규칙 26 definition-cards vs 37 faq** — H3가 의문문이면 `faq`, 명사형 개념·도구명이면 `definition-cards`.
+- **규칙 10 일반 table+tag vs 42 schedule** — 첫 컬럼이 날짜 패턴이면 `schedule`(상태 컬럼이 있어도 `.tag` 주입과 병행), 아니면 일반 table.
+- **셸 `qa` vs 37 faq** — 마지막 H1 `Q&A` 솔로(질문 목록 없음)는 셸 `qa`, 본문 중 Q&A 쌍 나열은 `faq`.
 
 ---
 
@@ -309,6 +326,127 @@ Anthropic의 코딩·문서 작업 특화 AI. Skills/MCP 생태계.
 - ul 들여쓰기 2단계 (각 항목에 부속 설명) → **toggle-list**
 - ul 각 항목 시작이 이모지/이모티콘 + 콜론 (`✅ 완료: ...`) → **icon-list**
 
+### faq — Q&A 쌍 나열 (2026-06)
+
+H3 2~5개가 의문문(`?` 종결, `~인가요`/`~나요`/`~까요`/`어떻게`/`왜`) + 각 1~3행 답변이면 `faq`:
+
+```markdown
+<!-- _class: faq -->
+
+# 자주 묻는 질문
+
+### 도입 비용은 어느 정도인가요?
+인당 월 구독료 외에 초기 교육 비용이 발생합니다.
+
+### 기존 매크로와 충돌하지 않나요?
+별도 추가기능으로 동작하므로 독립적입니다.
+```
+
+`### 질문` + 인접 `p`(또는 `ul`)가 자동 카드화된다. 마지막 H1 `Q&A` 솔로는 셸 `qa`로 — faq는 본문용.
+
+### code-focus — 코드 중심 (2026-06)
+
+fenced code block ≥6행이고 코드 외 본문이 ≤3행이면 `code-focus`. 코드가 14pt로 확대되고 에디터 헤더 바 장식이 붙는다. 하단 ul은 `#` 마커 주석 톤:
+
+```markdown
+<!-- _class: code-focus -->
+
+# 감가상각 계산 함수
+
+​```python
+def calculate_depreciation(...):
+    ...
+​```
+
+- 정액법 기준 연 상각액 산출
+- 반환값은 연도별 장부가액 리스트
+```
+
+### step-text — 텍스트 단계 가이드 (2026-06)
+
+ol 3~5 항목 + 각 `**제목** — 설명` 리드인 + 설명 ≥2행 + 절차 키워드 + **이미지 없음**이면 `step-text` (카드 스택 + 번호 배지). 이미지가 있으면 `step-image-guide`, 한 줄 요약이면 `timeline`:
+
+```markdown
+<!-- _class: step-text -->
+
+# 도입 절차
+
+1. **업무 절차서 정비** — 반복 업무의 단계·산출물·검증 기준을 문서화합니다. 표준화 없이는 결과 편차가 큽니다.
+2. **스킬 변환** — 절차서를 AI 스킬로 변환하고 샘플 데이터로 일관성을 검증합니다.
+3. **파일럿 운영** — 한 팀에서 1개월 병행 운영하며 오류 유형을 수집합니다.
+```
+
+### gallery-grid — 이미지 그리드 (2026-06)
+
+이미지 3~6장 + 본문 ≤2행이면 `gallery-grid`. **이미지들을 한 단락에 연속 작성**해야 단일 `p` 안에 grid로 정렬된다 (이미지 사이 빈 줄 금지):
+
+```markdown
+<!-- _class: gallery-grid -->
+
+# 화면 구성
+
+![1](assets/a.png) ![2](assets/b.png) ![3](assets/c.png) ![4](assets/d.png)
+
+대시보드 주요 화면 4종
+```
+
+### content-sidebar — 본문 + 사이드 박스 (2026-06)
+
+본문 ≥4행 + 보조 블록(`참고`/`Tip`/`주의`/`관련` 헤더가 붙은 짧은 ul·blockquote)이 동반되면 `content-sidebar`. 본문은 `.main`, 보조 블록은 `.side`로 분리:
+
+```markdown
+<!-- _class: content-sidebar -->
+
+# 업무 표준화 우선 원칙
+
+<div class="main">
+
+본문 단락들...
+
+</div>
+<div class="side">
+
+### 참고 자료
+
+- 절차서 표준 양식
+- 보안 검토 체크리스트
+
+</div>
+```
+
+### schedule — 날짜 기반 일정 (2026-06)
+
+표 첫 컬럼이 날짜 패턴(`6/15`, `2026-06`, `6월 15일`, `D-7`)이고 행 3+이면 `schedule`. 상태 컬럼이 있으면 `.tag` 주입과 병행. 분기/Phase 그룹은 `roadmap`:
+
+```markdown
+<!-- _class: schedule -->
+
+# 추진 일정
+
+| 날짜 | 일정 | 상태 |
+|---|---|---|
+| 6/15(월) | 킥오프 | <span class="tag green">완료</span> |
+| 7/06(월) | 파일럿 시작 | <span class="tag sky">예정</span> |
+```
+
+ul 폴백: 각 항목이 `**6/15(월)** — 항목` 형식이어도 매칭.
+
+---
+
+## 톤 프리셋 합성 (2026-06)
+
+`tone=` 인자(tone-exec / tone-lecture / tone-seminar)가 주어지면:
+
+1. front matter에 `class: tone-X` 추가 (디렉티브 없는 평문 슬라이드 커버)
+2. **모든** `<!-- _class: ... -->` spot 디렉티브에 톤 클래스를 합성 기입 — Marpit의 `_class`는 front matter `class`를 병합이 아니라 **대체**하므로 합성하지 않으면 톤이 유실된다:
+
+```markdown
+<!-- _class: cards tone-exec -->
+<!-- _class: schedule tone-exec -->
+```
+
+토큰 오버라이드 방식이므로 레이아웃 매칭 결과에는 영향 없음. cover/section/end 셸의 navy + 로고는 톤과 무관하게 불변 (PROCPA 정체성 가드).
+
 ---
 
 ## 이미지 결정 트리
@@ -323,10 +461,12 @@ imageCount(slide):
   1 + 본문 >7행          → 슬라이드 2개로 분할 (이미지 풀블리드 1 + 본문만 1)
   1 + 인접 blockquote   → image-quote (![bg left:60%] + blockquote)
   2                     → two-image (키워드 매치 시 before-after)
-  3                     → 본문을 2 슬라이드로 분할
-  4 + 본문 ≤2행          → 경고 리포트 (propca에 gallery-4 없음 — 슬라이드 분할 권장)
-  ≥4 + 본문 >2행         → 슬라이드당 2 이미지씩 분할
+  3~6 + 본문 ≤2행        → gallery-grid (가변 그리드 — 이미지들을 한 단락에 연속 작성)
+  3~6 + 본문 >2행        → 슬라이드 분할 (이미지 gallery-grid 1 + 본문 1) 또는 슬라이드당 2 이미지씩
+  ≥7                    → 슬라이드당 4~6 이미지 gallery-grid로 분할
 ```
+
+> 참고: 2×2 고정 그리드가 필요하면 `gallery-4`(기존 레이아웃)를 수동 지정할 수 있다. 자동 매칭은 가변 `gallery-grid`를 사용.
 
 `![bg right:40%]`나 `![bg left:60%]` 디렉티브는 Marp의 백그라운드 이미지 문법이며, propca CSS가 그에 맞춰 텍스트 영역을 조정한다 (image-quote의 경우 우측 40% 영역에 blockquote 중앙 정렬).
 

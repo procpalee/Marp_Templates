@@ -261,20 +261,29 @@ CSS의 `var(--font-mono)` 호출은 그대로 두고 토큰 정의만 sans로 �
 
 ---
 
-## §12. 색상 테마 변형 6종 (카탈로그)
+## §12. 색상 테마 변형 6종 (3종 구현 완료 — 2026-06)
 
-시각 카탈로그: [`color-variants.md`](color-variants.md) / [`color-variants.html`](color-variants.html). 실제 테마 적용은 별도 .css 파일 분기로 후속 작업.
+시각 카탈로그: [`color-variants.md`](color-variants.md) / [`color-variants.html`](color-variants.html).
 
-| 톤 | 시그니처 (--purple) | Hero (--navy) | 적합 컨텍스트 |
-|---|---|---|---|
-| **CURRENT** | `#5645d4` | `#0a1530` | 회계·자문·기본 (시그니처) |
-| **ROSE** | `#d14d72` | `#1f1018` | 마케팅·라이프스타일 |
-| **EMERALD** | `#10a37f` | `#0a1f1a` | 환경·헬스케어 |
-| **AMBER** | `#e09b3d` | `#1f1607` | 출판·저널·문화 |
-| **SLATE** | `#64748b` | `#1e293b` | 법률·미니멀·B2B |
-| **OCEAN** | `#0072c6` | `#062335` | 테크·SaaS·핀테크 |
+| 톤 | 시그니처 (--purple) | Hero (--navy) | 적합 컨텍스트 | 구현 |
+|---|---|---|---|---|
+| **CURRENT** | `#5645d4` | `#0a1530` | 회계·자문·기본 (시그니처) | `propca-notion-style` (베이스) |
+| **ROSE** | `#d14d72` | `#1f1018` | 마케팅·라이프스타일 | 카탈로그만 |
+| **EMERALD** | `#10a37f` | `#0a1f1a` | 환경·헬스케어 | ✅ [`propca-notion-style-emerald.css`](propca-notion-style-emerald.css) |
+| **AMBER** | `#e09b3d` | `#1f1607` | 출판·저널·문화 | 카탈로그만 |
+| **SLATE** | `#64748b` | `#1e293b` | 법률·미니멀·B2B | ✅ [`propca-notion-style-slate.css`](propca-notion-style-slate.css) |
+| **OCEAN** | `#0072c6` | `#062335` | 테크·SaaS·핀테크 | ✅ [`propca-notion-style-ocean.css`](propca-notion-style-ocean.css) |
 
 핵심 swap 토큰 7개: `--purple`, `--navy`, `--navy-deep`, `--canvas-card`, `--pastel-*` 6 펠릿 중 강조 1~3개. 이 토큰만 변경하면 다른 레이아웃 영향 없이 톤 전환 가능.
+
+### 구현 방식 — Marpit @import 상속 (의도적 예외)
+
+구현된 3 변형은 **베이스 CSS를 복제하지 않는다**. Marpit의 테마 상속(`@import 'propca-notion-style'`)으로 전 레이아웃을 물려받고, 토큰 + purple 파생 rgba 리터럴 몇 줄만 오버라이드한다 — propca 베이스가 갱신되면 변형 3종에 자동 전파된다. (브랜드 14 테마의 "자기완결형, @import 금지" 규칙의 의도적 예외 — 같은 패밀리 변형이므로 자동 전파가 목적에 부합.)
+
+- 사용: front matter `theme: propca-notion-style-emerald` 등으로 지정. 모든 레이아웃·인라인 헬퍼·톤 프리셋이 그대로 동작
+- 데모: `propca-notion-style-{emerald,slate,ocean}.md` / 빌드: `npm run build:propca-{emerald,slate,ocean}`
+- **자동 매칭 무관**: md-to-marp 자동 변환은 항상 베이스(`propca-notion-style`)를 사용 — 변형은 사용자가 front matter로 직접 선택
+- 변형 × 톤 프리셋 조합 가능 (예: OCEAN + tone-exec)
 
 ---
 
@@ -286,11 +295,67 @@ AI 변환 시 가장 먼저 참고할 결정 트리는 [`.claude/skills/md-to-ma
 |---|---|
 | **A. 2개 비교** | `compare` / `two-image` / `compare-cards` / `compare-table` |
 | **B. 3+ 비교** | `comparison-3up` / `feature-compare` |
-| **C. 개념 정의·설명** | `definition-cards` / `concept-list` / `concept-table` |
-| **D. 단계·튜토리얼** | `timeline` / `vertical-timeline` / `step-image-guide` / `roadmap` |
-| **E. 시각 강조·인용** | `hero-quote` / `image-quote` / `pull-quote` / `pastel-blocks` / `pastel-quote` |
+| **C. 개념 정의·설명·Q&A** | `definition-cards` / `concept-list` / `concept-table` / `faq` (의문문 H3 쌍) |
+| **D. 단계·튜토리얼·일정** | `timeline` / `vertical-timeline` / `step-image-guide` / `step-text` (텍스트 절차) / `roadmap` / `schedule` (날짜 행) |
+| **E. 시각 강조·인용** | `hero-quote` / `image-quote` / `pull-quote` / `pastel-blocks` / `pastel-quote` / `gallery-grid` (이미지 3~6) |
 | **F. 일화·사례·예시** | `story-arc` / `example-case` |
 | **G. 리스트 변형** | `icon-list` / `toggle-list` / `checklist` / `block-features` / `cards` / `pros-cons` |
 | **H. 셸 (입출구)** | `cover` (+5 변형) / `section` / `session-break` / `qa` / `thanks-contact` / `end` / `signup-end` |
+| **I. 코드·사이드바** | `code-focus` (코드 중심) / `content-sidebar` (본문 + 보조 박스) |
 
 각 레이아웃의 "언제 사용 / 피해야 할 경우" 가이드는 SKILL.md §2.D 표 참조.
+
+---
+
+## §14. 신규 레이아웃 6종 + 고도화 4종 (2026-06)
+
+### 신규 6종 — 글 구조 갭 보강
+
+| 클래스 | 용도 | 인접 레이아웃과의 구분 |
+|---|---|---|
+| `faq` | 본문 Q&A 쌍 2~5개 (H3 의문문 + 답변 자동 카드화, Q 칩) | 셸 `qa`(마감 Q&A 슬라이드)와 별개. 명사형 개념은 `definition-cards` |
+| `code-focus` | 코드가 주역인 슬라이드 (14pt 확대 + 에디터 헤더 바) | 보조 코드 조각은 일반 content의 `pre` |
+| `step-text` | 텍스트 절차 3~5단계 카드 스택 + purple 번호 배지 | 이미지 동반 → `step-image-guide`, 한 줄 요약 → `timeline` |
+| `gallery-grid` | 이미지 3~6장 가변 그리드 (한 단락 연속 작성) | 2×2 고정 → `gallery-4`, 2장 → `two-image` |
+| `content-sidebar` | 좌 본문(.main) + 우 340px 사이드 박스(.side, 상단 purple 보더) | 짧은 메모 → `.note` 인라인 헬퍼 |
+| `schedule` | 구체 날짜 행 단위 일정표 (첫 컬럼 mono purple) + `.tag` 조합 | 분기/Phase 그룹 → `roadmap`, 수직 마커 → `milestone-timeline` |
+
+### 고도화 4종 — 시각 무게 보강 (DOM 불변, CSS만 변경)
+
+| 클래스 | 변경 전 | 변경 후 |
+|---|---|---|
+| `toggle-list` | hairline 행 + ▶ 문자 | canvas-card 카드 그룹화 + purple 칩 ▶ (definition-cards 이음 기법) |
+| `concept-list` | 텍스트 큰 번호 | pastel-lavender 44×44 라운드 사각 번호 배지 |
+| `agenda` | 레거시 토큰 + counter 번호만 | notion 토큰 + canvas-card 카드 + purple 칩 번호. `toc`(흰 카드)보다 한 단계 무거운 위계 |
+| `lecture-objective` | hairline 행 + → 문자 | canvas-card 카드 스택 + orange 칩 → (강의 계열 orange 유지) |
+
+기존 마크다운/변환물은 무수정 재빌드만으로 새 디자인이 적용된다 (셀렉터·DOM 호환 유지).
+
+---
+
+## §15. 톤 프리셋 3종 (2026-06) — 발표 대상 축
+
+§12 색상 변형(브랜드 색 축, 카탈로그만)과 **별개의 축**: 톤 프리셋은 같은 propca 시그니처 안에서 발표 **대상·상황**에 맞춰 강조 색·채도만 조정하는 **실구현 클래스**다. 시각 카탈로그: [`tone-variants.md`](tone-variants.md).
+
+| 프리셋 | 대상 | 토큰 오버라이드 |
+|---|---|---|
+| `tone-exec` | 임원·이사회 보고 | `--purple` → `#22307a` (navy 계열 절제) + 파스텔 6색 저채도화 |
+| `tone-lecture` | 강의·교육 | `--purple` → `#dd5b00` (orange — lecture-* 톤 전덱 확장) |
+| `tone-seminar` | 대외 세미나·컨퍼런스 | `--canvas-card` → lavender 틴트 + blockquote 보더 `--pink` |
+
+### 적용 방법 (Marpit 제약)
+
+슬라이드별 `<!-- _class: ... -->`(spot directive)는 front matter `class:`를 **대체**하므로 이중 적용이 필요:
+
+1. front matter: `class: tone-exec`
+2. 모든 spot directive에 합성: `<!-- _class: cards tone-exec -->`
+
+md-to-marp-propca의 `tone=` 인자가 이를 자동 수행 (SKILL.md §3.F). purpose 키워드(임원/강의/세미나)로 md-to-marp 오케스트레이터가 자동 선택.
+
+### PROCPA 정체성 가드
+
+- `cover`/`section`/`end` 셸의 `--navy` hero + procpa 로고는 3톤 공통 **불변** (셸 규칙이 navy를 직접 참조하므로 자동 보장)
+- 강조색 ≤2종 정책(쇼케이스 규칙 8)은 톤과 무관하게 유지
+- 톤 클래스가 일부 슬라이드에만 합성되면 marp-reviewer가 medium 이슈로 검출
+
+참고: 신규/톤 클래스는 base `h1`(28pt) 스타일을 상속하므로 LAYOUT HEADERS UNIFICATION 블록에 추가하지 않는다 — 톤 클래스를 그 블록에 넣으면 cover의 56pt h1이 28pt로 강제되는 부작용이 있다.

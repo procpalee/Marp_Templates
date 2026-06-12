@@ -29,10 +29,10 @@ footer: 'Notion-Style 테마 사용 가이드'
 <div class="toc-main">
 
 1. **공통 지원 컴포넌트** <em>슬라이드 어디서나 호출 가능한 인라인 요소</em>
-2. **전용 레이아웃 — 콘텐츠 분할** <em>compare · two-image · before-after · cards</em>
-3. **전용 레이아웃 — 비교 / 정의** <em>feature-compare · step-image-guide · definition-cards</em>
-4. **전용 레이아웃 — 시각 강조 / 인용** <em>image-quote · hero-quote · pastel-blocks</em>
-5. **전용 레이아웃 — 프로세스 / 리스트** <em>timeline · vertical-timeline · roadmap · toggle-list · icon-list · block-features</em>
+2. **전용 레이아웃 — 콘텐츠 분할** <em>compare · two-image · before-after · cards · content-sidebar</em>
+3. **전용 레이아웃 — 비교 / 정의** <em>feature-compare · step-image-guide · definition-cards · faq</em>
+4. **전용 레이아웃 — 시각 강조 / 인용** <em>image-quote · hero-quote · pastel-blocks · gallery-grid · code-focus</em>
+5. **전용 레이아웃 — 프로세스 / 리스트** <em>timeline · vertical-timeline · step-text · roadmap · schedule · toggle-list · icon-list · block-features</em>
 6. **마무리** <em>session-break · qa · thanks-contact · end</em>
 </div>
 
@@ -290,6 +290,32 @@ Notion의 톤앤매너를 PPT/HTML 포맷으로 완벽히 통일하여 브랜드
 
 ---
 
+<!-- _class: content-sidebar -->
+<!-- header: '02. 전용 레이아웃 — 콘텐츠 분할' -->
+
+# 레이아웃 — content-sidebar
+
+<div class="main">
+
+본문이 주역이면서 참고·팁·관련 자료를 곁들여야 할 때 사용합니다. 좌측은 일반 마크다운 본문, 우측은 `### 라벨` + 리스트로 구성된 사이드 박스입니다.
+
+AI 도입 초기에는 **업무 표준화**가 우선입니다. 표준화되지 않은 업무는 AI에게 위임해도 결과 편차가 크고, 검증 비용이 절감 효과를 상쇄합니다.
+
+따라서 도입 1단계에서는 반복 업무의 절차서를 먼저 정비하고, 2단계에서 해당 절차를 스킬로 변환하는 순서를 권장합니다.
+
+</div>
+<div class="side">
+
+### 참고 자료
+
+- 업무 절차서 표준 양식
+- 스킬 변환 가이드 v2
+- 내부 보안 검토 체크리스트
+
+</div>
+
+---
+
 <!-- _class: section -->
 <!-- _header: '' -->
 <!-- header: '03. 전용 레이아웃 — 비교 / 정의' -->
@@ -454,6 +480,23 @@ A/B 두 항목을 카드 2개로 나란히 두고 가운데 **VS 뱃지**로 시
 
 ---
 
+<!-- _class: faq -->
+<!-- header: '03. 전용 레이아웃 — 비교 / 정의' -->
+
+# 레이아웃 — faq
+자주 묻는 질문을 Q 칩 + 답변 카드 쌍으로 나열합니다. `### 질문?` + 답변 단락 구조가 자동 카드화됩니다.
+
+### AI에게 민감한 재무 데이터를 맡겨도 안전한가요?
+엔터프라이즈 플랜은 입력 데이터를 모델 학습에 사용하지 않습니다. 다만 사내 보안 정책에 따라 비식별화 후 사용을 권장합니다.
+
+### 도입 비용은 어느 정도 예상해야 하나요?
+인당 월 구독료 외에 초기 업무 표준화·교육 비용이 발생합니다. 통상 3개월 내 반복 업무 시간 절감으로 회수됩니다.
+
+### 기존 엑셀 매크로와 충돌하지 않나요?
+별도 추가기능으로 동작하므로 기존 VBA 매크로와 독립적입니다. 동일 셀 동시 수정만 피하면 됩니다.
+
+---
+
 <!-- _class: section -->
 <!-- _header: '' -->
 <!-- header: '04. 전용 레이아웃 — 시각 강조 / 인용' -->
@@ -521,6 +564,41 @@ A/B 두 항목을 카드 2개로 나란히 두고 가운데 **VS 뱃지**로 시
 
 ---
 
+<!-- _class: gallery-grid -->
+<!-- header: '04. 전용 레이아웃 — 시각 강조 / 인용' -->
+
+# 레이아웃 — gallery-grid
+
+![화면 1](https://picsum.photos/seed/g1/640/420) ![화면 2](https://picsum.photos/seed/g2/640/420) ![화면 3](https://picsum.photos/seed/g3/640/420) ![화면 4](https://picsum.photos/seed/g4/640/420) ![화면 5](https://picsum.photos/seed/g5/640/420) ![화면 6](https://picsum.photos/seed/g6/640/420)
+
+이미지 3~6장을 가변 그리드로 배치합니다 — 2x2 고정인 `gallery-4`와 달리 장수에 맞춰 자동 정렬
+
+---
+
+<!-- _class: code-focus -->
+<!-- header: '04. 전용 레이아웃 — 시각 강조 / 인용' -->
+
+# 레이아웃 — code-focus
+
+```python
+def calculate_depreciation(asset_value: float, salvage: float, years: int) -> list[float]:
+    """정액법 감가상각 스케줄을 산출한다."""
+    annual = (asset_value - salvage) / years
+    schedule = []
+    book_value = asset_value
+    for year in range(1, years + 1):
+        book_value -= annual
+        schedule.append(round(book_value, 2))
+    return schedule
+
+print(calculate_depreciation(50_000_000, 5_000_000, 5))
+```
+
+- 코드가 주역인 슬라이드 — 에디터 헤더 바 + 14pt 확대 렌더
+- 하단 리스트는 `#` 마커로 코드 주석 톤을 유지
+
+---
+
 <!-- _class: section -->
 <!-- _header: '' -->
 <!-- header: '05. 전용 레이아웃 — 프로세스 / 리스트' -->
@@ -553,6 +631,18 @@ A/B 두 항목을 카드 2개로 나란히 두고 가운데 **VS 뱃지**로 시
 2. **분절 단계** — 슬라이드 한도 줄 수 검출 및 단락 쪼개기 작업
 3. **매칭 단계** — 카드, 차트, 타임라인 등 레이아웃 자동 판정
 4. **빌드 단계** — 설정된 테마 기반으로 웹 친화형 HTML/PDF 동시 빌드
+
+---
+
+<!-- _class: step-text -->
+
+# 레이아웃 — step-text
+이미지 없는 절차를 카드 스택 + 번호 배지로 안내합니다. `step-image-guide`(이미지 필수)와 달리 텍스트 설명이 2행 이상인 단계 가이드에 적합합니다.
+
+1. **업무 절차서 정비** — 반복 업무의 단계·산출물·검증 기준을 문서화합니다. 표준화되지 않은 업무는 AI 위임 시 결과 편차가 커집니다.
+2. **스킬 변환** — 정비된 절차서를 AI 스킬 형식으로 변환하고, 샘플 데이터로 결과 일관성을 검증합니다.
+3. **파일럿 운영** — 한 팀에서 1개월간 병행 운영하며 오류 유형을 수집하고 절차서를 보완합니다.
+4. **전사 확산** — 파일럿 결과를 바탕으로 교육 자료를 만들고 부서별 순차 도입합니다.
 
 ---
 
@@ -594,6 +684,21 @@ A/B 두 항목을 카드 2개로 나란히 두고 가운데 **VS 뱃지**로 시
 - 데이터 분석 기반 LTV 극대화
 </div>
 </div>
+
+---
+
+<!-- _class: schedule -->
+
+# 레이아웃 — schedule
+구체 날짜 기반 일정·마일스톤을 행 단위로 정리합니다. 분기/Phase 그룹은 `roadmap`, 날짜 행은 `schedule`. 상태는 인라인 `.tag`와 조합.
+
+| 날짜 | 일정 | 상태 |
+|---|---|---|
+| 6/15(월) | 업무 절차서 정비 킥오프 | <span class="tag green">완료</span> |
+| 6/22(월) | 스킬 변환 1차 검증 | <span class="tag yellow">진행중</span> |
+| 7/06(월) | 파일럿 팀 병행 운영 시작 | <span class="tag sky">예정</span> |
+| 8/03(월) | 중간 결과 임원 보고 | <span class="tag sky">예정</span> |
+| 9/01(월) | 전사 확산 교육 | <span class="tag peach">대기</span> |
 
 ---
 

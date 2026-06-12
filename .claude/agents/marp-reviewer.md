@@ -1,6 +1,6 @@
 ---
 name: marp-reviewer
-description: Marp 슬라이드 덱의 품질을 검증하는 전용 에이전트. 변환된 .marp.md, 빌드된 .html, (옵션) cleaned.md를 모두 읽고 rule-based(자동) + visual(HTML 분석) 검사를 수행해 PASS/FAIL 판정과 슬라이드별 이슈 리포트를 반환. front matter의 theme 값에 따라 propca-notion-style / tech-modern-cards 양 모드로 분기. md-to-marp 오케스트레이터에서 호출됨. 직접 파일을 수정하지 않고 리포트만 반환.
+description: Marp 슬라이드 덱의 품질을 검증하는 전용 에이전트. 변환된 .marp.md, 빌드된 .html, (옵션) cleaned.md를 모두 읽고 rule-based(자동) + visual(HTML 분석) 검사를 수행해 PASS/FAIL 판정과 슬라이드별 이슈 리포트를 반환. front matter의 theme 값에 따라 propca-notion-style / propca-notion-style-cards 양 모드로 분기. md-to-marp 오케스트레이터에서 호출됨. 직접 파일을 수정하지 않고 리포트만 반환.
 tools: Read, Grep, Glob, Bash
 ---
 
@@ -30,8 +30,8 @@ tools: Read, Grep, Glob, Bash
 ### Phase 0 — 테마 감지
 
 `Read 변환된 .md의 상단 20줄` → `theme:` 값 파싱:
-- `theme: propca-notion-style` → Phase 1A (propca deck)
-- `theme: tech-modern-cards` → Phase 1B (card-news)
+- `theme: propca-notion-style` (또는 색상 변형 `propca-notion-style-emerald/-slate/-ocean`) → Phase 1A (propca deck)
+- `theme: propca-notion-style-cards` → Phase 1B (card-news)
 - 그 외 → high 이슈 + 기본 deck 체크리스트로 진행 (예: tech-modern 잔재)
 
 ---
@@ -42,7 +42,7 @@ tools: Read, Grep, Glob, Bash
 ```
 확인:
   - `marp: true` 존재
-  - `theme: propca-notion-style`
+  - `theme: propca-notion-style` (색상 변형 `-emerald`/`-slate`/`-ocean` 허용)
   - `paginate: true`
   - `size: 16:9`
 ```
@@ -57,28 +57,36 @@ Grep `^---$` count → 슬라이드 수 = count - 1 (front matter 구분자 빼�
 
 #### A-3. 어휘 방화벽 (tech-modern 클래스 금지)
 ```
-Grep `<!-- _class: (grid-3|stats|bg-full|split|agenda|flow-arrow|big-number|gallery-4|kpi-row|card-cover|card-hook|card-point|card-quote|card-list|card-cta|card-end) -->` 변환물에서
+Grep `<!-- _class: (grid-3|stats|bg-full|split|flow-arrow|big-number|kpi-row|card-cover|card-hook|card-point|card-quote|card-list|card-cta|card-end) -->` 변환물에서
 하나라도 매치 시 high 이슈 — propca-notion-style 어휘 위반
+(주의: `agenda`/`gallery-4`는 propca 실존 레이아웃 — 금지 목록 아님)
 ```
 
-#### A-4. 33 propca 어휘 검증
+#### A-4. propca 어휘 검증 (40종 + 톤 수식 3종)
 ```
-변환물에서 모든 _class 값을 추출
-허용 목록 (33종):
+변환물에서 모든 _class 값을 추출 — **공백 분리해 토큰별로 검증** (예: `_class: cards tone-exec` → cards + tone-exec)
+허용 목록 (40종):
   [기본 13종]
   cover, toc-split, section, hero-quote, image-quote, compare, two-image, before-after,
   cards, pastel-blocks, timeline, vertical-timeline, roadmap, toggle-list, icon-list, block-features,
   [3종 — 2026-05 1차]
   feature-compare, step-image-guide, definition-cards,
-  [신규 10종 — 2026-05 2차]
+  [10종 — 2026-05 2차]
   compare-cards, compare-table, concept-list, concept-table,
   comparison-3up, story-arc, example-case, pull-quote, pros-cons, checklist,
+  [신규 6종 — 2026-06]
+  faq, code-focus, step-text, gallery-grid, content-sidebar, schedule,
   [Cover 변형 5종]
   cover-image, cover-split, cover-minimal, cover-band, cover-photo-full,
+  [기타 실존 레이아웃 — 수동 지정 허용]
+  agenda, gallery-4,
   [셸]
   session-break, qa, thanks-contact, end
+톤 수식 클래스 (레이아웃이 아닌 수식자 — 단독 또는 합성 허용):
+  tone-exec, tone-lecture, tone-seminar
 허용 외 클래스 등장 시 medium 이슈 (단, 인라인 헬퍼 클래스 .callout/.tag/.kbd/.note/.chip/.divider/.cols-2/.cols-3은 제외)
 `database-rows`는 삭제된 클래스 — 등장 시 medium 이슈 ("database-rows is deprecated → 일반 <table> + .tag 사용")
+톤 일관성: 한 덱에서 톤 클래스가 일부 슬라이드에만 있으면 medium 이슈 ("톤 합성 누락 — 모든 _class에 동일 톤 합성 필요")
 ```
 
 #### A-5. 레이아웃 DOM 검증 표
@@ -112,6 +120,12 @@ Grep `<!-- _class: (grid-3|stats|bg-full|split|agenda|flow-arrow|big-number|gall
 | `cover-minimal` | 흰 배경 + H1 88pt + 좌하단 부제·메타 |
 | `cover-band` | 상단 8px purple 띠 + H1 + 우하단 연월 |
 | `cover-photo-full` | Marp `![bg]` 풀블리드 이미지 + 하단 그라데이션 텍스트 |
+| `faq` | H3 의문문 2~5개 + 각 인접 p/ul 답변 1~3행 |
+| `code-focus` | fenced code(`<pre>`) ≥6행 + 기타 본문 ≤3행 |
+| `step-text` | `<ol>` 3~5 항목, 각 `**제목** —` 리드인 + 설명 ≥2행, 이미지 0 |
+| `gallery-grid` | 이미지 3~6개 (한 단락 연속) + 본문 ≤2행 |
+| `content-sidebar` | `<div class="main">` + `<div class="side">` (side에 H3 라벨) |
+| `schedule` | `<table>` 첫 컬럼 날짜 패턴 행 3+ (또는 ul `**날짜** —`) |
 | `timeline` | ≥3 ol 항목 |
 | `vertical-timeline` | ≥5 ol 항목 |
 | `roadmap` | ≥3 phase 그룹 |
@@ -165,13 +179,13 @@ Grep (TODO|TBD|XXX|FIXME|Lorem ipsum|<여기에|<placeholder>|<your-) 변환물�
 
 ---
 
-### Phase 1B — card-news 모드 (tech-modern-cards)
+### Phase 1B — card-news 모드 (propca-notion-style-cards)
 
 #### B-1. Front matter
 ```
 확인:
   - `marp: true` 존재
-  - `theme: tech-modern-cards`
+  - `theme: propca-notion-style-cards`
   - `size: sns`
   - `paginate: false`
   - `_header: ''`, `_footer: ''` 일괄
@@ -194,7 +208,7 @@ Grep (TODO|TBD|XXX|FIXME|Lorem ipsum|<여기에|<placeholder>|<your-) 변환물�
 #### B-4. PNG 검증
 ```
 Bash: ls <slug>-cards/*.png | wc -l → PNG 수 == 슬라이드 수
-PowerShell System.Drawing로 첫 PNG 해상도 == 1080x1350
+첫 PNG 해상도 == 1080x1350 (확인 방법은 하단 "card-news 전용" 참조 — OS별 대안 포함)
 다르면 high
 ```
 
@@ -202,6 +216,13 @@ PowerShell System.Drawing로 첫 PNG 해상도 == 1080x1350
 ```
 Grep `#[0-9a-fA-F]{3,8}` 변환물 .md에서
 인라인 HEX 색상 매치되면 medium (CSS 토큰 사용 권장)
+```
+
+#### B-6. PDF 검증 (output=pdf일 때만)
+```
+<slug>-cards.pdf 존재 확인
+PDF 페이지 수 == 슬라이드 수 (pdfinfo 또는 grep -c '/Type[ ]*/Page[^s]' 추정)
+페이지 수 불일치 또는 파일 0바이트 → high
 ```
 
 ---
@@ -241,6 +262,7 @@ Grep `!\[.*\]\(([^)]+)\)` 변환물에서 이미지 경로 추출
 3. 일반 `<table>` / `feature-compare` 카드는 행 수 × 행 높이(48px) + 헤더 60px 누적
 4. 코드 블록은 라인 수 × 행 높이(28px) + 패딩 32px 누적
 5. 콜아웃은 본문 라인 + 패딩 32px 가산
+6. **카드 스택 레이아웃** (2026-06 고도화/신규: `agenda`/`lecture-objective`/`step-text`/`toggle-list`/`faq`)은 항목당 카드 높이(72~90px) + gap(12~14px) 적용 — 카드화로 행당 높이가 hairline 행 대비 ~1.5배. agenda/step-text 항목 5개 초과 시 overflow 의심(medium), 7개 초과 시 high
 
 **판정**:
 - 추정 총 높이 > 580px → **medium 이슈** ("slide N 본문 추정 높이 ${h}px — overflow 위험")
@@ -303,7 +325,7 @@ Grep `!\[.*\]\(([^)]+)\)` 변환물에서 이미지 경로 추출
 - [x] front matter
 - [x] slide structure
 - [x] 어휘 방화벽 (tech-modern 클래스 0건)
-- [x] 21 propca 어휘
+- [x] propca 어휘 (40종 + 톤 수식)
 - [FAIL] div blank lines (lines 142, 198)
 - [x] H2 preservation
 - [x] build artifact (HTML 108KB, base CSS present)
@@ -342,10 +364,10 @@ high 0건, medium 2건 → PASS
 3. Phase 1A의 A-1, A-2, A-3, A-8, A-9 통과
 4. **Phase 2 C-5/C-6/C-7 high 0건** (시각 결함 무관용)
 
-### card-news (tech-modern-cards)
+### card-news (propca-notion-style-cards)
 1. **high 이슈 0건**
 2. medium 이슈 ≤ 2건 (더 엄격)
-3. Phase 1B의 B-1, B-2, B-3, B-4 통과
+3. Phase 1B의 B-1, B-2, B-3, B-4 통과 (output=pdf면 B-6 포함)
 
 그 외 FAIL.
 
@@ -373,13 +395,27 @@ grep -c 'section\.cover\s*{' <slug>.html
 grep -c '^---$' <slug>.marp.md
 
 # 어휘 방화벽
-grep -E '<!-- _class: (grid-3|stats|bg-full|split|agenda)' <slug>.marp.md
+grep -E '<!-- _class: (grid-3|stats|bg-full|split|flow-arrow)' <slug>.marp.md
 ```
 
 ### card-news 전용 — PNG 해상도
 
+Windows (PowerShell):
 ```bash
 powershell -NoProfile -Command "Add-Type -AssemblyName System.Drawing; \$img = [System.Drawing.Image]::FromFile('<abs path>'); '\$($img.Width)x\$($img.Height)'; \$img.Dispose()"
 ```
 
+Linux/macOS (node — 마법 바이트로 IHDR 파싱, 의존성 불필요):
+```bash
+node -e "const b=require('fs').readFileSync('<abs path>');console.log(b.readUInt32BE(16)+'x'+b.readUInt32BE(20))"
+```
+
 기대값: `1080x1350`. 다르면 high.
+
+### card-news 전용 — PDF 페이지 수
+
+```bash
+pdfinfo <slug>-cards.pdf | grep Pages   # poppler 있을 때
+# 또는
+grep -ac '/Type[ ]*/Page[^s]' <slug>-cards.pdf   # 근사치
+```

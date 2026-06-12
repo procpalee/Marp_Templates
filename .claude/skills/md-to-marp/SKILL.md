@@ -1,6 +1,6 @@
 ---
 name: md-to-marp
-description: 마크다운 파일(옵시디언 또는 표준)을 받아 Marp 슬라이드 HTML로 한 번에 변환하는 오케스트레이터. 두 가지 모드 — (1) deck 모드: propca-notion-style 16:9 슬라이드 (강의·교육·발표 자료 기본), (2) card-news 모드: 4:5 Threads/Instagram 카드뉴스 (purpose에 인스타/카드뉴스/sns 키워드 매치 시). 파이프라인은 md-to-marp-propca(옵시디언 전처리 + propca 자동매칭 통합) → Marp HTML 빌드 → marp-reviewer QA → (선택) watch 모드. 출력은 output/<slug>/<slug>.html (+ cleaned.md, marp.md, qa.md, assets/). card-news 모드는 기존 output/<slug>-cards/*.png 구조 유지.
+description: 마크다운 파일(옵시디언 또는 표준)을 받아 Marp 슬라이드 HTML로 한 번에 변환하는 오케스트레이터. 두 가지 모드 — (1) deck 모드: propca-notion-style 16:9 슬라이드 (강의·교육·발표 자료 기본, purpose 키워드로 톤 프리셋 tone-exec/tone-lecture/tone-seminar 자동 선택), (2) card-news 모드: 4:5 Threads/Instagram 카드뉴스 (purpose에 인스타/카드뉴스/sns 키워드 매치 시; 링크드인/linkedin 매치 시 PDF 캐러셀 추가 산출). 파이프라인은 md-to-marp-propca(옵시디언 전처리 + propca 자동매칭 통합) → Marp HTML 빌드 → marp-reviewer QA → (선택) watch 모드. 출력은 output/<slug>/<slug>.html (+ cleaned.md, marp.md, qa.md, assets/). card-news 모드는 기존 output/<slug>-cards/*.png 구조 유지 (+ 선택 <slug>-cards.pdf).
 ---
 
 # md-to-marp (v2.1)
@@ -18,7 +18,7 @@ description: 마크다운 파일(옵시디언 또는 표준)을 받아 Marp 슬�
 | 필드 | 필수 | 설명 |
 |---|---|---|
 | `source` | ✅ | 마크다운 파일 경로 (절대/상대). 옵시디언 또는 표준 형식 모두 지원 |
-| `purpose` | ❌ | 자연어 용도. 카드뉴스 키워드 검출 시 mode=card-news로 분기 |
+| `purpose` | ❌ | 자연어 용도. 카드뉴스 키워드 → mode=card-news, 링크드인 키워드 → output=pdf 추가, 임원/강의/세미나 키워드 → 톤 프리셋 (§2) |
 | `mode` | ❌ | `deck`(기본) 또는 `card-news`. 미지정 시 `purpose`에서 자동 감지 |
 | `slug` | ❌ | 출력 파일명. 기본은 source 파일명 기반 |
 | `watch` | ❌ | true면 빌드 후 watch 프로세스 background 시작 |
@@ -36,14 +36,15 @@ output/<slug>/
   assets/                 ← 옵시디언 이미지 복사본 (있을 때)
 ```
 
-### 출력 (card-news 모드 — tech-modern-cards)
+### 출력 (card-news 모드 — propca-notion-style-cards)
 
 기존 flat 구조 유지 (호환성):
 ```
 output/
   slides-<slug>-cards.md  ← 카드뉴스 Marp MD
   <slug>-cards.html       ← 검수 HTML
-  <slug>-cards/*.png      ← 1080×1350 PNG 카드 7장
+  <slug>-cards/*.png      ← 1080×1350 PNG 카드
+  <slug>-cards.pdf        ← LinkedIn 문서 캐러셀용 PDF (output=pdf일 때)
   <slug>-cards.qa.md      ← QA 리포트
 ```
 
@@ -64,8 +65,9 @@ output/
 [1] 입력 파싱 (source, purpose, mode, watch)
      ↓
 [2] 모드 결정 (§2)
-     │  - card-news 키워드 매치 → mode=card-news, theme=tech-modern-cards
-     │  - 그 외 → mode=deck, theme=propca-notion-style
+     │  - card-news 키워드 매치 → mode=card-news, theme=propca-notion-style-cards
+     │    (링크드인 키워드 동반 시 output=pdf 추가)
+     │  - 그 외 → mode=deck, theme=propca-notion-style (+ purpose 톤 키워드 → tone=tone-*)
      ↓
 [3] deck 모드:
      Skill(md-to-marp-propca) → output/<slug>/{cleaned.md, marp.md, assets/}
@@ -75,7 +77,7 @@ output/
      ↓
 [4] Marp 빌드
      │  - deck: HTML 1-pass
-     │  - card-news: HTML + PNG 2-pass
+     │  - card-news: HTML + PNG 2-pass (+ output=pdf면 PDF 3-pass)
      ↓
 [5] Agent(marp-reviewer) 호출 (독립 컨텍스트) — skip_qa=true 명시 안 한 한 **항상 실행 (의무)**
      │  - Phase 1: rule-based (front matter, 어휘 방화벽, 빌드물)
@@ -119,15 +121,35 @@ output/
 keywords(purpose) → mode
 
   인스타|insta|instagram|쓰레드|threads|카드뉴스|card news|sns|소셜|social 카드
-    → mode=card-news, theme=tech-modern-cards (고정)
+  |링크드인|linkedin
+    → mode=card-news, theme=propca-notion-style-cards (고정)
 
   (그 외)
     → mode=deck, theme=propca-notion-style (고정)
 ```
 
+card-news 모드에서 추가 산출 형식:
+
+```
+  링크드인|linkedin|문서 캐러셀|carousel pdf|pdf
+    → output=pdf 추가 (PNG와 병행 — LinkedIn 문서 업로드는 PDF가 네이티브)
+```
+
+deck 모드에서 톤 프리셋 자동 선택 (§3-1의 `tone=` 인자로 전달):
+
+```
+keywords(purpose) → tone
+
+  임원|경영진|이사회|보고|exec|executive     → tone-exec
+  강의|교육|수업|실습|lecture|training       → tone-lecture
+  세미나|대외|외부|컨퍼런스|seminar          → tone-seminar
+  (미매치)                                   → 톤 없음 (기본 purple)
+```
+
 선택 결과 1줄 로그:
-- `Mode: deck / Theme: propca-notion-style`
-- `Mode: card-news (matched "인스타") / Theme: tech-modern-cards`
+- `Mode: deck / Theme: propca-notion-style / Tone: tone-exec (matched "임원")`
+- `Mode: card-news (matched "인스타") / Theme: propca-notion-style-cards`
+- `Mode: card-news (matched "링크드인") / Output: png + pdf`
 
 > **주의**: deck 모드의 14 다른 브랜드 테마(vercel/notion/claude/spotify/stripe/figma/apple/linear/cursor/raycast/supabase/airbnb/nvidia/tesla)는 **자동 매칭 부재** — 사용자가 `<!-- _class -->`를 수동으로 작성한 경우에만 사용 가능. 본 오케스트레이터는 자동 변환 시 propca-notion-style만 사용.
 
@@ -138,13 +160,14 @@ keywords(purpose) → mode
 ### 3-1) md-to-marp-propca 호출 (옵시디언 전처리 + propca 매칭 통합)
 
 ```
-Skill(md-to-marp-propca, args: "<source 경로> slug=<slug> [header=...] [footer=...]")
+Skill(md-to-marp-propca, args: "<source 경로> slug=<slug> [header=...] [footer=...] [tone=tone-exec|tone-lecture|tone-seminar]")
 ```
 
 이 한 번의 호출이 다음을 모두 수행:
 - 옵시디언 마커 정리(`[[wikilinks]]`, `![[embeds]]`, `> [!NOTE]` 콜아웃, frontmatter, `#tag` 블록)
 - vault 이미지 자산 `output/<slug>/assets/`로 복사
-- propca-notion-style 21 레이아웃 + 8 인라인 헬퍼 자동 매칭
+- propca-notion-style 레이아웃(43 매칭 규칙) + 8 인라인 헬퍼 자동 매칭
+- `tone=` 지정 시 front matter `class:` + 모든 `_class`에 톤 클래스 합성 (md-to-marp-propca §3.F)
 - 쇼케이스 패턴 준수 (cover의 H1+H2+연월, section의 #=숫자/##=제목 등)
 
 산출:
@@ -156,13 +179,10 @@ Skill(md-to-marp-propca, args: "<source 경로> slug=<slug> [header=...] [footer
 
 ### 3-3) Marp 빌드
 
-```cmd
-cd build
-npx --yes @marp-team/marp-cli ^
-    ../output/<slug>/<slug>.marp.md ^
-    --html --allow-local-files ^
-    -o ../output/<slug>/<slug>.html ^
-    --theme-set ../themes/slide
+`build/` 디렉토리에서 실행 (한 줄 명령 — Windows/Linux 공통):
+
+```
+npx --yes @marp-team/marp-cli ../output/<slug>/<slug>.marp.md --html --allow-local-files -o ../output/<slug>/<slug>.html --theme-set ../themes/slide
 ```
 
 `--theme-set ../themes/slide`로 propca-notion-style.css 자동 등록 (재귀 스캔).
@@ -209,7 +229,7 @@ Agent({
 
 ## 4) card-news 모드 파이프라인
 
-> 옵시디언 전처리 + propca 매칭은 사용 안 함. tech-modern-cards 어휘 직접 적용.
+> 옵시디언 전처리 + propca 매칭은 사용 안 함. propca-notion-style-cards 어휘(card-*) 직접 적용.
 
 ### 4-1) 카드뉴스 변환 (오케스트레이터 내장)
 
@@ -236,7 +256,7 @@ front matter:
 ```yaml
 ---
 marp: true
-theme: tech-modern-cards
+theme: propca-notion-style-cards
 size: sns
 paginate: false
 _header: ''
@@ -248,25 +268,26 @@ _footer: ''
 
 ### 4-2) 2-pass 빌드
 
-```cmd
-cd build
+`build/` 디렉토리에서 실행 (한 줄 명령 — Windows/Linux 공통):
 
-:: HTML (검수용)
-npx --yes @marp-team/marp-cli ../output/slides-<slug>-cards.md ^
-    --html --allow-local-files ^
-    -o ../output/<slug>-cards.html ^
-    --theme-set ../themes/card-news/tech-modern
+```
+# HTML (검수용)
+npx --yes @marp-team/marp-cli ../output/slides-<slug>-cards.md --html --allow-local-files -o ../output/<slug>-cards.html --theme-set ../themes/card-news/propca-notion-style
 
-:: PNG 카드 (소셜 업로드)
-npx --yes @marp-team/marp-cli ../output/slides-<slug>-cards.md ^
-    --images png --allow-local-files ^
-    -o ../output/<slug>-cards/<slug>-cards.png ^
-    --theme-set ../themes/card-news/tech-modern
+# PNG 카드 (Threads/Instagram 업로드)
+npx --yes @marp-team/marp-cli ../output/slides-<slug>-cards.md --images png --allow-local-files -o ../output/<slug>-cards/<slug>-cards.png --theme-set ../themes/card-news/propca-notion-style
+```
+
+`output=pdf`(링크드인 키워드 매치)면 3번째 패스 추가 — `@size sns 1080px 1350px`가 그대로 PDF 페이지 크기(4:5)가 된다:
+
+```
+# PDF (LinkedIn 문서 캐러셀 업로드)
+npx --yes @marp-team/marp-cli ../output/slides-<slug>-cards.md --pdf --allow-local-files -o ../output/<slug>-cards.pdf --theme-set ../themes/card-news/propca-notion-style
 ```
 
 ### 4-3) marp-reviewer QA
 
-위와 동일하지만 prompt의 `[모드]`를 `card-news`로, `[적용 테마]`를 `tech-modern-cards`로 지정.
+위와 동일하지만 prompt의 `[모드]`를 `card-news`로, `[적용 테마]`를 `propca-notion-style-cards`로 지정. `output=pdf`면 PDF 페이지 수 = 카드 수 검증을 지침에 포함.
 
 ---
 
@@ -279,6 +300,7 @@ deck:
 ✓ QA PASS — <slug>
   Mode: deck
   Theme: propca-notion-style
+  Tone: <tone 또는 기본>
   Slides: <N>
   HTML: output/<slug>/<slug>.html (<KB>)
   Report: output/<slug>/<slug>.qa.md
@@ -293,6 +315,7 @@ card-news:
   Slides: <N>
   HTML: output/<slug>-cards.html
   PNG:  output/<slug>-cards/ (<N> files, 1080×1350)
+  PDF:  output/<slug>-cards.pdf (<N> pages, 1080×1350)   ← output=pdf일 때만
   Report: output/<slug>-cards.qa.md
 ```
 
@@ -335,13 +358,11 @@ retry build + QA
 
 `watch=true` 인자가 있으면 QA PASS 후 watch 프로세스 background 시작:
 
-```cmd
-cd build
-npx --yes @marp-team/marp-cli ^
-    ../output/<slug>/<slug>.marp.md ^
-    --watch --html --allow-local-files ^
-    --theme-set ../themes/slide
 ```
+npx --yes @marp-team/marp-cli ../output/<slug>/<slug>.marp.md --watch --html --allow-local-files --theme-set ../themes/slide
+```
+
+(`build/` 디렉토리에서 실행)
 
 Bash 도구의 `run_in_background: true`로 호출. 사용자에게 알림:
 
@@ -397,11 +418,33 @@ Claude:
 
 Claude:
   → Skill(md-to-marp)
-  → 모드: card-news (matched "인스타") / 테마: tech-modern-cards
+  → 모드: card-news (matched "인스타") / 테마: propca-notion-style-cards
   → 카드뉴스 변환: 7 slides (card-cover/4×card-point/card-list/card-cta)
   → 빌드: HTML 32KB + 7 PNG (1080×1350)
   → Agent(marp-reviewer): PASS
   → 출력 경로 안내
+```
+
+### LinkedIn PDF 캐러셀
+```
+사용자: "/marp content.md 링크드인 캐러셀용"
+
+Claude:
+  → Skill(md-to-marp)
+  → 모드: card-news (matched "링크드인") / Output: png + pdf
+  → 카드뉴스 변환 → 빌드: HTML + PNG + PDF (8 pages, 1080×1350)
+  → Agent(marp-reviewer): PASS (PDF 페이지 수 = 카드 수 확인)
+  → "PDF는 LinkedIn '문서' 업로드로 캐러셀 게시 가능합니다."
+```
+
+### 임원 보고 톤
+```
+사용자: "/marp 분기실적.md 임원 보고용"
+
+Claude:
+  → 모드: deck / 톤: tone-exec (matched "임원")
+  → Skill(md-to-marp-propca, args: "... tone=tone-exec")
+  → 빌드 + QA PASS
 ```
 
 ---
@@ -411,5 +454,6 @@ Claude:
 - 옵시디언 전처리 + propca 자동 매칭 (통합): [`../md-to-marp-propca/SKILL.md`](../md-to-marp-propca/SKILL.md)
 - 검수 에이전트: [`../../agents/marp-reviewer.md`](../../agents/marp-reviewer.md)
 - propca-notion-style 디자인: [`../../../themes/slide/propca-notion-style/design.md`](../../../themes/slide/propca-notion-style/design.md)
-- 카드뉴스 디자인: [`../../../themes/card-news/tech-modern/design.md`](../../../themes/card-news/tech-modern/design.md)
+- 카드뉴스 디자인: [`../../../themes/card-news/propca-notion-style/design.md`](../../../themes/card-news/propca-notion-style/design.md)
+- 톤 프리셋 카탈로그: [`../../../themes/slide/propca-notion-style/tone-variants.md`](../../../themes/slide/propca-notion-style/tone-variants.md)
 - 슬래시 명령: [`../../commands/marp.md`](../../commands/marp.md)

@@ -1,6 +1,6 @@
 ---
 name: md-to-marp-propca
-description: 옵시디언 또는 표준 마크다운을 propca-notion-style 테마의 Marp 슬라이드 마크다운으로 한 번에 변환. 강의·교육·발표 컨텍스트(한국 회계법인 톤)에 특화. 내부 2단계 — (1) 옵시디언 전처리(wikilinks/embeds/콜아웃/frontmatter/태그 블록 정리 + 이미지 자산 복사), (2) propca-notion-style 21 전용 레이아웃 + 8 인라인 헬퍼 자동 매칭. 변환은 propca-notion-style.md(테마 쇼케이스)의 패턴을 그대로 따른다 — cover의 H1+H2+연월 구조, section의 #=숫자/##=제목 패턴, 본문 슬라이드의 # 헤더 우선, 인용 신중 사용, 여백 최소화. 출력은 output/<slug>/<slug>.marp.md + <slug>.cleaned.md(감사 추적) + assets/(이미지 복사본).
+description: 옵시디언 또는 표준 마크다운을 propca-notion-style 테마의 Marp 슬라이드 마크다운으로 한 번에 변환. 강의·교육·발표 컨텍스트(한국 회계법인 톤)에 특화. 내부 2단계 — (1) 옵시디언 전처리(wikilinks/embeds/콜아웃/frontmatter/태그 블록 정리 + 이미지 자산 복사), (2) propca-notion-style 전용 레이아웃(43 매칭 규칙) + 8 인라인 헬퍼 자동 매칭 + 톤 프리셋 3종(tone-exec/tone-lecture/tone-seminar) 합성. 변환은 propca-notion-style.md(테마 쇼케이스)의 패턴을 그대로 따른다 — cover의 H1+H2+연월 구조, section의 #=숫자/##=제목 패턴, 본문 슬라이드의 # 헤더 우선, 인용 신중 사용, 여백 최소화. 출력은 output/<slug>/<slug>.marp.md + <slug>.cleaned.md(감사 추적) + assets/(이미지 복사본).
 ---
 
 # md-to-marp-propca (v2.0)
@@ -24,6 +24,7 @@ description: 옵시디언 또는 표준 마크다운을 propca-notion-style 테�
 | `vault_root` | ❌ | 옵시디언 vault 루트. 미지정 시 `.obsidian/` 폴더 자동 탐색 |
 | `header` | ❌ | 슬라이드 헤더 텍스트 기본값. 카테고리별 `<!-- header: 'NN. 제목' -->` 디렉티브가 우선 |
 | `footer` | ❌ | 슬라이드 푸터 텍스트 |
+| `tone` | ❌ | 톤 프리셋: `tone-exec`(임원 보고) / `tone-lecture`(강의·교육) / `tone-seminar`(대외 세미나). 미지정 시 기본 purple 톤. 적용 방식은 §3.F |
 | `force` | ❌ | 캐시 무시 강제 재생성 |
 
 ### 출력
@@ -40,7 +41,7 @@ output/<slug>/
 1. 옵시디언 마커(`[[`, `![[`, `> [!`, `#tag` 블록, `^block-id`) 잔재 0
 2. front matter는 **고정 스키마** (§3)
 3. 첫 슬라이드 = `cover`, 마지막 슬라이드 ∈ `{end, qa, thanks-contact}`
-4. 21 propca 어휘 외 클래스명 출력 금지 (tech-modern의 `grid-3`/`stats` 등 0회)
+4. propca 어휘(43 매칭 규칙의 출력 클래스 + 톤 프리셋 3종) 외 클래스명 출력 금지 (tech-modern의 `grid-3`/`stats` 등 0회)
 5. **쇼케이스 패턴 준수** — 5가지 핵심 규칙 (§2.A)
 6. 결과 디렉토리는 자기완결적 — 다른 폴더로 옮겨도 이미지 깨지지 않음
 7. 멱등성: source mtime ≤ cleaned.md mtime이면 skip (force=true 제외)
@@ -59,11 +60,11 @@ output/<slug>/
      ↓
 [3] 슬라이드 분절 (구분자: `^# `, `^---$`, `^\*\*\*$`)
      ↓
-[4] 슬라이드별 레이아웃 휴리스틱 적용 (21 레이아웃 — references/layout-heuristics.md)
+[4] 슬라이드별 레이아웃 휴리스틱 적용 (43 매칭 규칙 — references/layout-heuristics.md)
      ↓
 [5] 인라인 헬퍼 자동 주입 (8 헬퍼 — references/inline-helpers.md)
      ↓
-[6] 쇼케이스 패턴 적용 (§2.A — 5 핵심 규칙)
+[6] 쇼케이스 패턴 적용 (§2.A — 8 핵심 규칙) + 톤 프리셋 합성 (§3.F)
      ↓
 [7] front matter + 슬라이드 본문 조합 → output/<slug>/<slug>.marp.md
      ↓
@@ -88,7 +89,7 @@ output/<slug>/
 
 ## 2) 레이아웃 휴리스틱 + 쇼케이스 패턴
 
-전체 21 레이아웃 매핑은 [references/layout-heuristics.md](references/layout-heuristics.md), 인라인 헬퍼 주입은 [references/inline-helpers.md](references/inline-helpers.md).
+전체 레이아웃 매핑(43 규칙)은 [references/layout-heuristics.md](references/layout-heuristics.md), 인라인 헬퍼 주입은 [references/inline-helpers.md](references/inline-helpers.md).
 
 ### 2.A) 쇼케이스 5 핵심 규칙 (반드시 준수)
 
@@ -202,23 +203,25 @@ output/<slug>/
 
 **알록달록한 페이지는 propca 톤과 어울리지 않음.** 의심스러우면 강조색 1개 제거하는 쪽으로 보수적 결정.
 
-### 2.B) 33 레이아웃 매핑 우선순위
+### 2.B) 레이아웃 매핑 우선순위
 
 1. **셸 강제 매칭** — 첫/마지막 슬라이드, `***` 가로선
 2. **네비게이션** — toc-split / section
-3. **시각 강조·인용** — hero-quote / image-quote / **pull-quote** (규칙 4 준수)
-4. **2개 비교** — compare / two-image / before-after / **compare-cards** / **compare-table**
-5. **3+ 비교** — feature-compare / **comparison-3up**
-6. **개념 정의** — definition-cards / **concept-list** / **concept-table**
-7. **일화·사례·예시** — **story-arc** / **example-case**
-8. **카드 / 블록** — cards / pastel-blocks / block-features
-9. **데이터** — 일반 `<table>` (상태 셀에 .tag 자동 주입)
-10. **튜토리얼** — step-image-guide
-11. **순서 / 흐름** — timeline / vertical-timeline / roadmap
-12. **리스트 변형** — toggle-list / icon-list / **checklist** / **pros-cons**
-13. **폴백** — 평범 content (no `_class`)
+3. **시각 강조·인용** — hero-quote / image-quote / **pull-quote** (규칙 4 준수) / **gallery-grid** (이미지 3~6)
+4. **코드 중심** — **code-focus** (fenced code ≥6행 + 기타 본문 ≤3행)
+5. **2개 비교** — compare / two-image / before-after / **compare-cards** / **compare-table**
+6. **3+ 비교** — feature-compare / **comparison-3up**
+7. **개념 정의 / Q&A** — definition-cards / **concept-list** / **concept-table** / **faq** (의문문 H3 쌍)
+8. **일화·사례·예시** — **story-arc** / **example-case**
+9. **카드 / 블록** — cards / pastel-blocks / block-features
+10. **데이터** — 일반 `<table>` (상태 셀에 .tag 자동 주입) / **schedule** (첫 컬럼 날짜 패턴)
+11. **튜토리얼** — step-image-guide (이미지) / **step-text** (텍스트만)
+12. **순서 / 흐름** — timeline / vertical-timeline / roadmap
+13. **리스트 변형** — toggle-list / icon-list / **checklist** / **pros-cons**
+14. **사이드바** — **content-sidebar** (본문 ≥4행 + 보조 블록)
+15. **폴백** — 평범 content (no `_class`)
 
-세부 표는 [references/layout-heuristics.md](references/layout-heuristics.md) §매핑 표 (현재 36행).
+세부 표는 [references/layout-heuristics.md](references/layout-heuristics.md) §매핑 표 (현재 43행, 경합 정리 절 포함).
 
 ### 2.D) 용도별 결정 트리 ★ AI가 가장 먼저 참고
 
@@ -230,11 +233,15 @@ output/<slug>/
 A. 2개 항목 비교         → compare / two-image / compare-cards / compare-table
 B. 3개 이상 항목 비교    → comparison-3up / feature-compare
 C. 개념 정의·설명        → definition-cards / concept-list / concept-table
-D. 단계·절차·튜토리얼    → timeline / vertical-timeline / step-image-guide / roadmap
-E. 시각 강조·인용        → hero-quote / image-quote / pull-quote / pastel-blocks
+D. 단계·절차·튜토리얼    → timeline / vertical-timeline / step-image-guide / step-text / roadmap
+E. 시각 강조·인용        → hero-quote / image-quote / pull-quote / pastel-blocks / gallery-grid
 F. 일화·사례·예시        → story-arc / example-case
 G. 리스트 변형          → icon-list / toggle-list / checklist / block-features / cards / pros-cons
 H. 셸 (입출구)           → cover / section / session-break / qa / thanks-contact / end
+I. 코드 중심            → code-focus
+J. 질문-답변 나열        → faq (본문 Q&A 쌍 — 마감 Q&A는 셸 qa)
+K. 일정·날짜 행          → schedule
+L. 본문 + 보조 박스      → content-sidebar
 ```
 
 #### 질문 2 — 항목 수?
@@ -242,7 +249,9 @@ H. 셸 (입출구)           → cover / section / session-break / qa / thanks-c
 ```
 1개  → hero-quote / pull-quote / story-arc (단일 키 메시지)
 2개  → compare / two-image / compare-cards / compare-table / pros-cons
+2-5개 → faq (의문문 H3 쌍)
 3-4개 → cards / block-features / comparison-3up / definition-cards
+3-5개 → step-text (절차 카드 스택) / gallery-grid (이미지 3~6)
 5-7개 → vertical-timeline / concept-list / icon-list / checklist
 8+   → 분할 검토 또는 concept-table
 ```
@@ -251,11 +260,14 @@ H. 셸 (입출구)           → cover / section / session-break / qa / thanks-c
 
 ```
 카드 그리드   → cards / block-features / definition-cards / compare-cards / comparison-3up
-표 형태      → compare-table / concept-table / feature-compare
+카드 스택    → step-text / faq
+표 형태      → compare-table / concept-table / feature-compare / schedule (첫 컬럼 날짜)
 ol/ul 리스트  → concept-list / icon-list / checklist / timeline / vertical-timeline
-단락형       → pastel-blocks / story-arc / example-case
-좌-우 분할   → compare / two-image / cover-split
+단락형       → pastel-blocks / story-arc / example-case / content-sidebar (보조 블록 동반)
+좌-우 분할   → compare / two-image / cover-split / content-sidebar
 인용형       → hero-quote / image-quote / pull-quote
+코드 블록    → code-focus
+이미지 그리드 → gallery-grid (가변 3~6) / gallery-4 (2x2 고정, 수동)
 ```
 
 #### 각 레이아웃 "언제 사용 / 피해야 할 경우" 가이드
@@ -284,9 +296,15 @@ ol/ul 리스트  → concept-list / icon-list / checklist / timeline / vertical-
 | `block-features` | 3~6 기능 소개 (아이콘 + 제목 + 본문) | 정의 사전 (→ definition-cards) |
 | `timeline` | 3~5 단계 수평 흐름 | 단계 5+ (→ vertical-timeline) |
 | `vertical-timeline` | 5+ 단계 수직 흐름 + 부가 설명 | 짧은 단계 (→ timeline) |
-| `roadmap` | 분기/Phase 기반 일정 | 단순 ol 절차 (→ vertical-timeline) |
+| `roadmap` | 분기/Phase 기반 일정 | 구체 날짜 행 단위 (→ schedule) |
 | `toggle-list` | 2단계 들여쓰기 펼침형 | 평탄 ul (→ icon-list) |
 | `icon-list` | 이모지·아이콘 + 콜론 형식 | GFM 체크박스 (→ checklist) |
+| `faq` | 본문 Q&A 쌍 2~5개 (의문문 H3) | 마감 Q&A 슬라이드 (→ 셸 qa) / 명사형 개념 (→ definition-cards) |
+| `code-focus` | 코드가 주역 (fenced code ≥6행) | 코드가 보조 자료 (→ 일반 content의 pre) |
+| `step-text` | 텍스트 절차 3~5단계 + 설명 ≥2행 | 이미지 동반 (→ step-image-guide) / 한 줄 요약 (→ timeline) |
+| `gallery-grid` | 이미지 3~6장 + 본문 ≤2행 | 정확히 2장 (→ two-image) / 본문 길 때 (→ 분할) |
+| `content-sidebar` | 본문 + 참고·팁 보조 블록 | 보조 블록 없는 평문 (→ content) / 짧은 메모 (→ .note) |
+| `schedule` | 구체 날짜 행 단위 일정 | 분기/Phase 그룹 (→ roadmap) |
 
 ### 2.C) 인라인 헬퍼 자동 주입
 
@@ -366,7 +384,9 @@ imageCount(slide):
   1 + 본문 >7행          → 슬라이드 2개로 분할
   1 + 명확한 인용문구    → image-quote (![bg left:60%] + blockquote)
   2                     → two-image (키워드 매치 → before-after)
-  ≥3                    → 본문/이미지 슬라이드 분할
+  3~6 + 본문 ≤2행        → gallery-grid (이미지들을 한 단락에 연속 작성 — 빈 줄 금지)
+  3~6 + 본문 >2행        → 슬라이드 분할 (gallery-grid + 본문) 또는 슬라이드당 2 이미지씩
+  ≥7                    → 슬라이드당 4~6 이미지 gallery-grid로 분할
 ```
 
 **중요**: 인용 레이아웃 사용 조건은 §2.A 규칙 4를 따른다. 본문 강조 문장만 있는 슬라이드의 이미지는 **인라인** (`![w:720](url)`) 로 처리.
@@ -374,6 +394,37 @@ imageCount(slide):
 ### 3.E) 옵시디언 전처리 산출물 보존
 
 `output/<slug>/<slug>.cleaned.md`는 디스크에 보존해 감사 추적·재실행에 활용. 변환 리포트에서 cross-check 가능.
+
+### 3.F) 톤 프리셋 합성 (`tone=` 인자)
+
+`tone` 인자가 주어지면 **이중 방식**으로 적용한다 (Marpit의 `_class` spot 디렉티브는 front matter `class`를 병합이 아니라 **대체**하므로 둘 다 필요):
+
+1. front matter에 `class: <tone>` 추가:
+
+```yaml
+---
+marp: true
+theme: propca-notion-style
+class: tone-exec
+...
+---
+```
+
+2. 모든 `<!-- _class: ... -->` 디렉티브에 톤 클래스를 **합성 기입**:
+
+```markdown
+<!-- _class: cover tone-exec -->
+<!-- _class: schedule tone-exec -->
+<!-- _class: cards tone-exec -->
+```
+
+| 프리셋 | 용도 | 효과 |
+|---|---|---|
+| `tone-exec` | 임원·이사회 보고 | 강조색 navy 계열(#22307a) 절제 + 파스텔 저채도화 |
+| `tone-lecture` | 강의·교육 | orange(#dd5b00) accent 전덱 확장 (lecture-* 톤 계승) |
+| `tone-seminar` | 대외 세미나·컨퍼런스 | purple 유지 + 파스텔 활성 (카드 lavender 틴트) |
+
+토큰 오버라이드 방식이므로 레이아웃 매칭에 영향 없음. cover/section/end 셸의 navy + procpa 로고는 톤과 무관하게 불변 (PROCPA 정체성 가드). 시각 카탈로그: [`tone-variants.md`](../../../themes/slide/propca-notion-style/tone-variants.md).
 
 ---
 
@@ -446,6 +497,7 @@ npx --yes @marp-team/marp-cli ^
 - propca CSS: [`../../../themes/slide/propca-notion-style/propca-notion-style.css`](../../../themes/slide/propca-notion-style/propca-notion-style.css)
 - 옵시디언 전처리 규칙: [references/obsidian-prep.md](references/obsidian-prep.md)
 - 이미지 vault 경로 해석: [references/vault-resolution.md](references/vault-resolution.md)
-- 21 레이아웃 매핑 표 + 이미지 결정 트리: [references/layout-heuristics.md](references/layout-heuristics.md)
+- 레이아웃 매핑 표 (43 규칙) + 이미지 결정 트리: [references/layout-heuristics.md](references/layout-heuristics.md)
+- 톤 프리셋 카탈로그: [`../../../themes/slide/propca-notion-style/tone-variants.md`](../../../themes/slide/propca-notion-style/tone-variants.md)
 - 8 인라인 헬퍼 자동 주입 규칙: [references/inline-helpers.md](references/inline-helpers.md)
 - 오케스트레이터: [`../md-to-marp/SKILL.md`](../md-to-marp/SKILL.md)
