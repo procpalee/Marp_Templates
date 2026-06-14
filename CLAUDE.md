@@ -57,10 +57,13 @@
 | `airbnb` | 코랄 + 사진 우선 + 64pt rating (호스피탈리티/마켓플레이스) |
 | `nvidia` | 풀블랙/화이트 + brand green + 4 corner squares (하드웨어 AI/spec) |
 | `tesla` | 화이트/카본 + Electric Blue + 극단적 whitespace (자동차/럭셔리) |
+| `procpa-vivid` | 화이트 + Vivid Blue #2563eb + 헤어라인 에디토리얼 (모던/전문 발표, procpa.co.kr 블로그 톤) |
 
 용도→테마 매핑은 [`.claude/skills/md-to-deck/references/theme-picker.md`](.claude/skills/md-to-deck/references/theme-picker.md) 참조.
 
 `tech-modern` 외 14 테마는 [VoltAgent/awesome-design-md](https://github.com/VoltAgent/awesome-design-md) (MIT)의 DESIGN.md 토큰을 기반. 브랜드 로고·상표는 사용하지 않음.
+
+`procpa-vivid`는 사용자 블로그(procpa.co.kr, [`procpalee/procpa_obsidian_style`](https://github.com/procpalee/procpa_obsidian_style) `globals.css`)의 "Vivid Blue" 디자인 시스템을 이식한 **라이브 자기완결형 테마**다 (`themes/slide/procpa-vivid/`, 빌드 가능). 14 브랜드 테마(`reference_design/`, 레퍼런스 전용)와 달리 `npm run build:procpa-vivid`로 빌드된다. 셸 3 + 레이아웃 12, 수동 `<!-- _class -->` 지정 (자동매칭 비대상). 상세: [`themes/slide/procpa-vivid/design.md`](themes/slide/procpa-vivid/design.md).
 
 ---
 

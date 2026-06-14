@@ -1,0 +1,534 @@
+/* @theme procpa-vivid */
+/* ============================================================
+   procpa-vivid — Modern editorial "Vivid Blue" brand theme.
+   Designed from scratch (NOT a tech-modern derivative).
+   Source: procpa.co.kr blog design system (repo procpa_obsidian_style,
+   src/app/globals.css). Lineage: Apple × CMDS editorial doc structure,
+   retoned to a vivid-blue identity.
+   Brand language: pure-white canvas, cool neutrals, single vivid-blue
+   accent (#2563eb), hairline-separated sections + generous whitespace,
+   uppercase eyebrow labels, blue callouts, token-chip code. No pastels,
+   no sticky notes, no navy hero (that is propca-notion-style), no shadows.
+   ============================================================ */
+
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@latest/dist/web/variable/pretendardvariable.min.css');
+
+/* ---------------------------------------------------------------
+   Tokens (LIGHT — "Vivid Blue")
+   --------------------------------------------------------------- */
+:root {
+  --canvas:       #ffffff;
+  --canvas-soft:  #f4f6f9;   /* secondary / muted surface */
+  --card:         #ffffff;
+
+  --ink:          #0c0e12;   /* foreground (cool near-black) */
+  --ink-mute:     #4a5160;   /* muted-foreground */
+  --ink-sub:      #8a90a0;   /* derived third tier (labels, meta) */
+
+  --blue:         #2563eb;   /* primary — the single accent */
+  --blue-hover:   #3b82f6;
+  --blue-soft:    #eff5ff;   /* accent wash (blue-50) */
+  --on-blue:      #ffffff;
+
+  --hairline:        #e6e9ee;
+  --hairline-strong: #d4d8df;
+  --destructive:     #c2410c;
+
+  --chart-1: #2563eb;
+  --chart-2: #3b82f6;
+  --chart-3: #60a5fa;
+  --chart-4: #94a3b8;
+  --chart-5: #cbd5e1;
+
+  --font-sans: 'Pretendard Variable', Pretendard, 'Noto Sans KR', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-sans);  /* mono aliased to sans (tabular-nums where needed) */
+
+  /* radius scale — 0.7rem base, blog ratios */
+  --radius:     11px;
+  --radius-sm:  7px;
+  --radius-md:  9px;
+  --radius-lg:  11px;
+  --radius-xl:  16px;
+}
+
+/* ---------------------------------------------------------------
+   Section base
+   --------------------------------------------------------------- */
+section {
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  padding: 72px 88px;
+  font-size: 18pt;
+  line-height: 1.6;
+  font-weight: 400;
+  letter-spacing: -0.011em;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  position: relative;
+}
+
+/* ---------------------------------------------------------------
+   Typography — blog signatures: hairline title, eyebrow h4,
+   blue callout blockquote, token-chip code, bordered tables
+   --------------------------------------------------------------- */
+h1 {
+  font-size: 34pt;
+  font-weight: 700;
+  letter-spacing: -0.026em;
+  line-height: 1.15;
+  color: var(--ink);
+  margin: 0 0 22px 0;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--hairline);   /* editorial hairline under slide title */
+}
+h2 {
+  font-size: 22pt;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  color: var(--ink-mute);
+  margin: 0 0 14px 0;
+}
+h3 {
+  font-size: 18pt;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin: 0 0 8px 0;
+}
+/* h4 = uppercase eyebrow label (blog device) */
+h4 {
+  font-size: 12pt;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-sub);
+  margin: 0 0 10px 0;
+}
+p, li {
+  font-size: 18pt;
+  line-height: 1.6;
+  color: var(--ink-mute);
+  margin: 0 0 12px 0;
+  font-weight: 400;
+}
+strong { color: var(--ink); font-weight: 600; background: none; }
+em { font-style: italic; color: var(--ink); }
+
+/* .eyebrow / .accent inline helpers */
+.eyebrow {
+  font-size: 12pt;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--blue);
+  margin: 0 0 14px 0;
+}
+.accent { color: var(--blue); font-weight: 600; }
+.muted  { color: var(--ink-sub); }
+
+a {
+  color: var(--blue);
+  font-weight: 500;
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in oklab, var(--blue) 30%, transparent);
+}
+a:hover { border-bottom-color: var(--blue); }
+
+ul, ol { margin: 0 0 16px 0; padding-left: 24px; }
+li { margin-bottom: 8px; }
+li::marker { color: var(--ink-sub); }
+
+/* inline code = token chip (muted bg + hairline) */
+code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  font-weight: 500;
+  background: var(--canvas-soft);
+  color: var(--ink);
+  border: 1px solid color-mix(in oklab, var(--hairline) 70%, transparent);
+  border-radius: var(--radius-sm);
+  padding: 0.12em 0.42em;
+}
+pre {
+  background: var(--canvas-soft);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-lg);
+  padding: 22px 26px;
+  margin: 14px 0;
+  font-size: 13pt;
+  line-height: 1.6;
+  overflow: hidden;
+}
+pre code { display: block; background: transparent; color: var(--ink); padding: 0; border: none; font-size: inherit; }
+
+/* blockquote = CMDS blue callout: 3px left bar + soft blue wash */
+blockquote {
+  border-left: 3px solid var(--blue);
+  background: color-mix(in oklab, var(--blue) 8%, var(--canvas));
+  color: var(--ink-mute);
+  font-style: normal;
+  font-weight: 400;
+  padding: 14px 24px;
+  margin: 16px 0;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+blockquote p { color: var(--ink-mute); margin: 0; font-style: normal; }
+
+/* tables — bordered card, elevated header, hairline rows */
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  font-size: 14pt;
+  margin: 14px 0 24px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+thead { background: var(--canvas-soft); }
+th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--hairline); vertical-align: top; }
+th {
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 11pt;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+td { color: var(--ink-mute); }
+tr:last-child td { border-bottom: none; }
+hr { display: none; }
+
+/* ---------------------------------------------------------------
+   Header / Footer / Pagination
+   --------------------------------------------------------------- */
+header {
+  position: absolute;
+  top: 30px;
+  left: 88px;
+  font-size: 10pt;
+  letter-spacing: 0.05em;
+  color: var(--ink-sub);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+footer {
+  position: absolute;
+  bottom: 30px;
+  left: 88px;
+  font-size: 10pt;
+  color: var(--ink-sub);
+}
+section::after {
+  content: attr(data-marpit-pagination);
+  position: absolute;
+  bottom: 28px;
+  right: 88px;
+  font-size: 10pt;
+  color: var(--ink-sub);
+  font-variant-numeric: tabular-nums;
+  border: 1px solid var(--hairline);
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+/* ===============================================================
+   Shell 3 — cover / section / end
+   =============================================================== */
+section.cover {
+  justify-content: center;
+  align-items: flex-start;
+  border-top: 2px solid var(--blue);
+}
+section.cover h1 {
+  font-size: 56pt;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+  margin-bottom: 18px;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+section.cover h2 {
+  font-size: 22pt;
+  font-weight: 400;
+  color: var(--ink-mute);
+  margin-bottom: 44px;
+  max-width: 78%;
+}
+section.cover p {
+  color: var(--ink-sub);
+  font-size: 11pt;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+}
+section.cover::after, section.cover header, section.cover footer { display: none; }
+
+section.section {
+  background: var(--canvas-soft);
+  justify-content: center;
+  align-items: flex-start;
+}
+section.section h1 {
+  font-size: 88pt;
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  color: var(--ink);
+  margin: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+  line-height: 1;
+}
+section.section h2 {
+  font-size: 22pt;
+  font-weight: 500;
+  color: var(--blue);
+  margin-top: 18px;
+}
+section.section::after { display: none; }
+
+section.end {
+  justify-content: center;
+  align-items: flex-start;
+  border-top: 2px solid var(--blue);
+}
+section.end h1 {
+  font-size: 56pt;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  margin-bottom: 16px;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+section.end h2 { font-size: 22pt; font-weight: 400; color: var(--ink-mute); }
+section.end p {
+  color: var(--ink-sub);
+  font-size: 11pt;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+section.end::after, section.end header, section.end footer { display: none; }
+
+/* ===============================================================
+   12 BRAND LAYOUTS
+   =============================================================== */
+
+/* ---------- 1) toc — editorial agenda, hairline-separated rows ----------
+   absolute ::before keeps inline content (title + em) flowing normally */
+section.toc ol { list-style: none; counter-reset: toc; margin: 8px 0 0; padding: 0; }
+section.toc ol li {
+  counter-increment: toc;
+  position: relative;
+  padding: 18px 0 18px 60px;
+  border-top: 1px solid var(--hairline);
+  font-size: 21pt;
+  color: var(--ink);
+}
+section.toc ol li:last-child { border-bottom: 1px solid var(--hairline); }
+section.toc ol li::before {
+  content: counter(toc, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 22px;
+  font-size: 16pt;
+  font-weight: 600;
+  color: var(--blue);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+section.toc ol li em { font-style: normal; color: var(--ink-sub); font-size: 14pt; display: block; margin-top: 2px; }
+
+/* ---------- 2) statement — ink canvas punctuation slide ---------- */
+section.statement {
+  background: var(--ink);
+  color: #ffffff;
+  justify-content: center;
+  align-items: flex-start;
+}
+section.statement h1 {
+  color: #ffffff;
+  font-size: 46pt;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.18;
+  border-bottom: none;
+  padding-bottom: 0;
+  margin: 0;
+  max-width: 90%;
+}
+section.statement h1 strong, section.statement .accent { color: var(--blue-hover); }
+section.statement p { color: rgba(255,255,255,0.6); font-size: 14pt; margin-top: 24px; }
+section.statement::after { color: rgba(255,255,255,0.4); border-color: rgba(255,255,255,0.18); }
+section.statement header, section.statement footer { color: rgba(255,255,255,0.4); }
+
+/* ---------- 3) metric-row — large tabular-num KPIs ---------- */
+section.metric-row .metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  gap: 28px;
+  margin-top: 16px;
+}
+section.metric-row .metric { display: flex; flex-direction: column; gap: 6px; }
+section.metric-row .metric .num {
+  font-size: 52pt;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+section.metric-row .metric .num .unit { font-size: 24pt; color: var(--blue); font-weight: 600; }
+section.metric-row .metric .label {
+  font-size: 12pt;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-sub);
+  font-weight: 600;
+}
+section.metric-row .metric .desc { font-size: 14pt; color: var(--ink-mute); }
+
+/* ---------- 4) callout-hero — full blue callout centerpiece ---------- */
+section.callout-hero { justify-content: center; }
+section.callout-hero blockquote {
+  border-left: 4px solid var(--blue);
+  background: var(--blue-soft);
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+  padding: 36px 44px;
+  margin: 0;
+}
+section.callout-hero blockquote p { font-size: 28pt; line-height: 1.4; color: var(--ink); font-weight: 500; }
+section.callout-hero blockquote p:last-child:not(:first-child) {
+  font-size: 14pt; color: var(--ink-sub); font-weight: 600; margin-top: 20px;
+}
+
+/* ---------- 5) split — 50/50 two columns + center hairline ---------- */
+section.split .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-top: 12px; }
+section.split .cols > * { padding: 0; }
+section.split .cols > *:first-child { border-right: 1px solid var(--hairline); padding-right: 48px; }
+
+/* ---------- 6) feature-cards — 3 bordered cards ---------- */
+section.feature-cards .cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  gap: 20px;
+  margin-top: 14px;
+}
+section.feature-cards .card {
+  background: var(--card);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-lg);
+  padding: 24px 26px;
+}
+section.feature-cards .card h4 { color: var(--blue); margin-bottom: 12px; }
+section.feature-cards .card h3 { font-size: 19pt; margin-bottom: 8px; }
+section.feature-cards .card p { font-size: 15pt; margin: 0; }
+
+/* ---------- 7) comparison — bordered table hero (inherits table style) ---------- */
+section.comparison table { font-size: 15pt; }
+section.comparison th { background: var(--canvas-soft); }
+section.comparison td:first-child { font-weight: 600; color: var(--ink); }
+
+/* ---------- 8) code-focus — large code card + editor top bar ---------- */
+section.code-focus pre {
+  font-size: 15pt;
+  padding: 0;
+  overflow: hidden;
+}
+section.code-focus pre::before {
+  content: '';
+  display: block;
+  height: 38px;
+  background: var(--canvas-soft);
+  border-bottom: 1px solid var(--hairline);
+  /* three traffic-light dots via radial gradients */
+  background-image:
+    radial-gradient(circle 5px at 22px 19px, var(--hairline-strong) 99%, transparent),
+    radial-gradient(circle 5px at 40px 19px, var(--hairline-strong) 99%, transparent),
+    radial-gradient(circle 5px at 58px 19px, var(--hairline-strong) 99%, transparent);
+}
+section.code-focus pre code { padding: 20px 26px; }
+
+/* ---------- 9) steps — numbered steps stack + blue index ----------
+   absolute ::before badge keeps inline content flowing normally */
+section.steps ol { list-style: none; counter-reset: step; margin: 8px 0 0; padding: 0; }
+section.steps ol li {
+  counter-increment: step;
+  position: relative;
+  padding: 18px 0 18px 56px;
+  border-top: 1px solid var(--hairline);
+  font-size: 17pt;
+  line-height: 1.5;
+  color: var(--ink-mute);
+  min-height: 34px;
+}
+section.steps ol li:last-child { border-bottom: 1px solid var(--hairline); }
+section.steps ol li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 14px;
+  width: 34px; height: 34px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--blue-soft);
+  color: var(--blue);
+  border-radius: 999px;
+  font-size: 15pt;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+section.steps ol li strong { color: var(--ink); }
+
+/* ---------- 10) quote — attribution quote ---------- */
+section.quote { justify-content: center; }
+section.quote blockquote {
+  border-left: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+}
+section.quote blockquote p { font-size: 32pt; line-height: 1.35; color: var(--ink); font-weight: 600; letter-spacing: -0.02em; }
+section.quote blockquote p:last-child:not(:first-child),
+section.quote > p {
+  font-size: 14pt; color: var(--ink-sub); font-weight: 600; margin-top: 22px;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+section.quote blockquote::before {
+  content: '';
+  display: block;
+  width: 44px; height: 4px;
+  background: var(--blue);
+  border-radius: 2px;
+  margin-bottom: 26px;
+}
+
+/* ---------- 11) image-split — bg image left + content right ----------
+   Marpit `![bg left]` already constrains content to the right half;
+   the .body just pads + vertically centers (no extra width/flex). */
+section.image-split { padding: 0; justify-content: center; }
+section.image-split .body {
+  padding: 64px 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+}
+section.image-split h1 { border-bottom: none; padding-bottom: 0; }
+
+/* ---------- 12) closing-cta — blue pill CTA + handle/url ---------- */
+section.closing-cta { justify-content: center; align-items: flex-start; border-top: 2px solid var(--blue); }
+section.closing-cta h1 { font-size: 44pt; border-bottom: none; padding-bottom: 0; margin-bottom: 24px; }
+section.closing-cta .pill {
+  display: inline-block;
+  background: var(--blue);
+  color: var(--on-blue);
+  font-size: 16pt;
+  font-weight: 600;
+  padding: 12px 28px;
+  border-radius: 999px;
+  margin-bottom: 20px;
+}
+section.closing-cta p { color: var(--ink-sub); font-size: 13pt; text-transform: uppercase; letter-spacing: 0.06em; }
+section.closing-cta::after, section.closing-cta header, section.closing-cta footer { display: none; }
