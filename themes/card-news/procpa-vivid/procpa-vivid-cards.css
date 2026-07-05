@@ -386,7 +386,7 @@ section.outro-cta::after { display: none; }
 /* 로고 — 표지처럼 좌상단 (블루 위 화이트 원본) */
 section.outro-cta::before {
   content: ''; position: absolute; top: 84px; left: 90px;
-  width: 216px; height: 72px; background: var(--logo) no-repeat left center / contain;
+  width: 164px; height: 54px; background: var(--logo) no-repeat left center / contain;
 }
 
 /* B. outro-card — 명함형 패널 (라벨↔값 정렬, 정돈된 신뢰감). 로고는 표지처럼 좌상단.
@@ -408,7 +408,7 @@ section.outro-card::after { display: none; }
 /* 로고 — 표지와 동일하게 좌상단 (하단 중앙 공유 규칙에서 제외됨) */
 section.outro-card::before {
   content: ''; position: absolute; top: 84px; left: 90px;
-  width: 216px; height: 72px; background: var(--logo) no-repeat left center / contain;
+  width: 164px; height: 54px; background: var(--logo) no-repeat left center / contain;
 }
 
 /* C. outro-chips — 핸들을 pill 칩으로 나열 (가볍고 모던)
@@ -460,12 +460,12 @@ section.outro-hero .panel .row .k { flex: none; min-width: 190px; color: #5b9cff
 section.outro-hero .panel .row .v { color: rgba(244,246,250,0.95); }
 section.outro-hero::after { display: none; }
 section.outro-hero::before { content: ''; position: absolute; top: 84px; left: 90px;
-  width: 216px; height: 72px; background: var(--logo) no-repeat left center / contain; }
+  width: 164px; height: 54px; background: var(--logo) no-repeat left center / contain; }
 
 /* 변형 공통 로고 (하단 중앙, 화이트 원본) — outro-card·outro-cta·outro-hero는 좌상단 별도 규칙 */
 section.outro-chips::before, section.outro-thanks::before {
   content: ''; position: absolute; bottom: 66px; left: 50%; transform: translateX(-50%);
-  width: 184px; height: 60px; background: var(--logo) no-repeat center / contain; opacity: 0.8;
+  width: 164px; height: 54px; background: var(--logo) no-repeat center / contain; opacity: 0.8;
 }
 section.outro-thanks::before { opacity: 0.55; }
 
@@ -481,7 +481,7 @@ section.card-cover::before {
 }
 section.card-outro::before {
   content: ''; position: absolute; bottom: 72px; left: 50%; transform: translateX(-50%);
-  width: 198px; height: 66px;
+  width: 164px; height: 54px;
   background: var(--logo) no-repeat center / contain;
   opacity: 0.85;
 }
