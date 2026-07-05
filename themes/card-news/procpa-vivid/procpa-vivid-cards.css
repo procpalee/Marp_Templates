@@ -254,6 +254,59 @@ section.intro-timeline .tl .item:not(:last-child)::before { content: ''; positio
 section.intro-timeline .tl .body h3 { font-size: 38px; font-weight: 700; color: var(--ink); margin: 0; padding-top: 8px; }
 section.intro-timeline .tl .body p { font-size: 29px; color: var(--ink-mute); margin: 6px 0 0; line-height: 1.45; }
 
+/* ===============================================================
+   intro 운띄우기 전용 신규 레이아웃 3종 — 목차형이 아니라 주제로
+   끌어들이는 문법. E=intro-chat / F=intro-split / G=intro-ask
+   =============================================================== */
+
+/* E. intro-chat — 대화(말풍선)형: 세간의 성공담(좌) vs 내 현실(우)
+   <div class="chat">
+     <div class="bub them">성공담…</div>
+     <div class="bub me">나도 해볼까?</div>
+     <div class="bub real">막상 해보니…</div> (우측, 현실 토로)
+   </div> */
+section.intro-chat .lead { font-size: 36px; color: var(--ink-mute); margin: -6px 0 38px; line-height: 1.55; }
+section.intro-chat .chat { display: flex; flex-direction: column; gap: 22px; width: 100%; }
+section.intro-chat .bub { max-width: 78%; padding: 24px 38px; font-size: 33px; line-height: 1.45;
+  border-radius: 26px; word-break: keep-all; }
+section.intro-chat .bub.them { align-self: flex-start; background: var(--canvas-soft);
+  border: 1px solid var(--hairline); color: var(--ink); border-bottom-left-radius: 8px; }
+section.intro-chat .bub.me { align-self: flex-end; background: var(--blue); color: var(--on-blue);
+  border-bottom-right-radius: 8px; font-weight: 600; }
+section.intro-chat .bub.real { align-self: flex-end; background: var(--blue-soft);
+  border: 1px solid color-mix(in oklab, var(--blue) 30%, transparent); color: var(--ink);
+  border-bottom-right-radius: 8px; }
+section.intro-chat .bub strong { color: inherit; text-decoration: underline; text-underline-offset: 6px;
+  text-decoration-color: color-mix(in oklab, currentColor 45%, transparent); }
+section.intro-chat .bub.real strong, section.intro-chat .bub.them strong { color: var(--blue); text-decoration: none; }
+
+/* F. intro-split — 기대 vs 현실 반전: 상단 하이프 존 → 전환 문장 → 현실 존
+   <div class="hype"><span class="q">"성공담1"</span><span class="q">"성공담2"</span></div>
+   <div class="turn">그런데 막상 해보면?</div>
+   <ul class="real"><li>현실1</li>…</ul> */
+section.intro-split .hype { display: flex; flex-wrap: wrap; gap: 18px; width: 100%; margin-bottom: 40px; }
+section.intro-split .hype .q { background: var(--canvas-soft); border: 1px solid var(--hairline);
+  border-radius: 999px; padding: 18px 36px; font-size: 30px; color: var(--ink-mute); }
+section.intro-split .turn { font-size: 46px; font-weight: 800; color: var(--ink);
+  margin: 0 0 36px; letter-spacing: -0.03em; }
+section.intro-split .turn strong { color: var(--blue); }
+section.intro-split ul.real li { color: var(--ink); }
+section.intro-split ul.real li .li-sub { color: var(--ink-mute); }
+
+/* G. intro-ask — 대형 질문 + 현실 대시 3줄 (미니멀 에디토리얼, 거대 ? 워터마크)
+   <h1>큰 질문</h1> + <p class="lead">…</p> + <div class="dashes"><p>— 현실1</p>…</div> */
+section.intro-ask::before { content: '?'; position: absolute; right: -30px; bottom: -110px;
+  font-size: 560px; font-weight: 800; line-height: 1;
+  color: color-mix(in oklab, var(--blue) 7%, transparent); pointer-events: none; }
+section.intro-ask h1 { font-size: 66px; font-weight: 800; line-height: 1.25;
+  letter-spacing: -0.035em; border-bottom: none; padding-bottom: 0; margin: 0 0 34px; }
+section.intro-ask h1 strong { color: var(--blue); }
+section.intro-ask .lead { font-size: 36px; color: var(--ink-mute); margin: 0 0 44px; line-height: 1.55; }
+section.intro-ask .dashes { display: flex; flex-direction: column; gap: 24px; width: 100%; }
+section.intro-ask .dashes p { font-size: 35px; color: var(--ink); margin: 0; line-height: 1.5;
+  padding-left: 46px; position: relative; }
+section.intro-ask .dashes p::before { content: '—'; position: absolute; left: 0; color: var(--blue); font-weight: 700; }
+
 /* ---------------------------------------------------------------
    card-hook — 대형 질문/도발 + 좌하단 스와이프 CTA
    --------------------------------------------------------------- */
