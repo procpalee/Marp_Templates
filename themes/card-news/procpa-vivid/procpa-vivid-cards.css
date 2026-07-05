@@ -390,9 +390,9 @@ section.outro-card { background: var(--ink); color: #ffffff; justify-content: ce
 section.outro-card .eyebrow { color: #5b9cff; }
 section.outro-card h1 { color: #ffffff; font-size: 52px; font-weight: 700; line-height: 1.32;
   border-bottom: none; padding-bottom: 0; margin: 0; }
-section.outro-card .panel { margin-top: 44px; max-width: 680px;
+section.outro-card .panel { margin-top: 44px; width: 100%;
   background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.16);
-  border-radius: 20px; padding: 34px 44px; }
+  border-radius: 20px; padding: 34px 48px; }
 section.outro-card .panel .row { display: flex; justify-content: space-between; align-items: center;
   gap: 40px; font-size: 31px; padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.09); }
 section.outro-card .panel .row:last-child { border-bottom: none; }
