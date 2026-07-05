@@ -103,6 +103,11 @@ code {
   letter-spacing: 0.09em;
   margin: 0 0 30px;
 }
+/* eyebrow가 있는 본문 카드는 상단 정렬 → eyebrow가 매 페이지 같은 높이(상단 패딩)에 고정.
+   표지(card-cover)·아웃트로(outro-*)는 각자 정렬을 쓰므로 제외. */
+section:has(> .eyebrow):not(.card-cover):not([class*="outro"]) {
+  justify-content: flex-start;
+}
 
 /* 기본 불릿 — 블루 닷. 밀도 확보: li 본문 + .li-sub 보조 설명 2단 구성 권장 */
 ul { list-style: none; padding: 0; margin: 0; width: 100%; }
@@ -151,7 +156,7 @@ section::after {
    --------------------------------------------------------------- */
 section.card-cover {
   background: var(--ink); color: #ffffff;
-  justify-content: flex-end; padding-bottom: 300px;
+  justify-content: flex-end; padding-bottom: 340px;
 }
 section.card-cover::after { display: none; }   /* 페이지 pill 숨김 */
 /* 스크림 — marpit이 background/content 레이어의 section pseudo를 차단하므로
