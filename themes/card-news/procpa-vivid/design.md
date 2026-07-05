@@ -52,6 +52,12 @@ footer: 'PROCPA'
 
 **워터마크** — 어느 카드든 `<div class="wm">03</div>` 또는 `<div class="wm">≠</div>` 한 줄로 우하단 대형 8% 블루 글리프. 섹션 번호·핵심 기호에 사용.
 
+**밀도 부품 (v1.1 — 빈약해 보이지 않게)**
+
+- `<p class="lead">…</p>` — h1 바로 아래 리드 문단 (ink-mute 36px). content 카드는 리드 1문장 권장
+- `<span class="li-sub">…</span>` — 불릿 안 둘째 줄 보조 설명 (31px ink-mute). 주장(li 본문) + 근거(li-sub) 2단 구성
+- content 카드 기준 분량: 리드 1문장 + 불릿 2~4개(각각 li-sub 가능) — 3요소 미만이면 카드가 비어 보임
+
 ## §3. 덱 리듬 규칙 (밋밋함 방지)
 
 - **같은 레이아웃 3연속 금지.** 기본 구성(9장): cover → hook → content → **stat/vs**(앵커) → **statement**(반전) → content → check/steps → summary → outro
