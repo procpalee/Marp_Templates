@@ -26,19 +26,18 @@ marp: true
 theme: procpa-vivid-cards
 size: square
 paginate: true
-footer: 'PROCPA'
 ---
 ```
 
-- `paginate: true` → 우하단 "n / N" pill (cover·outro는 자동 숨김)
-- `footer: 'PROCPA'` → 좌하단 브랜드 (잉크 카드에서 자동 반전)
+- `paginate: true` → **하단 중앙** "n / N" pill (cover·outro는 자동 숨김)
+- 브랜드 = **로고 자동 삽입**: cover 좌상단(잉크 반전) · outro 하단 중앙(화이트 원본). 텍스트 footer 폐지 — frontmatter에 `footer` 넣지 않는다. 로고 원본: 레포 루트 `procpa_logo_dark.png`, CSS에 data-URI 임베드(교체 시 base64 재주입)
 
 ## §2. 레이아웃 12종 (한 카드 = 한 클래스)
 
 | 클래스 | 용도 | 마크업 키 |
 |---|---|---|
 | `card-cover` | 표지 — 상단 12px 블루 밴드 | `.eyebrow` + `# 제목` + p(부제) |
-| `card-hook` | 2장 훅 — 대형 질문/도발 + '밀어서 계속 →' 자동 | `# 훅` + p |
+| `card-hook` | 2장 훅 — 대형 질문/도발 | `# 훅` + p |
 | (없음/`card-content`) | 기본 — 헤어라인 h1 + 블루 닷 불릿 | `.eyebrow`? + `# 제목` + ul/p |
 | `card-statement` | 잉크 펀치 카드 (덱 중간 1장) | `# 선언` (+ `.wm` 글리프) |
 | `card-stat` | 대형 숫자 KPI | `<div class="n">5/5</div>` + `## 라벨` + p |
@@ -47,7 +46,12 @@ footer: 'PROCPA'
 | `card-check` | 경계선 체크리스트 | **ul 전체를 raw HTML로**: `<ul><li>…</li><li class="open">…</li></ul>` (li=✓ 블루, `.open`=○ 회색. markdown `-` 리스트에 HTML li 혼용 금지 — 파싱 깨짐) |
 | `card-steps` | 번호 단계 — 블루 원형 배지 | `1. …` ol |
 | `card-summary` | 아웃트로 직전 정리 — blue-soft 풀배경 | `# 정리` + ul/p |
-| `card-outro` | 마무리 — 잉크 + 블루 pill CTA | `# 마무리 문장` + `<div class="cta">CTA</div>` |
+| `card-outro` | 마무리 — 잉크 + 블루 pill CTA + 하단 로고 | `# 마무리 문장` + `<div class="cta">CTA</div>` |
+| `card-flow` | 수직 프로세스 A↓B↓C | `.flow > .step / .arr(↓) / .step.hi(강조)` |
+| `card-grid` | 2×2(·`.cols-3`) 미니 카드 | `.grid > .cell > (.swatch?)+h3+p`, `.cell.accent` |
+| `card-table` | 보더 테이블 | markdown 표 그대로 (th 대문자 헤더) |
+| `card-qa` | Q&A — 블루 Q 배지 | `.qa > h3 + p` 반복 2~3개 |
+| `card-metric` | KPI 2~3개 나란히 | `.metrics > .m > .v(숫자)+.l(라벨)` |
 | 모디파이어 | `.center`(중앙정렬) `.compact`(밀도↓) | `<!-- _class: card-stat center -->` |
 
 **워터마크** — 어느 카드든 `<div class="wm">03</div>` 또는 `<div class="wm">≠</div>` 한 줄로 우하단 대형 8% 블루 글리프. 섹션 번호·핵심 기호에 사용.

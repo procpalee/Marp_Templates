@@ -3,7 +3,6 @@ marp: true
 theme: procpa-vivid-cards
 size: square
 paginate: true
-footer: 'PROCPA'
 ---
 
 <!-- _class: card-cover -->
