@@ -106,7 +106,7 @@ code {
 }
 /* eyebrow가 있는 본문 카드는 상단 정렬 → eyebrow가 매 페이지 같은 높이(상단 패딩)에 고정.
    표지(card-cover)·아웃트로(outro-*)는 각자 정렬을 쓰므로 제외. */
-section:has(> .eyebrow):not(.card-cover):not(.thumb):not([class*="outro"]):not(.card-statement):not(.card-summary):not(.intro-thesis) {
+section:has(> .eyebrow):not(.card-cover):not(.thumb):not([class*="outro"]):not(.card-statement):not(.card-summary):not(.intro-thesis):not(.intro-punch):not(.intro-verdict):not(.intro-take):not(.intro-ask) {
   justify-content: flex-start;
 }
 /* statement·summary(펀치 카드)는 eyebrow가 있어도 세로 중앙정렬 — 짧은 내용의 하단 공백 방지 */
@@ -364,6 +364,13 @@ section.intro-ask .dashes { display: flex; flex-direction: column; gap: 24px; wi
 section.intro-ask .dashes p { font-size: 35px; color: var(--ink); margin: 0; line-height: 1.5;
   padding-left: 46px; position: relative; }
 section.intro-ask .dashes p::before { content: '—'; position: absolute; left: 0; color: var(--blue); font-weight: 700; }
+/* 세로 중앙정렬 + 결론 한 줄만 살짝 강조 (blue-soft 좌측 바, 크기는 본문 유지) */
+section.intro-ask { justify-content: center; }
+section.intro-ask .dashes .concl { padding: 22px 30px; margin-top: 8px;
+  background: var(--blue-soft); border-left: 8px solid var(--blue); border-radius: 0 14px 14px 0;
+  color: var(--ink); font-weight: 700; }
+section.intro-ask .dashes .concl::before { content: none; }
+section.intro-ask .dashes .concl strong { color: var(--blue); }
 
 /* H. intro-thesis — 도입 전용: 세팅(성공담) → 현실 대시 → 하단 '결론' 블루 밴드로 명제 강조.
    마크업: <p class="setup">세팅 문장</p>
@@ -420,6 +427,24 @@ section.intro-verdict .verdict { margin-top: 60px; width: 100%;
 section.intro-verdict .verdict strong { color: var(--blue); }
 section.intro-verdict .verdict .k { display: block; font-size: 27px; font-weight: 700;
   color: var(--blue); text-transform: uppercase; letter-spacing: 0.09em; margin-bottom: 18px; }
+
+/* H4. intro-take — 결론 강조를 '적당한' 크기로 (verdict의 절제 버전, 명제 ~50px).
+   .setup + .dashes 후 <div class="take"><span class="k">라벨</span><span class="t">명제(<strong>강조</strong>)</span></div> */
+section.intro-take { justify-content: center; }
+section.intro-take .setup { font-size: 39px; font-weight: 700; color: var(--ink);
+  line-height: 1.45; margin: 0 0 32px; letter-spacing: -0.02em; }
+section.intro-take .setup strong { color: var(--blue); }
+section.intro-take .dashes { display: flex; flex-direction: column; gap: 18px; width: 100%; }
+section.intro-take .dashes p { font-size: 32px; color: var(--ink-mute); margin: 0; line-height: 1.5;
+  padding-left: 44px; position: relative; }
+section.intro-take .dashes p::before { content: '—'; position: absolute; left: 0; color: var(--ink-sub); font-weight: 700; }
+section.intro-take .take { margin-top: 48px; width: 100%;
+  border-left: 10px solid var(--blue); padding: 8px 0 8px 36px; }
+section.intro-take .take .k { display: block; font-size: 26px; font-weight: 700;
+  color: var(--blue); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px; }
+section.intro-take .take .t { font-size: 50px; font-weight: 800; line-height: 1.35;
+  letter-spacing: -0.03em; color: var(--ink); word-break: keep-all; }
+section.intro-take .take .t strong { color: var(--blue); }
 
 /* ---------------------------------------------------------------
    card-hook — 대형 질문/도발 + 좌하단 스와이프 CTA
