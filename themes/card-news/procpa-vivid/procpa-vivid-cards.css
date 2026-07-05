@@ -353,7 +353,9 @@ section.intro-split ul.real li .li-sub { color: var(--ink-mute); }
 
 /* G. intro-ask — 대형 질문 + 현실 대시 3줄 (미니멀 에디토리얼, 거대 ? 워터마크)
    <h1>큰 질문</h1> + <p class="lead">…</p> + <div class="dashes"><p>— 현실1</p>…</div> */
-section.intro-ask::before { content: '?'; position: absolute; right: -30px; bottom: -110px;
+/* 거대 '?' 워터마크 — 결론 .concl 콜아웃이 있으면 우하단에서 겹치므로 제거.
+   콜아웃 없는(강조 없는) intro-ask에서만 워터마크 표시 */
+section.intro-ask:not(:has(.concl))::before { content: '?'; position: absolute; right: -30px; bottom: -110px;
   font-size: 560px; font-weight: 800; line-height: 1;
   color: color-mix(in oklab, var(--blue) 7%, transparent); pointer-events: none; }
 section.intro-ask h1 { font-size: 66px; font-weight: 800; line-height: 1.25;
