@@ -363,17 +363,25 @@ section.card-outro .links .row .k {
    공통: 잉크/블루 배경 + 로고 자동. 하나만 골라 <!-- _class: X --> 지정.
    =============================================================== */
 
-/* A. outro-cta — 블루 풀블리드 + 화이트 pill CTA + 핸들 행 (강한 행동유도)
-   <h1> + <div class="pill">CTA</div> + <div class="handles"><span>procpa.co.kr</span>…</div> */
-section.outro-cta { background: var(--blue); color: #ffffff; justify-content: center; }
-section.outro-cta h1 { color: #ffffff; font-size: 58px; font-weight: 800; line-height: 1.3;
+/* A. outro-cta — 블루 풀블리드 + 화이트 pill CTA + 핸들 행 (강한 행동유도). 로고 좌상단.
+   <div class="eyebrow">더 읽어보기</div> + <h1> + <div class="pill">CTA →</div> +
+   <div class="handles"><span><b>사이트</b> procpa.co.kr</span>…</div> */
+section.outro-cta { background: var(--blue); color: #ffffff; justify-content: center; padding-top: 200px; }
+section.outro-cta .eyebrow { color: rgba(255,255,255,0.82); }
+section.outro-cta h1 { color: #ffffff; font-size: 56px; font-weight: 800; line-height: 1.3;
   border-bottom: none; padding-bottom: 0; margin: 0; }
-section.outro-cta .pill { align-self: flex-start; margin-top: 52px;
+section.outro-cta .pill { align-self: flex-start; margin-top: 48px;
   background: #ffffff; color: var(--blue); font-weight: 700; font-size: 36px;
   padding: 26px 58px; border-radius: 999px; }
-section.outro-cta .handles { margin-top: 60px; display: flex; flex-wrap: wrap; gap: 20px 44px;
-  font-size: 29px; font-weight: 600; color: rgba(255,255,255,0.92); }
+section.outro-cta .handles { margin-top: 56px; display: flex; flex-direction: column; gap: 16px;
+  font-size: 30px; color: rgba(255,255,255,0.95); }
+section.outro-cta .handles b { font-weight: 700; display: inline-block; min-width: 132px; color: #ffffff; }
 section.outro-cta::after { display: none; }
+/* 로고 — 표지처럼 좌상단 (블루 위 화이트 원본) */
+section.outro-cta::before {
+  content: ''; position: absolute; top: 84px; left: 90px;
+  width: 216px; height: 72px; background: var(--logo) no-repeat left center / contain;
+}
 
 /* B. outro-card — 명함형 패널 (라벨↔값 정렬, 정돈된 신뢰감). 로고는 표지처럼 좌상단.
    <div class="eyebrow">더 읽어보기</div> + <h1> +
@@ -420,8 +428,7 @@ section.outro-thanks .handle-lg { margin-top: 44px; font-size: 58px; font-weight
 section.outro-thanks .site { margin-top: 14px; font-size: 30px; color: rgba(244,246,250,0.62); }
 section.outro-thanks::after { display: none; }
 
-/* 변형 공통 로고 (하단 중앙, 화이트 원본) — outro-card는 좌상단 별도 규칙 */
-section.outro-cta::before,
+/* 변형 공통 로고 (하단 중앙, 화이트 원본) — outro-card·outro-cta는 좌상단 별도 규칙 */
 section.outro-chips::before, section.outro-thanks::before {
   content: ''; position: absolute; bottom: 66px; left: 50%; transform: translateX(-50%);
   width: 184px; height: 60px; background: var(--logo) no-repeat center / contain; opacity: 0.8;
