@@ -40,7 +40,7 @@ paginate: true
 | `card-intro` | **2장 소개/동기/목차** — 리드 + agenda 3~4개(정보량 많음) | `.eyebrow` + `# 제목` + `<p class="lead">` + `<div class="agenda"><div class="item"><span class="idx">01</span><span class="txt">항목<small>보조</small></span></div>…</div>` |
 | `card-hook` | 2장 훅 — 대형 질문/도발(가벼운 버전) | `# 훅` + p |
 | (없음/`card-content`) | 기본 — 헤어라인 h1 + 블루 닷 불릿 | `.eyebrow`? + `# 제목` + ul/p |
-| `card-statement` | 잉크 펀치 카드 (덱 중간 1장) | `# 선언` (+ `.wm` 글리프) |
+| `card-statement` | 라이트 펀치(blue-soft + 좌측 블루 바, 덱 중간 1장) | `# 선언` |
 | `card-stat` | 대형 숫자 KPI | `<div class="n">5/5</div>` + `## 라벨` + p |
 | `card-quote` | 인용 — 블루 바 + blue-soft | `> 인용문` + `<span class="cite">출처</span>` |
 | `card-vs` | 좌우 비교 (우측=강조) | `.vs-row > .a / .mid / .b`, 각 `<h3>`+`<p>` |
@@ -49,7 +49,8 @@ paginate: true
 | `card-summary` | 아웃트로 직전 정리 — blue-soft 풀배경 | `# 정리` + ul/p |
 | `card-outro` | 마무리(기본) — 잉크 + 하단 중앙 로고 + CTA/링크 | `# 마무리 문장` + `<div class="cta">CTA</div>` |
 | `outro-card` | **마무리 변형(권장)** — 좌상단 로고 + '더 읽어보기' 명함 패널 | `.eyebrow` + `# 문장` + `<div class="panel"><div class="row"><span class="k">사이트</span><span class="v">procpa.co.kr</span></div>…</div>` |
-| `outro-cta` / `outro-chips` / `outro-thanks` | 마무리 변형 — 블루 풀블리드 CTA / 칩 태그 / 중앙 핸들. 하단 중앙 로고 | 각각 `.pill`+`.handles` / `.chips>.chip` / `.eyebrow`+`.handle-lg`+`.site` (데모: `outro-variants.md`) |
+| `outro-hero` | **마무리 변형 — procpa.co.kr 히어로 미러**(배경사진+스크림+중앙 브랜드 헤드라인+CTA. 표지와 같은 이미지로 북엔드) | `![bg](…jpg)` + `# 헤드라인` + `<p class="tag">` + `<div class="cta-row"><span class="pill">…</span><span class="pill ghost">…</span></div>` + `<div class="sub">` |
+| `outro-cta` / `outro-chips` / `outro-thanks` | 마무리 변형 — 블루 풀블리드 CTA / 칩 태그 / 중앙 핸들 | 각각 `.pill`+`.handles` / `.chips>.chip` / `.eyebrow`+`.handle-lg`+`.site` (데모: `outro-variants.md`) |
 | `card-flow` | 수직 프로세스 A↓B↓C | `.flow > .step / .arr(↓) / .step.hi(강조)` |
 | `card-grid` | 2×2(·`.cols-3`) 미니 카드 | `.grid > .cell > (.swatch?)+h3+p`, `.cell.accent` |
 | `card-table` | 보더 테이블 | markdown 표 그대로 (th 대문자 헤더) |
