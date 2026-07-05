@@ -444,6 +444,15 @@ section.outro-hero .pill { background: var(--blue); color: #ffffff; font-weight:
   padding: 22px 46px; border-radius: 999px; }
 section.outro-hero .pill.ghost { background: transparent; border: 1px solid rgba(255,255,255,0.45); }
 section.outro-hero .sub { margin-top: 32px; font-size: 27px; color: rgba(244,246,250,0.6); }
+/* 하단 표(패널) — 사이트/블로그 라벨↔값. 사진 위라 반투명 다크 */
+section.outro-hero .panel { margin: 48px auto 0; width: 100%; max-width: 740px; text-align: left;
+  background: rgba(12,14,18,0.55); border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 20px; padding: 28px 44px; }
+section.outro-hero .panel .row { display: flex; justify-content: space-between; align-items: center;
+  gap: 40px; font-size: 31px; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.14); }
+section.outro-hero .panel .row:last-child { border-bottom: none; }
+section.outro-hero .panel .row .k { color: #5b9cff; font-weight: 700; }
+section.outro-hero .panel .row .v { color: rgba(244,246,250,0.95); }
 section.outro-hero::after { display: none; }
 section.outro-hero::before { content: ''; position: absolute; top: 84px; left: 90px;
   width: 216px; height: 72px; background: var(--logo) no-repeat left center / contain; }
