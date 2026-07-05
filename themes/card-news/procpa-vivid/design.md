@@ -68,6 +68,53 @@ paginate: true
 - `<span class="li-sub">…</span>` — 불릿 안 둘째 줄 보조 설명 (31px ink-mute). 주장(li 본문) + 근거(li-sub) 2단 구성
 - content 카드 기준 분량: 리드 1문장 + 불릿 2~4개(각각 li-sub 가능) — 3요소 미만이면 카드가 비어 보임
 
+## §2b. 상황→클래스 결정 가이드 (콘텐츠 신호)
+
+"이 내용은 어느 레이아웃인가"를 아래 신호로 결정한다. (제작 취향 축적본은 볼트 `.claude/harness/lessons/cards.md` — `/to-cards`가 필독)
+
+**덱 골격 (모든 덱 공통 — 고정 슬롯)**
+
+| 위치 | 클래스 | 콘텐츠 신호 |
+|---|---|---|
+| 1장 표지 | `card-cover` | 항상 — 썸네일 배경 재사용(북엔드) |
+| 2장 도입 | `intro-ask`(기본) · `intro-chat`(대화 재현) · `intro-split`(기대vs현실) | **운 띄우기 — 독자 공감 질문/상황**. 목차가 꼭 필요할 때만 `card-intro` 계열 |
+| 중간 변곡점(4~6장) | `card-statement` | 글의 핵심 주장 한 문장 — 덱당 1장 |
+| 마지막 직전 | `card-summary` | 전체 정리 핵심 3줄 |
+| 마지막 장 | `outro-hero` | 항상 — 표지와 같은 배경 + `.panel` 웹사이트·블로그 표 |
+
+**본문 카드 (내용 신호 → 클래스)**
+
+| 콘텐츠 신호 | 클래스 |
+|---|---|
+| 핵심 숫자·비율 1개 ("5/5", "80%") | `card-stat` — **숫자가 있으면 최우선** |
+| KPI 2~3개 나란히 | `card-metric` |
+| A vs B 대비 (도구·방식·전후) | `card-vs` (우측 `.b`=권장안) |
+| 원인→결과·단계적 흐름 서사 | `card-flow` (결론 step에 `.hi`) |
+| 실행 절차·순서 (1→2→3) | `card-steps` |
+| 기준·경계 긋기 (한다/안 한다) | `card-check` (✓=확정, `.open` ○=열린 것) |
+| 규칙·항목이 표로 정리될 때 | `card-table` |
+| 병렬 개념 3~4개 (색·유형 구분) | `card-grid` (+`.swatch` 색칩) |
+| 인용문·명언·한 줄 교훈 | `card-quote` |
+| 예상 질문 2~3개 | `card-qa` |
+| 도발적 질문 한 방 (도입 아닌 중간) | `card-hook` |
+| 그 외 일반 설명 | (기본) — `.lead` 1문장 + 불릿 2~4 + `.li-sub` |
+
+**부품 클래스 (여러 카드에서 재사용)**
+
+| 부품 | 어디에 | 역할 |
+|---|---|---|
+| `.eyebrow` | h1 위 | 대문자 킥커 라벨 (위치는 전 카드 동일 — 테마 고정) |
+| `.lead` | h1 아래 | 리드 1문장 — content 카드 필수 |
+| `.li-sub` | 불릿 안 `<span>` | 둘째 줄 보조설명 — 주장+근거 2단 |
+| `.agenda > .item > .idx / .txt(+small)` | card-intro | 목차 항목 |
+| `.panel > .row > .k / .v` | outro-hero·outro-card | 라벨↔값 표 (웹사이트·블로그, `https://` 포함) |
+| `.cta` / `.pill`(`.ghost`) | outro 계열 | CTA 버튼 |
+| `.chips > .chip` | outro-chips | 태그 나열 |
+| `.cite` | card-quote | 출처 |
+| `.n` / `.metrics > .m > .v + .l` | card-stat / card-metric | 대형 숫자 / KPI 쌍 |
+| `.wm` | (기본 미사용) | 대형 글리프 워터마크 — 명시 요청 시만 |
+| `.center` / `.compact` | 모디파이어 | 중앙정렬 / 밀도↓ (`_class`에 합성) |
+
 ## §3. 덱 리듬 규칙 (밋밋함 방지)
 
 - **같은 레이아웃 3연속 금지.** 기본 구성(9장): cover → hook → content → **stat/vs**(앵커) → **statement**(반전) → content → check/steps → summary → outro
