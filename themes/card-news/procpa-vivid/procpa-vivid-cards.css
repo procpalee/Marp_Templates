@@ -206,6 +206,54 @@ section.card-intro .agenda .txt small {
   margin-top: 6px; line-height: 1.45;
 }
 
+/* ===============================================================
+   card-intro 변형 (2장 소개/목차 디자인 선택지). 공통: 상단 정렬 + 리드.
+   마크업은 각 변형 주석 참고. A=card-intro(위) / B=intro-toc /
+   C=intro-tiles / D=intro-timeline.
+   =============================================================== */
+
+/* B. intro-toc — 매거진 목차: 큰 블루 번호 + 헤어라인 구분선
+   <div class="toc"><div class="item"><span class="no">01</span>
+     <div class="body"><h3>제목</h3><p>보조</p></div></div>…</div> */
+section.intro-toc .lead { font-size: 36px; color: var(--ink-mute); margin: -6px 0 40px; line-height: 1.55; }
+section.intro-toc .toc { display: flex; flex-direction: column; width: 100%; }
+section.intro-toc .toc .item { display: flex; align-items: baseline; gap: 34px;
+  padding: 28px 0; border-top: 1px solid var(--hairline); }
+section.intro-toc .toc .item:last-child { border-bottom: 1px solid var(--hairline); }
+section.intro-toc .toc .no { flex: none; min-width: 78px; font-size: 46px; font-weight: 800;
+  color: var(--blue); letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+section.intro-toc .toc .body h3 { font-size: 40px; font-weight: 700; color: var(--ink); margin: 0; }
+section.intro-toc .toc .body p { font-size: 29px; color: var(--ink-mute); margin: 6px 0 0; line-height: 1.45; }
+
+/* C. intro-tiles — 3열 미니 카드 그리드
+   <div class="tiles"><div class="tile"><span class="no">01</span>
+     <h3>제목</h3><p>보조</p></div>…</div> */
+section.intro-tiles .lead { font-size: 36px; color: var(--ink-mute); margin: -6px 0 40px; line-height: 1.55; }
+section.intro-tiles .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; width: 100%; }
+section.intro-tiles .tile { border: 1px solid var(--hairline); border-radius: 18px;
+  padding: 38px 32px; background: var(--canvas); }
+section.intro-tiles .tile .no { display: inline-flex; align-items: center; justify-content: center;
+  width: 60px; height: 60px; border-radius: 14px; background: var(--blue-soft); color: var(--blue);
+  font-size: 27px; font-weight: 800; margin-bottom: 24px; font-variant-numeric: tabular-nums; }
+section.intro-tiles .tile h3 { font-size: 35px; font-weight: 700; color: var(--ink); margin: 0 0 14px; line-height: 1.3; }
+section.intro-tiles .tile p { font-size: 27px; color: var(--ink-mute); margin: 0; line-height: 1.45; }
+
+/* D. intro-timeline — 수직 연결 타임라인 (진행감 01→02→03)
+   <div class="tl"><div class="item"><span class="no">01</span>
+     <div class="body"><h3>제목</h3><p>보조</p></div></div>…</div> */
+section.intro-timeline .lead { font-size: 36px; color: var(--ink-mute); margin: -6px 0 40px; line-height: 1.55; }
+section.intro-timeline .tl { display: flex; flex-direction: column; width: 100%; }
+section.intro-timeline .tl .item { display: flex; gap: 32px; padding-bottom: 38px; position: relative; }
+section.intro-timeline .tl .item:last-child { padding-bottom: 0; }
+section.intro-timeline .tl .no { flex: none; width: 66px; height: 66px; border-radius: 50%;
+  background: var(--blue); color: var(--on-blue); font-size: 28px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; position: relative; z-index: 1;
+  font-variant-numeric: tabular-nums; }
+section.intro-timeline .tl .item:not(:last-child)::before { content: ''; position: absolute;
+  left: 32px; top: 66px; bottom: 6px; width: 2px; background: var(--hairline-strong); }
+section.intro-timeline .tl .body h3 { font-size: 38px; font-weight: 700; color: var(--ink); margin: 0; padding-top: 8px; }
+section.intro-timeline .tl .body p { font-size: 29px; color: var(--ink-mute); margin: 6px 0 0; line-height: 1.45; }
+
 /* ---------------------------------------------------------------
    card-hook — 대형 질문/도발 + 좌하단 스와이프 CTA
    --------------------------------------------------------------- */
