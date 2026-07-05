@@ -36,7 +36,7 @@ paginate: true
 
 | 클래스 | 용도 | 마크업 키 |
 |---|---|---|
-| `card-cover` | 표지 — 상단 12px 블루 밴드 | `.eyebrow` + `# 제목` + p(부제) |
+| `card-cover` | 표지 — **포토 커버**(배경 사진 + 다크 스크림 + 화이트 타이포 + 좌상단 로고). 썸네일과 동일 언어 | `![bg](경로)` 한 줄(썸네일 배경 `Attachments/thumb-bg/<slug>.jpg` 재사용 권장, 없으면 잉크 폴백) + `.eyebrow` + `# 제목` + p(부제) |
 | `card-hook` | 2장 훅 — 대형 질문/도발 | `# 훅` + p |
 | (없음/`card-content`) | 기본 — 헤어라인 h1 + 블루 닷 불릿 | `.eyebrow`? + `# 제목` + ul/p |
 | `card-statement` | 잉크 펀치 카드 (덱 중간 1장) | `# 선언` (+ `.wm` 글리프) |
