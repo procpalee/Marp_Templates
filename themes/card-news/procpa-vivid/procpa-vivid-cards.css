@@ -375,20 +375,27 @@ section.outro-cta .handles { margin-top: 60px; display: flex; flex-wrap: wrap; g
   font-size: 29px; font-weight: 600; color: rgba(255,255,255,0.92); }
 section.outro-cta::after { display: none; }
 
-/* B. outro-card — 명함형 패널 (라벨↔값 정렬, 정돈된 신뢰감)
-   <h1> + <div class="panel"><div class="row"><span class="k">사이트</span><span class="v">procpa.co.kr</span></div>…</div> */
-section.outro-card { background: var(--ink); color: #ffffff; justify-content: center; }
-section.outro-card h1 { color: #ffffff; font-size: 54px; font-weight: 700; line-height: 1.32;
+/* B. outro-card — 명함형 패널 (라벨↔값 정렬, 정돈된 신뢰감). 로고는 표지처럼 좌상단.
+   <div class="eyebrow">더 읽어보기</div> + <h1> +
+   <div class="panel"><div class="row"><span class="k">사이트</span><span class="v">procpa.co.kr</span></div>…</div> */
+section.outro-card { background: var(--ink); color: #ffffff; justify-content: center; padding-top: 200px; }
+section.outro-card .eyebrow { color: #5b9cff; }
+section.outro-card h1 { color: #ffffff; font-size: 52px; font-weight: 700; line-height: 1.32;
   border-bottom: none; padding-bottom: 0; margin: 0; }
-section.outro-card .panel { margin-top: 50px; width: 100%;
+section.outro-card .panel { margin-top: 44px; max-width: 680px;
   background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.16);
-  border-radius: 24px; padding: 40px 50px; }
+  border-radius: 20px; padding: 34px 44px; }
 section.outro-card .panel .row { display: flex; justify-content: space-between; align-items: center;
-  font-size: 32px; padding: 18px 0; border-bottom: 1px solid rgba(255,255,255,0.09); }
+  gap: 40px; font-size: 31px; padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.09); }
 section.outro-card .panel .row:last-child { border-bottom: none; }
 section.outro-card .panel .row .k { color: #5b9cff; font-weight: 700; }
 section.outro-card .panel .row .v { color: rgba(244,246,250,0.92); }
 section.outro-card::after { display: none; }
+/* 로고 — 표지와 동일하게 좌상단 (하단 중앙 공유 규칙에서 제외됨) */
+section.outro-card::before {
+  content: ''; position: absolute; top: 84px; left: 90px;
+  width: 216px; height: 72px; background: var(--logo) no-repeat left center / contain;
+}
 
 /* C. outro-chips — 핸들을 pill 칩으로 나열 (가볍고 모던)
    <h1> + <div class="chips"><span class="chip">procpa.co.kr</span>…</div> */
@@ -413,8 +420,8 @@ section.outro-thanks .handle-lg { margin-top: 44px; font-size: 58px; font-weight
 section.outro-thanks .site { margin-top: 14px; font-size: 30px; color: rgba(244,246,250,0.62); }
 section.outro-thanks::after { display: none; }
 
-/* 변형 4종 공통 로고 (하단 중앙, 화이트 원본) */
-section.outro-cta::before, section.outro-card::before,
+/* 변형 공통 로고 (하단 중앙, 화이트 원본) — outro-card는 좌상단 별도 규칙 */
+section.outro-cta::before,
 section.outro-chips::before, section.outro-thanks::before {
   content: ''; position: absolute; bottom: 66px; left: 50%; transform: translateX(-50%);
   width: 184px; height: 60px; background: var(--logo) no-repeat center / contain; opacity: 0.8;

@@ -47,7 +47,9 @@ paginate: true
 | `card-check` | 경계선 체크리스트 | **ul 전체를 raw HTML로**: `<ul><li>…</li><li class="open">…</li></ul>` (li=✓ 블루, `.open`=○ 회색. markdown `-` 리스트에 HTML li 혼용 금지 — 파싱 깨짐) |
 | `card-steps` | 번호 단계 — 블루 원형 배지 | `1. …` ol |
 | `card-summary` | 아웃트로 직전 정리 — blue-soft 풀배경 | `# 정리` + ul/p |
-| `card-outro` | 마무리 — 잉크 + 하단 로고. 링크/CTA 배치 | `# 마무리 문장` + `<div class="links"><div class="row"><span class="k">사이트</span> …</div>…</div>` (또는 `<div class="cta">CTA</div>`) |
+| `card-outro` | 마무리(기본) — 잉크 + 하단 중앙 로고 + CTA/링크 | `# 마무리 문장` + `<div class="cta">CTA</div>` |
+| `outro-card` | **마무리 변형(권장)** — 좌상단 로고 + '더 읽어보기' 명함 패널 | `.eyebrow` + `# 문장` + `<div class="panel"><div class="row"><span class="k">사이트</span><span class="v">procpa.co.kr</span></div>…</div>` |
+| `outro-cta` / `outro-chips` / `outro-thanks` | 마무리 변형 — 블루 풀블리드 CTA / 칩 태그 / 중앙 핸들. 하단 중앙 로고 | 각각 `.pill`+`.handles` / `.chips>.chip` / `.eyebrow`+`.handle-lg`+`.site` (데모: `outro-variants.md`) |
 | `card-flow` | 수직 프로세스 A↓B↓C | `.flow > .step / .arr(↓) / .step.hi(강조)` |
 | `card-grid` | 2×2(·`.cols-3`) 미니 카드 | `.grid > .cell > (.swatch?)+h3+p`, `.cell.accent` |
 | `card-table` | 보더 테이블 | markdown 표 그대로 (th 대문자 헤더) |
