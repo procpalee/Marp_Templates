@@ -573,6 +573,8 @@ section.card-summary h1 {
 }
 section.card-summary h1 strong { color: var(--blue); }
 section.card-summary p { font-size: 38px; color: var(--ink-mute); margin: 0; }
+/* 문단 사이는 자동 한 줄 간격 — 수동 <br> 불필요(단독 <br>은 빈 줄 박스가 되어 두 배로 벌어짐) */
+section.card-summary p + p { margin-top: 22px; }
 section.card-summary ul li { color: var(--ink); }
 section.card-summary::after { background: rgba(255,255,255,0.7); }
 
