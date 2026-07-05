@@ -173,12 +173,12 @@ section.outro-hero[data-marpit-advanced-background="background"] figure::after {
     rgba(8,11,16,.62) 0%, rgba(8,11,16,.72) 55%, rgba(8,11,16,.9) 100%);
 }
 /* 로고는 marpit이 pseudo(전경) 레이어에서만 pseudo 요소를 허용하므로 거기서 렌더됨 */
-section.card-cover .eyebrow { color: #5b9cff; }
+section.card-cover .eyebrow { color: #5b9cff; font-size: 30px; }
 section.card-cover h1 {
-  color: #ffffff; font-size: 80px; font-weight: 800; line-height: 1.18;
-  letter-spacing: -0.035em; border-bottom: none; padding-bottom: 0; margin: 0;
+  color: #ffffff; font-size: 96px; font-weight: 800; line-height: 1.16;
+  letter-spacing: -0.04em; border-bottom: none; padding-bottom: 0; margin: 0;
 }
-section.card-cover p { font-size: 38px; color: rgba(244,246,250,0.88); margin: 40px 0 0; line-height: 1.5; }
+section.card-cover p { font-size: 42px; color: rgba(244,246,250,0.88); margin: 42px 0 0; line-height: 1.5; }
 
 /* ---------------------------------------------------------------
    card-intro — 2장용 소개/동기/목차. 헤어라인 타이틀 + 리드 문단 +
@@ -475,7 +475,7 @@ section.outro-thanks::before { opacity: 0.55; }
    --------------------------------------------------------------- */
 section.card-cover::before {
   content: ''; position: absolute; top: 84px; left: 90px; z-index: 1;
-  width: 216px; height: 72px;
+  width: 164px; height: 54px;
   background: var(--logo) no-repeat left center / contain;
   /* 포토 커버(다크)라 화이트 로고 원본 그대로 */
 }
