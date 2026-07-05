@@ -39,7 +39,8 @@ paginate: true
 | `card-cover` | 표지 — **포토 커버**(배경 사진 + 다크 스크림 + 화이트 타이포 + 좌상단 로고). 썸네일과 동일 언어 | `![bg](경로)` 한 줄(썸네일 배경 `Attachments/thumb-bg/<slug>.jpg` 재사용 권장, 없으면 잉크 폴백) + `.eyebrow` + `# 제목` + p(부제) |
 | `card-intro` | 2장 목차형 A — 리드 + agenda 칩 | `.eyebrow` + `# 제목` + `<p class="lead">` + `<div class="agenda"><div class="item"><span class="idx">01</span><span class="txt">항목<small>보조</small></span></div>…</div>` |
 | `intro-toc` / `intro-tiles` / `intro-timeline` | 2장 목차형 B/C/D — 매거진 목차 / 3열 타일 / 수직 타임라인 | `.toc>.item>.no+.body` / `.tiles>.tile>.no+h3+p` / `.tl>.item>.no+.body` (데모: `intro-variants.md`) |
-| `intro-chat` / `intro-split` / `intro-ask` | **2장 운띄우기형 E/F/G(권장)** — 말풍선 대화 / 기대vs현실 반전 / 대형 질문+? 워터마크 | `.chat>.bub.them/.me/.real` / `.hype>.q`+`.turn`+`ul.real` / `# 질문`+`.lead`+`.dashes>p` (데모: `intro-new-variants.md`) |
+| `intro-chat` / `intro-split` / `intro-ask` | **2장 운띄우기형 E/F/G** — 말풍선 대화 / 기대vs현실 반전 / 대형 질문+? 워터마크 | `.chat>.bub.them/.me/.real` / `.hype>.q`+`.turn`+`ul.real` / `# 질문`+`.lead`+`.dashes>p` (데모: `intro-new-variants.md`) |
+| `intro-thesis` | **2장 명제 강조형 H** — 세팅 → 현실 대시 → 하단 '결론' 블루 밴드로 핵심 명제를 크게 못박음 | `.setup` + `.dashes>p` + `<div class="thesis"><span class="k">라벨</span><span class="t">명제(<u>강조</u>)</span></div>` |
 | `card-hook` | 2장 훅 — 대형 질문/도발(가벼운 버전) | `# 훅` + p |
 | (없음/`card-content`) | 기본 — 헤어라인 h1 + 블루 닷 불릿 | `.eyebrow`? + `# 제목` + ul/p |
 | `card-statement` | 라이트 펀치(blue-soft + 좌측 블루 바, 덱 중간 1장) | `# 선언` |

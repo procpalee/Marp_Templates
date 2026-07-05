@@ -106,7 +106,7 @@ code {
 }
 /* eyebrow가 있는 본문 카드는 상단 정렬 → eyebrow가 매 페이지 같은 높이(상단 패딩)에 고정.
    표지(card-cover)·아웃트로(outro-*)는 각자 정렬을 쓰므로 제외. */
-section:has(> .eyebrow):not(.card-cover):not(.thumb):not([class*="outro"]):not(.card-statement):not(.card-summary) {
+section:has(> .eyebrow):not(.card-cover):not(.thumb):not([class*="outro"]):not(.card-statement):not(.card-summary):not(.intro-thesis) {
   justify-content: flex-start;
 }
 /* statement·summary(펀치 카드)는 eyebrow가 있어도 세로 중앙정렬 — 짧은 내용의 하단 공백 방지 */
@@ -364,6 +364,28 @@ section.intro-ask .dashes { display: flex; flex-direction: column; gap: 24px; wi
 section.intro-ask .dashes p { font-size: 35px; color: var(--ink); margin: 0; line-height: 1.5;
   padding-left: 46px; position: relative; }
 section.intro-ask .dashes p::before { content: '—'; position: absolute; left: 0; color: var(--blue); font-weight: 700; }
+
+/* H. intro-thesis — 도입 전용: 세팅(성공담) → 현실 대시 → 하단 '결론' 블루 밴드로 명제 강조.
+   마크업: <p class="setup">세팅 문장</p>
+     + <div class="dashes"><p>— 현실1</p>…</div>
+     + <div class="thesis"><span class="k">그래서 내린 결론</span>
+         <span class="t">업무 자동화는 생각보다 <u>'더'</u> 어렵다</span></div> */
+section.intro-thesis { justify-content: center; }
+section.intro-thesis .setup { font-size: 40px; font-weight: 700; color: var(--ink);
+  line-height: 1.4; margin: 0 0 34px; letter-spacing: -0.02em; }
+section.intro-thesis .setup strong { color: var(--blue); }
+section.intro-thesis .dashes { display: flex; flex-direction: column; gap: 18px; width: 100%; }
+section.intro-thesis .dashes p { font-size: 33px; color: var(--ink-mute); margin: 0; line-height: 1.5;
+  padding-left: 44px; position: relative; }
+section.intro-thesis .dashes p::before { content: '—'; position: absolute; left: 0; color: var(--ink-sub); font-weight: 700; }
+section.intro-thesis .thesis { margin-top: 46px; width: 100%; background: var(--blue);
+  color: #ffffff; border-radius: 22px; padding: 44px 48px; }
+section.intro-thesis .thesis .k { display: block; font-size: 27px; font-weight: 700;
+  color: rgba(255,255,255,0.72); text-transform: uppercase; letter-spacing: 0.09em; margin-bottom: 16px; }
+section.intro-thesis .thesis .t { display: block; font-size: 56px; font-weight: 800;
+  line-height: 1.28; letter-spacing: -0.03em; word-break: keep-all; }
+section.intro-thesis .thesis .t u { text-decoration-color: rgba(255,255,255,0.55);
+  text-underline-offset: 8px; text-decoration-thickness: 5px; }
 
 /* ---------------------------------------------------------------
    card-hook — 대형 질문/도발 + 좌하단 스와이프 CTA
