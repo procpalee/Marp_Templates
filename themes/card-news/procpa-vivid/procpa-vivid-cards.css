@@ -1,0 +1,304 @@
+/* @theme procpa-vivid-cards */
+/* @size square 1080px 1080px */
+/* @size sns 1080px 1350px */
+
+/* ============================================================
+   procpa-vivid-cards — 카드뉴스(SNS) 전용 vivid 테마.
+   단일 출처: ../../slide/procpa-vivid/design.md (토큰 100% 계승)
+   화이트 캔버스 + Vivid Blue 단일 강조 + 헤어라인 에디토리얼.
+   그림자·그라데이션·파스텔 금지. 잉크 카드(statement/outro)는
+   punctuation 용도로 덱당 1~2장.
+
+   규격: size: square(1080×1080, 기본) | sns(1080×1350, 4:5)
+   레이아웃 12종 (한 카드 = 한 클래스, <!-- _class: X -->):
+     card-cover / card-hook / card-content(기본) / card-statement /
+     card-stat / card-quote / card-vs / card-check / card-steps /
+     card-summary / card-outro / (+ .center .compact 모디파이어)
+   워터마크: <div class="wm">03</div> — 우하단 대형 8% 블루 글리프
+   브랜드: 덱 frontmatter footer: 'PROCPA' → 좌하단 고정
+   페이지: paginate: true → 우하단 "n / N" pill (cover·outro 자동 숨김)
+   ============================================================ */
+
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@latest/dist/web/variable/pretendardvariable.min.css');
+
+:root {
+  --canvas:       #ffffff;
+  --canvas-soft:  #f4f6f9;
+  --card:         #ffffff;
+  --ink:          #0c0e12;
+  --ink-mute:     #4a5160;
+  --ink-sub:      #8a90a0;
+  --blue:         #2563eb;
+  --blue-hover:   #3b82f6;
+  --blue-soft:    #eff5ff;
+  --on-blue:      #ffffff;
+  --hairline:        #e6e9ee;
+  --hairline-strong: #d4d8df;
+  --destructive:     #c2410c;
+  --success:         #15803d;
+  --font-sans: 'Pretendard Variable', Pretendard, 'Noto Sans KR', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --radius:     16px;
+  --radius-sm:  10px;
+  --radius-lg:  24px;
+}
+
+/* ---------------------------------------------------------------
+   Base — 모든 카드 공통
+   --------------------------------------------------------------- */
+section {
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  padding: 96px 90px 150px;
+  font-size: 38px;
+  line-height: 1.58;
+  font-weight: 400;
+  letter-spacing: -0.011em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  position: relative;
+  overflow: hidden;
+  word-break: keep-all;
+}
+section.compact { font-size: 33px; padding: 84px 80px 140px; }
+section.center { align-items: center; text-align: center; }
+
+h1 {
+  font-size: 58px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  margin: 0 0 44px;
+  padding-bottom: 34px;
+  border-bottom: 1px solid var(--hairline);
+  width: 100%;
+}
+h2 { font-size: 44px; font-weight: 600; color: var(--ink-mute); margin: 0 0 24px; }
+p  { margin: 0 0 18px; color: var(--ink-mute); }
+strong { color: var(--blue); font-weight: 700; }
+em { font-style: normal; color: var(--blue); }
+code {
+  font-family: var(--font-sans);
+  font-size: 0.82em;
+  background: var(--canvas-soft);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  padding: 4px 16px;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* eyebrow — 대문자 킥커 라벨 (블루) */
+.eyebrow {
+  font-size: 27px;
+  font-weight: 700;
+  color: var(--blue);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  margin: 0 0 30px;
+}
+
+/* 기본 불릿 — 블루 닷 */
+ul { list-style: none; padding: 0; margin: 0; width: 100%; }
+ul li { position: relative; padding-left: 52px; margin-bottom: 30px; color: var(--ink); }
+ul li::before {
+  content: ""; position: absolute; left: 0; top: 0.62em;
+  width: 16px; height: 16px; border-radius: 50%; background: var(--blue);
+}
+ul li:last-child { margin-bottom: 0; }
+
+/* 워터마크 — 우하단 대형 저채도 블루 글리프/번호 */
+.wm {
+  position: absolute; right: -20px; bottom: -60px;
+  font-size: 420px; font-weight: 700; line-height: 1;
+  color: color-mix(in oklab, var(--blue) 8%, transparent);
+  letter-spacing: -0.04em; pointer-events: none; z-index: 0;
+  font-variant-numeric: tabular-nums;
+}
+section > *:not(.wm):not(footer):not(header) { position: relative; z-index: 1; }
+
+/* 브랜드 footer (덱 frontmatter footer: 'PROCPA') */
+footer {
+  position: absolute; bottom: 64px; left: 90px;
+  font-size: 26px; font-weight: 600; color: var(--ink-sub);
+  text-transform: uppercase; letter-spacing: 0.08em;
+}
+header { display: none; }
+
+/* 페이지네이션 pill — 우하단 "n / N" */
+section::after {
+  content: attr(data-marpit-pagination) ' / ' attr(data-marpit-pagination-total);
+  position: absolute; bottom: 58px; right: 90px;
+  font-size: 25px; font-weight: 500; color: var(--ink-sub);
+  background: var(--canvas-soft); border: 1px solid var(--hairline);
+  border-radius: 999px; padding: 8px 26px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------------------------------------------------------------
+   card-cover — 화이트 + 상단 블루 밴드 + eyebrow (vivid cover 이식)
+   --------------------------------------------------------------- */
+section.card-cover { border-top: 12px solid var(--blue); }
+section.card-cover h1 {
+  font-size: 84px; font-weight: 800; line-height: 1.16;
+  letter-spacing: -0.035em; border-bottom: none; padding-bottom: 0; margin: 0;
+}
+section.card-cover p { font-size: 40px; color: var(--ink-mute); margin: 44px 0 0; line-height: 1.45; }
+section.card-cover::after { display: none; }
+
+/* ---------------------------------------------------------------
+   card-hook — 대형 질문/도발 + 좌하단 스와이프 CTA
+   --------------------------------------------------------------- */
+section.card-hook h1 {
+  font-size: 72px; font-weight: 800; line-height: 1.25;
+  letter-spacing: -0.035em; border-bottom: none; padding-bottom: 0; margin: 0 0 30px;
+}
+section.card-hook p { font-size: 40px; color: var(--ink-mute); margin: 0; }
+section.card-hook::before {
+  content: '밀어서 계속 →'; position: absolute; bottom: 62px; left: 50%;
+  transform: translateX(-50%);
+  font-size: 26px; font-weight: 600; color: var(--blue);
+  letter-spacing: 0.06em;
+}
+
+/* ---------------------------------------------------------------
+   card-content — 기본 섹션 카드 (헤어라인 타이틀 + 블루 닷 불릿)
+   base 스타일 그대로 사용. 클래스 없이도 동일.
+   --------------------------------------------------------------- */
+
+/* ---------------------------------------------------------------
+   card-statement — 잉크 펀치 카드 (덱 중간 1장, vivid statement 이식)
+   --------------------------------------------------------------- */
+section.card-statement { background: var(--ink); color: #ffffff; }
+section.card-statement h1 {
+  color: #ffffff; font-size: 66px; font-weight: 700; line-height: 1.35;
+  letter-spacing: -0.03em; border-bottom: none; padding-bottom: 0; margin: 0;
+}
+section.card-statement p { color: rgba(255,255,255,0.6); font-size: 34px; margin: 36px 0 0; }
+section.card-statement strong, section.card-statement em { color: var(--blue-hover); }
+section.card-statement .wm { color: rgba(91,156,255,0.10); }
+section.card-statement footer { color: rgba(255,255,255,0.4); }
+section.card-statement::after {
+  color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.14);
+}
+
+/* ---------------------------------------------------------------
+   card-stat — 대형 숫자 KPI (vivid .stat 이식)
+   <div class="n">5/5</div> + h2 라벨 + p 보조
+   --------------------------------------------------------------- */
+section.card-stat .n {
+  font-size: 240px; font-weight: 800; line-height: 1;
+  letter-spacing: -0.045em; color: var(--ink);
+  font-variant-numeric: tabular-nums; margin: 0 0 40px;
+}
+section.card-stat .n strong, section.card-stat .n em { color: var(--blue); font-weight: 800; }
+section.card-stat h2 { font-size: 48px; font-weight: 700; color: var(--ink); margin: 0 0 20px; }
+section.card-stat p { font-size: 36px; color: var(--ink-mute); margin: 0; }
+
+/* ---------------------------------------------------------------
+   card-quote — 블루 바 인용 (vivid .quote-block 이식)
+   --------------------------------------------------------------- */
+section.card-quote blockquote {
+  border-left: 10px solid var(--blue);
+  background: var(--blue-soft);
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+  padding: 56px 64px;
+  margin: 0; width: 100%;
+}
+section.card-quote blockquote p {
+  font-size: 47px; font-weight: 600; line-height: 1.5;
+  color: var(--ink); margin: 0;
+}
+section.card-quote .cite {
+  display: block; margin-top: 36px;
+  font-size: 30px; font-weight: 400; color: var(--ink-sub);
+}
+
+/* ---------------------------------------------------------------
+   card-vs — 좌우 비교 (vivid .vs 이식, 우측 = 강조)
+   <div class="vs-row"><div class="a">…</div><div class="mid">vs</div>
+   <div class="b">…</div></div>
+   --------------------------------------------------------------- */
+section.card-vs .vs-row { display: flex; gap: 30px; align-items: stretch; width: 100%; }
+section.card-vs .a, section.card-vs .b {
+  flex: 1; border: 2px solid var(--hairline-strong);
+  border-radius: var(--radius-lg); padding: 52px 44px;
+  display: flex; flex-direction: column; justify-content: center;
+}
+section.card-vs .b { border: 4px solid var(--blue); background: var(--blue-soft); }
+section.card-vs .mid { align-self: center; font-size: 32px; font-weight: 700; color: var(--ink-sub); }
+section.card-vs .a h3, section.card-vs .b h3 {
+  font-size: 44px; font-weight: 700; margin: 0 0 18px; color: var(--ink);
+}
+section.card-vs .b h3 { color: var(--blue); }
+section.card-vs .a p, section.card-vs .b p { font-size: 33px; color: var(--ink-mute); margin: 0; line-height: 1.5; }
+
+/* ---------------------------------------------------------------
+   card-check — 경계선 긋기 체크리스트 (vivid checklist 이식)
+   기본 li = 블루 ✓(닫기/완료) · li.open = 회색 ○(열기/판단)
+   --------------------------------------------------------------- */
+section.card-check ul li { padding-left: 76px; margin-bottom: 40px; }
+section.card-check ul li::before {
+  content: '✓'; width: auto; height: auto; border-radius: 0; background: none;
+  top: 0; font-size: 44px; font-weight: 800; color: var(--blue); line-height: 1.45;
+}
+section.card-check ul li.open::before { content: '○'; color: var(--ink-sub); font-weight: 600; }
+section.card-check ul li.open { color: var(--ink-mute); }
+
+/* ---------------------------------------------------------------
+   card-steps — 번호 단계 (vivid steps 이식, 블루 원형 배지)
+   --------------------------------------------------------------- */
+section.card-steps ol { list-style: none; counter-reset: step; padding: 0; margin: 0; width: 100%; }
+section.card-steps ol li {
+  counter-increment: step; position: relative;
+  padding-left: 104px; margin-bottom: 44px; color: var(--ink);
+}
+section.card-steps ol li::before {
+  content: counter(step); position: absolute; left: 0; top: 0.08em;
+  width: 68px; height: 68px; border-radius: 50%;
+  background: var(--blue); color: var(--on-blue);
+  font-size: 34px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  font-variant-numeric: tabular-nums;
+}
+section.card-steps ol li:last-child { margin-bottom: 0; }
+section.card-steps ol li strong { color: var(--ink); }
+section.card-steps ol li em { color: var(--blue); }
+
+/* ---------------------------------------------------------------
+   card-summary — 아웃트로 직전 핵심 정리 (blue-soft 패널)
+   --------------------------------------------------------------- */
+section.card-summary { background: var(--blue-soft); }
+section.card-summary h1 {
+  border-bottom: none; padding-bottom: 0;
+  font-size: 62px; font-weight: 700; line-height: 1.35; margin: 0 0 40px;
+}
+section.card-summary h1 strong { color: var(--blue); }
+section.card-summary p { font-size: 38px; color: var(--ink-mute); margin: 0; }
+section.card-summary ul li { color: var(--ink); }
+section.card-summary::after { background: rgba(255,255,255,0.7); }
+
+/* ---------------------------------------------------------------
+   card-outro — 잉크 마무리 + 블루 pill CTA (vivid closing-cta 이식)
+   <div class="cta">…</div>
+   --------------------------------------------------------------- */
+section.card-outro { background: var(--ink); color: #ffffff; }
+section.card-outro h1 {
+  color: #ffffff; font-size: 62px; font-weight: 700; line-height: 1.35;
+  letter-spacing: -0.03em; border-bottom: none; padding-bottom: 0; margin: 0;
+}
+section.card-outro h1 strong, section.card-outro h1 em { color: var(--blue-hover); }
+section.card-outro .cta {
+  display: inline-block; margin-top: 64px;
+  background: var(--blue); color: var(--on-blue);
+  font-size: 38px; font-weight: 600;
+  padding: 28px 66px; border-radius: 999px;
+}
+section.card-outro p { color: rgba(255,255,255,0.5); font-size: 28px; margin: 40px 0 0; }
+section.card-outro .wm { color: rgba(91,156,255,0.10); }
+section.card-outro footer { color: rgba(255,255,255,0.4); }
+section.card-outro::after { display: none; }
