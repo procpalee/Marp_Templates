@@ -91,6 +91,10 @@ output/<slug>/
 
 전체 레이아웃 매핑(40 규칙)은 [references/layout-heuristics.md](references/layout-heuristics.md), 인라인 헬퍼 주입은 [references/inline-helpers.md](references/inline-helpers.md).
 
+> **테마 분기** — 사용자가 **procpa-vivid**(화이트+단일블루 에디토리얼) 타깃을 요청하면, 아래 propca 40 규칙 대신 [references/procpa-vivid-matching.md](references/procpa-vivid-matching.md)를 적용하고 출력을 `theme: procpa-vivid`로 한다. procpa-vivid는 **컴포넌트 우선(components-first)**: 슬라이드를 공통 컴포넌트(`.card`/`.stat`/`.vs`/`.board`/`.panel`/`.process`/`.quote-block`/`.callout` + `.cols-*`/`.stack`)로 먼저 조립하고, **컴포넌트로 표현 불가하거나 시각 임팩트가 필요할 때만** CORE 레이아웃(`<!-- _class: X -->`)을 쓴다. **v8 (2026-07)**: 레이아웃은 CORE 세트로 축소, `[ARCHIVE]` 32종은 출력 금지 — 조합 표준은 [references/vivid-recipes.md](references/vivid-recipes.md)의 R-01~R-12. 맞는 표현이 반복적으로 필요하면 CSS의 `PROJECT LAYOUTS` 섹션에 신규 레이아웃을 추가한다(design.md §"새 레이아웃 추가"). 그 외(기본)는 propca-notion-style.
+>
+> **사용자 스타일 프로파일 (필수 로드)** — procpa-vivid·카드뉴스 변환 시 [references/user-style-profile.md](references/user-style-profile.md)를 항상 로드해 문체(매체별 종결어미 스위칭)·밀도(불릿 3~6개, 45자)·강조(볼드 1~2개, 하단 콜아웃 요약)·덱 골격(시작하며→진단→처방→실증→마치며)을 적용한다. 사용자가 원고를 직접 쓸 때의 가이드는 [references/authoring-guide.md](references/authoring-guide.md).
+
 ### 2.A) 쇼케이스 5 핵심 규칙 (반드시 준수)
 
 > 이 5 규칙은 propca-notion-style.md 쇼케이스의 관습이며, 모든 변환에 적용된다.

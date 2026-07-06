@@ -1,7 +1,6 @@
 /* @theme procpa-vivid-cards */
 /* @size square 1080px 1080px */
 /* @size sns 1080px 1350px */
-/* @size wide 1280px 720px */
 
 /* ============================================================
    procpa-vivid-cards — 카드뉴스(SNS) 전용 vivid 테마.
@@ -106,7 +105,7 @@ code {
 }
 /* eyebrow가 있는 본문 카드는 상단 정렬 → eyebrow가 매 페이지 같은 높이(상단 패딩)에 고정.
    표지(card-cover)·아웃트로(outro-*)는 각자 정렬을 쓰므로 제외. */
-section:has(> .eyebrow):not(.card-cover):not(.thumb):not([class*="outro"]):not(.card-statement):not(.card-summary):not(.intro-thesis):not(.intro-punch):not(.intro-verdict):not(.intro-take):not(.intro-ask) {
+section:has(> .eyebrow):not(.card-cover):not([class*="outro"]):not(.card-statement):not(.card-summary):not(.intro-thesis):not(.intro-punch):not(.intro-verdict):not(.intro-take):not(.intro-ask) {
   justify-content: flex-start;
 }
 /* statement·summary(펀치 카드)는 eyebrow가 있어도 세로 중앙정렬 — 짧은 내용의 하단 공백 방지 */
@@ -202,41 +201,6 @@ section.card-cover h1 {
   letter-spacing: -0.04em; border-bottom: none; padding-bottom: 0; margin: 0;
 }
 section.card-cover p { font-size: 42px; color: rgba(244,246,250,0.88); margin: 42px 0 0; line-height: 1.5; }
-
-/* ---------------------------------------------------------------
-   thumb — 블로그/OG 썸네일 (16:9, 1280×720). card-cover와 동일 언어
-   (배경 사진 + 다크 스크림 + 화이트 타이포 + 좌상단 로고)를 와이드
-   비율로 옮긴 것. 사용: size: wide + <!-- _class: thumb -->,
-   배경은 ![bg](…/Attachments/thumb-bg/<slug>.jpg) 한 줄. 이미지가 없으면
-   잉크 캔버스로 폴백. 마크업: .eyebrow(카테고리) → # 제목 → <p class="sub">부제</p>.
-   좌상단 로고(::before)는 테마가 자동 삽입 (card-cover와 동일하게 핸들 없음).
-   --------------------------------------------------------------- */
-section.thumb {
-  background: var(--ink); color: #ffffff;
-  padding: 96px 96px 104px;
-  justify-content: center; align-items: flex-start;
-}
-section.thumb::after { display: none; }   /* 페이지 pill 숨김 (썸네일은 단일 슬라이드) */
-/* 스크림 — 배경 레이어 figure 위, 텍스트 아래 (card-cover와 동일 메커니즘) */
-section.thumb[data-marpit-advanced-background="background"] figure::after {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(to bottom,
-    rgba(8,11,16,.34) 0%, rgba(8,11,16,.56) 55%, rgba(8,11,16,.88) 100%);
-}
-section.thumb .eyebrow { color: #5b9cff; font-size: 27px; margin: 0 0 26px; }
-section.thumb h1 {
-  color: #ffffff; font-size: 72px; font-weight: 800; line-height: 1.2;
-  letter-spacing: -0.035em; border-bottom: none; padding: 0; margin: 0; max-width: 94%;
-}
-section.thumb .sub {
-  font-size: 32px; font-weight: 400; color: rgba(244,246,250,0.82);
-  margin: 30px 0 0; line-height: 1.5; max-width: 90%;
-}
-/* 좌상단 로고 (card-cover와 동일, 화이트 원본) */
-section.thumb::before {
-  content: ''; position: absolute; top: 72px; left: 96px; z-index: 1;
-  width: 150px; height: 50px; background: var(--logo) no-repeat left center / contain;
-}
 
 /* ---------------------------------------------------------------
    card-intro — 2장용 소개/동기/목차. 헤어라인 타이틀 + 리드 문단 +

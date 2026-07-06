@@ -120,6 +120,12 @@ output/
 ```
 keywords(purpose) → mode
 
+  풀세트|full set|풀 세트|멀티산출|올인원|덱+카드|전체 산출
+    → mode=full-set (§4.5 — 덱+카드뉴스+썸네일 일괄, procpa-vivid 계열 고정)
+
+  썸네일|thumbnail|thumb|대표이미지|og 이미지|커버 이미지
+    → mode=thumbnail, theme=procpa-vivid-thumb (고정)
+
   인스타|insta|instagram|쓰레드|threads|카드뉴스|card news|sns|소셜|social 카드
   |링크드인|linkedin
     → mode=card-news, theme=propca-notion-style-cards (고정)
@@ -127,6 +133,12 @@ keywords(purpose) → mode
   (그 외)
     → mode=deck, theme=propca-notion-style (고정)
 ```
+
+**thumbnail 모드** (경량 — QA 에이전트 생략, 시각 확인만):
+1. 소스에서 제목/부제/카테고리(eyebrow) 추출 (또는 사용자가 직접 제공).
+2. 변형 선택 — **기본(메인)은 `thumb-photo`**(`_backgroundImage` cover + 다크 스크림; 사진 없으면 잉크 폴백이라 안전). 연재물(EP/회차)→`thumb-badge`, 순타이포를 원할 때만→`thumb-typo`/`thumb-ink`/`thumb-band`. 브랜드 마커는 모든 변형 하단 중앙(테마가 처리). 카탈로그: [`themes/thumbnail/procpa-vivid/design.md`](../../../themes/thumbnail/procpa-vivid/design.md).
+3. 비율 — purpose 키워드: 인스타→`sq`(1:1), 카드뉴스 표지→`sns`(4:5)+`tall`, 기본→16:9. 복수 매체면 복수 산출.
+4. `output/<slug>-thumb/<slug>-thumb-<ratio>.md` 생성 → marp `--images png` 빌드 (`--theme-set ../themes/thumbnail/procpa-vivid`). 문체는 [user-style-profile.md](../md-to-marp-propca/references/user-style-profile.md) 준수 (제목 그대로, 부제 25자 내외).
 
 card-news 모드에서 추가 산출 형식:
 
@@ -288,6 +300,31 @@ npx --yes @marp-team/marp-cli ../output/slides-<slug>-cards.md --pdf --allow-loc
 ### 4-3) marp-reviewer QA
 
 위와 동일하지만 prompt의 `[모드]`를 `card-news`로, `[적용 테마]`를 `propca-notion-style-cards`로 지정. `output=pdf`면 PDF 페이지 수 = 카드 수 검증을 지침에 포함.
+
+### 4-4) 카드 스타일 규칙 리포트 (living rules 리뷰 루프)
+
+카드뉴스 산출 완료 시 최종 리포트에 **"적용된 카드 규칙" 표**를 포함한다 — [user-style-profile.md](../md-to-marp-propca/references/user-style-profile.md) "카드뉴스 스타일" 섹션의 규칙 ID(C1~C7)별로 어느 카드에 어떻게 적용했는지 1줄씩. 사용자가 특정 규칙에 O/X/수정 코멘트를 주면 **그 자리에서 프로파일의 해당 규칙을 갱신**(상태 ✅/문구 수정/삭제)하고 변경 이력에 날짜와 함께 기록한다. 이 루프가 카드뉴스 규칙을 실전 배포물 기반으로 수렴시키는 공식 경로다.
+
+---
+
+## 4.5) full-set 모드 파이프라인 (원소스 멀티산출)
+
+purpose에 `풀세트|full set|풀 세트|멀티산출|올인원|덱+카드|전체 산출` 매치 시 — **한 소스에서 발표 덱 + 카드뉴스 + 썸네일을 일괄 산출**한다. 브랜드 일관성을 위해 **전부 procpa-vivid 계열로 고정**:
+
+| 산출 | 테마 | 파이프라인 |
+|---|---|---|
+| ① 발표 덱 (16:9) | `procpa-vivid` | §3 deck 파이프라인 (procpa-vivid 분기 + user-style-profile 로드) |
+| ② 카드뉴스 (4:5, ≤10장) | `procpa-vivid-cards` | §4 card-news 파이프라인 — 단, `--theme-set ../themes/card-news/procpa-vivid` |
+| ③ 썸네일 | `procpa-vivid-thumb` | §2 thumbnail 모드 (기본 16:9 + 사용자 지정 비율 추가) |
+
+실행 규칙:
+1. **slug 공유** — 산출물: `output/<slug>/`(덱), `output/<slug>-cards/`(카드 PNG), `output/<slug>-thumb/`(썸네일 PNG).
+2. **순서**: 덱 → 카드뉴스 → 썸네일. 덱 변환에서 뽑은 핵심 명제(takeaway/statement 문장)를 카드뉴스 후크·썸네일 제목 후보로 재사용 — 세 산출물의 메시지를 일치시킨다 (user-style-profile "아웃트로 = 핵심 명제 재천명" 규칙).
+3. **분량 독립** — 카드뉴스는 덱 슬라이드 축약이 아니라 카드 문법(후크→포인트→"결국 3가지"→CTA)으로 재구성. 덱 39장 ≠ 카드 39장.
+4. **QA**: 덱·카드뉴스는 marp-reviewer 각각 실행(§5), 썸네일은 시각 확인만.
+5. **최종 리포트**: 산출물 3종 경로 + 슬라이드/카드/썸네일 수 + QA 판정 요약 표 1개.
+
+호출 예: `/marp 원고.md 풀세트 (썸네일은 16:9와 1:1)`
 
 ---
 

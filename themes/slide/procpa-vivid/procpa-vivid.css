@@ -3,12 +3,47 @@
    procpa-vivid — Modern editorial "Vivid Blue" brand theme.
    Designed from scratch (NOT a tech-modern derivative).
    Source: procpa.co.kr blog design system (repo procpa_obsidian_style,
-   src/app/globals.css). Lineage: Apple × CMDS editorial doc structure,
+   src/app/globals.css). Lineage: Apple x CMDS editorial doc structure,
    retoned to a vivid-blue identity.
    Brand language: pure-white canvas, cool neutrals, single vivid-blue
-   accent (#2563eb), hairline-separated sections + generous whitespace,
+   accent, hairline-separated sections + generous whitespace,
    uppercase eyebrow labels, blue callouts, token-chip code. No pastels,
    no sticky notes, no navy hero (that is propca-notion-style), no shadows.
+
+   COMPONENTS-FIRST MODEL (v7) -- CSS is organised in four tiers:
+     TIER 1 COMPONENTS   - global classes (card/stat/vs/board/panel/
+       process/quote-block/callout + cols/stack). Combine MULTIPLE per
+       slide inside any wrapper. THIS IS THE DEFAULT - build slides here.
+     TIER 2 IMPACT LAYOUTS - section-scoped class, ONE per slide. Use only
+       when components cannot express it or a hero moment is needed
+       (connecting lines, badges, check/cross markers, editor chrome, bg).
+     SHELLS            - cover/section/toc/closers (deck skeleton).
+     PROJECT LAYOUTS   - append NEW one-off layouts at the very bottom.
+   All colours come from :root tokens so procpa-vivid-dark auto-inverts.
+
+   v8 LAYOUT DIET (2026-07) -- CORE vs [ARCHIVE]:
+   실사용 데이터 기반으로 레이아웃을 CORE 세트로 축소했다. [ARCHIVE] 마커가
+   붙은 블록은 렌더링 호환을 위해 CSS에 남아 있지만(기존 덱 재빌드 보장),
+   카탈로그(design.md·layouts-by-purpose.md)와 스킬 매칭 문서에서 제외되어
+   신규 변환에는 사용하지 않는다. 대체는 TIER 1 컴포넌트 레시피
+   (.claude/skills/md-to-marp-propca/references/vivid-recipes.md).
+
+   CORE (신규 덱에서 사용하는 section 클래스 전체 목록 — v8.2 조정 2026-07):
+     shells  : cover · cover-image · cover-split · section · toc · end ·
+               qa · thanks-contact · session-break · thumb
+     body    : split · feature-cards · content-sidebar · comparison-vs ·
+               comparison · steps · icon-list · checklist · faq ·
+               vertical-timeline
+     impact  : statement(+light) · takeaway · callout-hero
+     modifier: compact · roomy · code-lg
+   ARCHIVE (28): problem-solution gap-analysis pros-cons timeline
+     roadmap definition code-focus image-split gallery before-after
+     grid-3 quote toggle-list block-features two-image comparison-three
+     conclusion-cards conclusion-split conclusion-actions
+     situation-insight lead-support flow-arrow big-insight metric-row
+     closing-cta cover-minimal cover-band cover-photo-full
+   (v8.1: checklist·cover-split 복귀, metric-row 아카이브.
+    v8.2: faq·vertical-timeline·session-break 복귀 — 사용자 선택)
    ============================================================ */
 
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@latest/dist/web/variable/pretendardvariable.min.css');
@@ -30,9 +65,14 @@
   --blue-soft:    #eff5ff;   /* accent wash (blue-50) */
   --on-blue:      #ffffff;
 
+  /* 브랜드 로고 (화이트 워드마크) — 카드 테마와 동일 data-URI. thumb 커버용 */
+  --logo: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA6wAAAE9CAYAAAAPnu+LAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAE3XSURBVHhe7d153K5juT7w8ziXki2KnRQyUzKHkqSkZChDGRpQKSTRpFm2Uu200zyXXUKmyFhkaBDKTJJMmYUQkUU95/H7Y932b3W2lvW+z3Bd9/08x/fzWZ+9O66b5/W+z3qf+7zu6zovMxEREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREZHpQw5ERKSdImIVAKuRfLaZLWdmzya5IID5zeyJZja/mc0P4Ikk5wfwJDMzkjMBPELyUTN75LE/JB8F8JCZ/cHMbjCzP5rZ79z92vzaIv2KiJXNbDUze46ZLW9mz5ni+/bvJGea2UwAj5jZw2Y208z+SvIOd7+V5O1mdiuA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44TkP0ieTXIfkk+bMWPGFu7+k3ydtJu7f3nGjBlrklyd5P+QHOul2yQZEReS3Jfk09x9S3c/Jl8nMilIrgPgeTkvqblXacsk+9gDcFTOKlDBKiJmTXObT+e8hnFqwDQvAK529/3cffVxKwKaPUbnkHyfmS3l7pu4+1d0HmX3ufuV7v6B5iindUh+sXZzjmFplvseT3JvM1uuOfv3YL1vRcxI7p6z0kie7O46hqucI1twXN9L5rb6TgWryIQB8D8kr855JWPVgGkqUhHwApL7kzw5IjrTKZfkVSS/T3JPAEu7+0bu/nl3vytfK+PB3S9x9/e4+wokX0LyAJKnkvxzvraNSD5oZr8k+Qkze3Gz3Pe17v5V7ZET+f8iYgGS2+e8NACH5UxGx90fMLOTcl4SADezOTZfQg5ERKQOksuS3MTM1ie5LoBVATwhX1cSyQcAXEryQjM7H8DPm6OSRMxm3eCuBGBjkuub2bokn+vuM/J1pZAMM7vWzC4xswvN7DwAFwKIfK2IiLSfClYRkZYi+USSKwNYkeSyZra0mT2r+bMUyWcMWhiQnGlmtwK4LSJuAXAzgJtI/gnA9QDGYgmolEVyLZLLmdnyZraUmS3TvG+XBPDMfP10kbyD5J0A7jSzO5o/t5vZzWZ2rpb2ioiMDxWsIiIdFhELm9kCABYkuUDT0GoBM3sSySfZrGU2M0k+bGaP/fm7mT2sJbxSS/O+XRDAAnN53zK9Xx9q/u+DzdI1ERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERER6c//A9QYgR0I7fpFAAAAAElFTkSuQmCC');
+
   --hairline:        #e6e9ee;
   --hairline-strong: #d4d8df;
   --destructive:     #c2410c;
+  --success:         #15803d;   /* semantic — callout/checklist (used sparingly) */
+  --warn:            #b45309;   /* semantic — callout warn */
 
   --chart-1: #2563eb;
   --chart-2: #3b82f6;
@@ -58,16 +98,28 @@ section {
   background: var(--canvas);
   color: var(--ink);
   font-family: var(--font-sans);
-  padding: 72px 88px;
-  font-size: 18pt;
-  line-height: 1.6;
+  padding: 58px 88px;   /* lecture: tighter vertical margins → more usable canvas */
+  font-size: 19pt;       /* lecture readability */
+  line-height: 1.58;
   font-weight: 400;
   letter-spacing: -0.011em;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   position: relative;
+  overflow: hidden;   /* safety net — content can never spill off the slide / below the footer */
 }
+
+/* ---------------------------------------------------------------
+   Density modifiers — compose with any layout to fit more / breathe.
+   e.g. <!-- _class: faq compact -->  /  <!-- _class: steps roomy -->
+   --------------------------------------------------------------- */
+section.compact { padding: 52px 72px; font-size: 16pt; }
+section.compact h1 { font-size: 30pt; margin-bottom: 14px; padding-bottom: 13px; }
+section.compact h2 { font-size: 19pt; }
+section.compact p, section.compact li { font-size: 15pt; line-height: 1.45; }
+section.roomy { padding: 92px 108px; }
+section.roomy h1 { margin-bottom: 30px; }
 
 /* ---------------------------------------------------------------
    Typography — blog signatures: hairline title, eyebrow h4,
@@ -79,8 +131,8 @@ h1 {
   letter-spacing: -0.026em;
   line-height: 1.15;
   color: var(--ink);
-  margin: 0 0 22px 0;
-  padding-bottom: 18px;
+  margin: 0 0 16px 0;
+  padding-bottom: 13px;
   border-bottom: 1px solid var(--hairline);   /* editorial hairline under slide title */
 }
 h2 {
@@ -108,8 +160,8 @@ h4 {
   margin: 0 0 10px 0;
 }
 p, li {
-  font-size: 18pt;
-  line-height: 1.6;
+  font-size: 19pt;
+  line-height: 1.55;
   color: var(--ink-mute);
   margin: 0 0 12px 0;
   font-weight: 400;
@@ -117,7 +169,7 @@ p, li {
 strong { color: var(--ink); font-weight: 600; background: none; }
 em { font-style: italic; color: var(--ink); }
 
-/* .eyebrow / .accent inline helpers */
+/* .eyebrow / .accent / .muted inline text helpers (TIER 1 inline) */
 .eyebrow {
   font-size: 12pt;
   font-weight: 600;
@@ -164,6 +216,29 @@ pre {
 }
 pre code { display: block; background: transparent; color: var(--ink); padding: 0; border: none; font-size: inherit; }
 
+/* ---------------------------------------------------------------
+   Syntax highlighting (highlight.js tokens) — restrained editorial
+   palette built entirely from theme tokens, so it auto-inverts in
+   procpa-vivid-dark. Blue = keyword, green = string, amber = number/
+   class, muted-grey = vars/attrs, sub-grey italic = comments.
+   --------------------------------------------------------------- */
+pre code.hljs { color: var(--ink); }
+.hljs-keyword, .hljs-selector-tag, .hljs-built_in, .hljs-literal, .hljs-type,
+.hljs-meta .hljs-keyword { color: var(--blue); font-weight: 600; }
+.hljs-string, .hljs-regexp, .hljs-char.escape_, .hljs-meta .hljs-string { color: var(--success); }
+.hljs-number { color: var(--warn); }
+.hljs-title, .hljs-title.function_, .hljs-section { color: var(--ink); font-weight: 600; }
+.hljs-title.class_, .hljs-class .hljs-title { color: var(--warn); font-weight: 600; }
+.hljs-attr, .hljs-attribute, .hljs-property,
+.hljs-variable, .hljs-params, .hljs-template-variable { color: var(--ink-mute); }
+.hljs-name, .hljs-tag, .hljs-selector-id, .hljs-selector-class,
+.hljs-symbol, .hljs-bullet, .hljs-link { color: var(--blue); }
+.hljs-comment, .hljs-quote, .hljs-meta { color: var(--ink-sub); font-style: italic; }
+.hljs-deletion { color: var(--destructive); }
+.hljs-addition { color: var(--success); }
+.hljs-emphasis { font-style: italic; }
+.hljs-strong { font-weight: 700; }
+
 /* blockquote = CMDS blue callout: 3px left bar + soft blue wash */
 blockquote {
   border-left: 3px solid var(--blue);
@@ -177,28 +252,31 @@ blockquote {
 }
 blockquote p { color: var(--ink-mute); margin: 0; font-style: normal; }
 
-/* tables — bordered card, elevated header, hairline rows */
+/* tables — financial-statement / audit-schedule style: horizontal rules only,
+   no fill, no zebra, no vertical lines. Strong top + bottom ink rules frame the
+   table; header underlined; light row separators. tabular-nums for figures.
+   Right-align numeric columns in markdown with `---:`. */
 table {
-  border-collapse: separate;
-  border-spacing: 0;
+  border-collapse: collapse;
   width: 100%;
   font-size: 14pt;
-  margin: 14px 0 24px;
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-md);
-  overflow: hidden;
+  margin: 16px 0 24px;
+  border-top: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+  font-variant-numeric: tabular-nums;
 }
-thead { background: var(--canvas-soft); }
-th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--hairline); vertical-align: top; }
-th {
+thead th {
+  background: none;
   color: var(--ink);
-  font-weight: 600;
-  font-size: 11pt;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-weight: 700;
+  font-size: 12pt;
+  text-transform: none;
+  letter-spacing: 0;
+  border-bottom: 1.5px solid var(--ink-mute);
 }
-td { color: var(--ink-mute); }
-tr:last-child td { border-bottom: none; }
+th, td { padding: 11px 18px; text-align: left; vertical-align: top; }
+td { color: var(--ink-mute); border-bottom: 1px solid var(--hairline); }
+tbody tr:last-child td { border-bottom: none; }
 hr { display: none; }
 
 /* ---------------------------------------------------------------
@@ -221,8 +299,9 @@ footer {
   font-size: 10pt;
   color: var(--ink-sub);
 }
+/* pagination pill — "current / total" progress (presenter & audience aid) */
 section::after {
-  content: attr(data-marpit-pagination);
+  content: attr(data-marpit-pagination) ' / ' attr(data-marpit-pagination-total);
   position: absolute;
   bottom: 28px;
   right: 88px;
@@ -234,9 +313,799 @@ section::after {
   border-radius: 999px;
 }
 
+/* ███████████████████████████████████████████████████████████████
+   TIER 1 · COMPONENTS  — USE THESE FIRST.
+   Global (un-scoped) classes. Combine MULTIPLE per slide inside any
+   wrapper (.cols-2/3/4 · .stack · .split-7-5). Token-only → dark-safe.
+   ███████████████████████████████████████████████████████████████ */
+
+/* ---------- Combination wrappers (put components inside these) ---------- */
+.cols-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 16px 0; }
+.cols-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 16px 0; }
+.cols-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 16px 0; }
+.stack  { display: flex; flex-direction: column; gap: 16px; margin: 16px 0; }
+.split-7-5 { display: grid; grid-template-columns: 1.4fr 1fr; gap: 32px; margin: 16px 0; }
+.cols-2 > *, .cols-3 > *, .cols-4 > *, .stack > *, .split-7-5 > * { margin: 0; }
+/* stack 안 panel(Q&A 목록 등)은 밀도 압축 — 4개까지 한 장에 (2026-07) */
+.stack { gap: 12px; }
+.stack > .panel { padding: 15px 24px; }
+.stack > .panel > h4 { margin-bottom: 5px; }
+.stack > .panel p, .stack > .panel li { font-size: 16pt; margin: 0; line-height: 1.45; }
+
+/* ---------- .card — white card; content vertically centred to fill height ---------- */
+.card {
+  background: var(--card);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-lg);
+  padding: 26px 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.card > h4 { color: var(--blue); font-size: 12pt; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 10px; }
+.card > h3 { font-size: 23pt; margin: 0 0 10px; color: var(--ink); line-height: 1.25; }
+.card > h3:last-child { margin-bottom: 0; }
+.card > p  { font-size: 18pt; margin: 0; color: var(--ink-mute); line-height: 1.5; }
+.card > p + p { margin-top: 10px; }
+.card ul { margin: 6px 0 0; padding-left: 20px; }
+.card li { font-size: 16pt; color: var(--ink-mute); margin-bottom: 6px; }
+/* card variants */
+/* accent 바 — 좌측 코너 직각 + 풀하이트 수직 바 (callout/quote-block과 동일 언어, 2026-07) */
+.card.accent   { border-left: 4px solid var(--blue); border-radius: 0 var(--radius-lg) var(--radius-lg) 0; }
+.card.featured { border: 2px solid var(--blue); position: relative; }
+.card.featured::before { content: '추천'; position: absolute; top: -13px; left: 22px; background: var(--blue); color: var(--on-blue); font-size: 10pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 3px 12px; border-radius: 999px; }
+.card.top-rule { border: 1px solid var(--hairline); border-top: 3px solid var(--blue); }
+.card > .num { font-size: 32pt; font-weight: 700; color: var(--blue); margin: 0 0 10px; font-variant-numeric: tabular-nums; line-height: 1; opacity: 0.85; }
+.card > .ico { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: var(--blue-soft); color: var(--blue); border-radius: var(--radius-md); font-size: 22pt; font-weight: 700; margin: 0 0 16px; }
+
+/* ---------- .stat — single KPI block (drop into any .cols-*) ---------- */
+.stat { display: flex; flex-direction: column; gap: 6px; }
+.stat .num { font-size: 56pt; font-weight: 700; letter-spacing: -0.03em; color: var(--ink); font-variant-numeric: tabular-nums; line-height: 1; }
+.stat .num .unit { font-size: 26pt; color: var(--blue); font-weight: 700; }
+.stat .label { font-size: 13pt; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-sub); font-weight: 600; }
+.stat .desc { font-size: 16pt; color: var(--ink-mute); }
+
+/* ---------- .vs — 1:1 compare pair with centre VS badge ---------- */
+.vs { display: grid; grid-template-columns: 1fr auto 1fr; gap: 20px; align-items: stretch; }
+.vs .vs-side { background: var(--card); border: 1px solid var(--hairline); border-radius: var(--radius-lg); padding: 26px 28px; display: flex; flex-direction: column; justify-content: center; }
+.vs .vs-side.accent { border: 2px solid var(--blue); }
+.vs .vs-mid { display: flex; align-items: center; }
+.vs .vs-mid::before { content: 'VS'; font-family: var(--font-mono); font-size: 13pt; font-weight: 700; color: var(--blue); background: var(--blue-soft); width: 50px; height: 50px; border-radius: 999px; display: flex; align-items: center; justify-content: center; }
+.vs h4 { color: var(--ink-sub); font-size: 12pt; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 8px; }
+.vs .vs-side.accent h4 { color: var(--blue); }
+.vs h3 { font-size: 22pt; margin: 0 0 8px; color: var(--ink); }
+.vs p  { font-size: 16pt; color: var(--ink-mute); margin: 0 0 12px; }
+.vs ul { margin: 0; padding-left: 20px; }
+.vs li { font-size: 15pt; color: var(--ink-mute); margin-bottom: 6px; }
+
+/* ---------- .board — kanban: labelled columns of stacked item cards ----------
+   <div class="board"><div class="board-col"><h4>To-Do</h4>
+     <div class="board-item">…</div> …</div> ×N</div>
+   Modifiers: .board.two (2 col) · .board.four (4 col). Default 3. */
+.board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 16px 0; align-items: start; }
+.board.two  { grid-template-columns: repeat(2, 1fr); }
+.board.four { grid-template-columns: repeat(4, 1fr); }
+.board .board-col { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.board .board-col > h4 { color: var(--blue); font-size: 12pt; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 4px; padding-bottom: 10px; border-bottom: 2px solid var(--hairline-strong); }
+.board .board-item { background: var(--card); border: 1px solid var(--hairline); border-radius: var(--radius-md); padding: 14px 18px; font-size: 16pt; color: var(--ink-mute); line-height: 1.45; }
+.board .board-item strong { color: var(--ink); }
+.board .board-item.accent { border-left: 3px solid var(--blue); }
+
+/* ---------- .panel — titled general box (bigger than callout, freer than card) ----------
+   <div class="panel"><h4>label</h4><h3>title</h3><p>…</p></div>
+   Modifiers: .panel.accent (blue left bar) · .panel.soft (muted surface). */
+.panel { background: var(--card); border: 1px solid var(--hairline); border-radius: var(--radius-lg); padding: 24px 28px; margin: 16px 0; }
+.panel > h4 { color: var(--blue); font-size: 12pt; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 8px; }
+.panel > h3 { font-size: 21pt; margin: 0 0 10px; color: var(--ink); }
+.panel > :last-child { margin-bottom: 0; }
+.panel p, .panel li { font-size: 17pt; color: var(--ink-mute); }
+.panel.accent { border-left: 4px solid var(--blue); border-radius: 0 var(--radius-lg) var(--radius-lg) 0; }
+.panel.soft { background: var(--canvas-soft); border-color: transparent; }
+
+/* ---------- .process — inline A → B → C flow (arrows via ::before) ----------
+   <div class="process"><div class="process-step"><span class="n">01</span>
+     <h3>…</h3><p>…</p></div> ×N</div>   (lightweight; for hero flow use roadmap) */
+.process { display: flex; align-items: stretch; margin: 16px 0; }
+.process .process-step { flex: 1; min-width: 0; background: var(--card); border: 1px solid var(--hairline); border-radius: var(--radius-lg); padding: 22px 24px; display: flex; flex-direction: column; justify-content: center; }
+.process .process-step + .process-step { margin-left: 46px; position: relative; }
+.process .process-step + .process-step::before { content: '→'; position: absolute; left: -40px; top: 50%; transform: translateY(-50%); color: var(--blue); font-size: 30pt; font-weight: 300; line-height: 1; }
+.process .process-step .n { font-family: var(--font-mono); font-size: 11pt; font-weight: 700; color: var(--blue); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+.process .process-step h3 { font-size: 19pt; margin: 0 0 6px; color: var(--ink); }
+.process .process-step p { font-size: 15pt; color: var(--ink-mute); margin: 0; line-height: 1.45; }
+
+/* ---------- .quote-block — inline pull quote (blue bar + cite) ----------
+   <div class="quote-block"><p>“…”</p><span class="cite">— 출처</span></div> */
+.quote-block { border-left: 4px solid var(--blue); background: var(--blue-soft); border-radius: 0 var(--radius-lg) var(--radius-lg) 0; padding: 24px 30px; margin: 16px 0; }
+.quote-block p { font-size: 24pt; line-height: 1.4; color: var(--ink); font-weight: 500; margin: 0; }
+.quote-block .cite { display: block; font-size: 13pt; color: var(--ink-sub); font-weight: 600; margin-top: 14px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* ---------- .callout — left-bar box; info(default)/success/warn/danger/example ---------- */
+.callout {
+  border-left: 3px solid var(--blue);
+  background: color-mix(in oklab, var(--blue) 7%, var(--canvas));
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  padding: 16px 22px;
+  margin: 16px 0;
+  font-size: 15pt; color: var(--ink-mute);
+}
+.callout > :last-child { margin-bottom: 0; }
+.callout strong { color: var(--ink); }
+.callout.success { border-left-color: var(--success);     background: color-mix(in oklab, var(--success) 8%, var(--canvas)); }
+.callout.warn    { border-left-color: var(--warn);        background: color-mix(in oklab, var(--warn) 8%, var(--canvas)); }
+.callout.danger  { border-left-color: var(--destructive); background: color-mix(in oklab, var(--destructive) 8%, var(--canvas)); }
+.callout.example { border-left-color: var(--ink-sub);     background: var(--canvas-soft); }
+.callout.example strong { color: var(--blue); }
+
+/* ---------- inline badges & rules — .tag / .chip / .kbd / .divider / .note / figure ---------- */
+/* .tag — inline pill badge */
+.tag {
+  display: inline-block;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 11pt; font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.02em;
+  vertical-align: middle;
+}
+/* .chip — mono pill label; default / .solid / .outline (vs .tag = filled status) */
+.chip {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 11pt; font-weight: 500;
+  background: var(--canvas-soft);
+  color: var(--ink-sub);
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  padding: 1px 10px;
+  letter-spacing: 0.02em;
+  line-height: 1.7;
+  vertical-align: middle;
+}
+.chip.solid   { background: var(--blue); color: var(--on-blue); border-color: var(--blue); }
+.chip.outline { background: transparent; color: var(--blue); border-color: var(--blue); }
+/* .kbd — keyboard key cap */
+.kbd {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.82em; font-weight: 600;
+  color: var(--ink);
+  background: var(--canvas-soft);
+  border: 1px solid var(--hairline-strong);
+  border-bottom-width: 2px;
+  border-radius: var(--radius-sm);
+  padding: 1px 7px;
+  line-height: 1.4;
+}
+/* .divider — horizontal rule (hr is hidden; use this element) */
+.divider { height: 1px; background: var(--hairline); border: none; margin: 22px 0; }
+.divider.strong { height: 2px; background: var(--hairline-strong); }
+/* .note — quiet muted memo box */
+.note {
+  background: var(--canvas-soft);
+  border-radius: var(--radius-md);
+  padding: 14px 20px;
+  margin: 14px 0;
+  font-size: 14pt; color: var(--ink-sub);
+}
+/* figure / figcaption — standardised image + caption */
+figure { margin: 14px 0; }
+figure img { border-radius: var(--radius-lg); border: 1px solid var(--hairline); max-width: 100%; }
+figcaption { font-size: 12pt; color: var(--ink-sub); margin-top: 8px; letter-spacing: 0.01em; }
+
+/* ---------- v7.3 — lecture helpers (framed screenshots / large code / density) ----------
+   Distilled from the 한공회(KICPA) deck's repeated <style scoped> + inline <img> patterns,
+   so the same look needs no per-slide overrides. Token-only -> dark-safe. */
+
+/* .shot — framed screenshot: centered, height-capped, hairline-strong border, rounded.
+   <img class="shot" src="…" />  (replaces 9× identical inline image styles) */
+.shot { display: block; margin: 14px auto; max-width: 100%; max-height: 380px; height: auto;
+        border: 1px solid var(--hairline-strong); border-radius: var(--radius-lg); }
+/* auto-frame plain content images inside the workhorse layouts (split / content-sidebar main) */
+section.split .cols img, section.content-sidebar .main img {
+  display: block; margin: 10px auto; max-width: 100%; max-height: 330px; height: auto;
+  border: 1px solid var(--hairline-strong); border-radius: var(--radius-lg);
+}
+
+/* .code-lg — additive modifier for large projection code: <!-- _class: split code-lg --> */
+section.code-lg pre code { font-size: 18.5pt; line-height: 1.35; }
+
+/* .compact extended to scoped layouts — one class instead of per-slide <style scoped> */
+section.comparison.compact table { font-size: 15pt; }
+section.comparison.compact th, section.comparison.compact td { padding: 9px 14px; line-height: 1.4; }
+section.comparison-vs.compact .vs-card { font-size: 16pt; }
+section.comparison-vs.compact .vs-card h3 { font-size: 21pt; }
+section.comparison-vs.compact .vs-card li { line-height: 1.3; }
+section.icon-list.compact ul { gap: 6px; }
+section.icon-list.compact li { padding: 5px 20px; font-size: 19pt; line-height: 1.25; }
+
+/* ---------- .code-block — labelled code (filename/lang header bar) ----------
+   reusable code listing (vs full-slide `code-focus`). drop into any .cols-*.
+   <div class="code-block"><div class="code-head">app.py<span class="lang">python</span></div>
+   (blank line) ```python … ``` (blank line) </div> */
+/* align-self:start + canvas-soft bg + flex pre = no white gap when a grid/flex
+   neighbour is taller (box keeps natural height; any residual area stays code-grey) */
+.code-block { border: 1px solid var(--hairline); border-radius: var(--radius-lg); overflow: hidden; margin: 16px 0; background: var(--canvas-soft); display: flex; flex-direction: column; align-self: start; }
+.code-block .code-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  background: var(--canvas-soft); border-bottom: 1px solid var(--hairline);
+  padding: 9px 16px; font-family: var(--font-mono); font-size: 11pt; font-weight: 600;
+  color: var(--ink-mute); letter-spacing: 0.01em;
+}
+.code-block .code-head .lang { flex-shrink: 0; font-size: 9pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--blue); background: var(--blue-soft); padding: 2px 9px; border-radius: 999px; }
+.code-block pre { margin: 0; border: none; border-radius: 0; flex: 1; }
+
+/* ---------- .table-block — table as a component (compact / caption) ----------
+   accounting style (no zebra). <div class="table-block compact"> (blank)
+     | md table | (blank) <div class="cap">표 1. …</div> </div>  — modifier: .compact */
+.table-block { margin: 16px 0; }
+.table-block table { margin: 0; }
+.table-block.compact th, .table-block.compact td { padding: 8px 14px; font-size: 12pt; }
+.table-block figcaption, .table-block .cap { font-size: 12pt; color: var(--ink-sub); margin-top: 10px; font-family: var(--font-mono); letter-spacing: 0.01em; }
+
+/* ---------- .mark — inline highlight (blue wash; vs em = italic) ---------- */
+.mark { background: var(--blue-soft); color: var(--ink); padding: 0.04em 0.34em; border-radius: var(--radius-sm); font-weight: 500; }
+
+/* ---------- .tag semantic variants — status tags via theme tokens (no pastels) ---------- */
+.tag.success { background: color-mix(in oklab, var(--success) 14%, var(--canvas)); color: var(--success); }
+.tag.warn    { background: color-mix(in oklab, var(--warn) 16%, var(--canvas)); color: var(--warn); }
+.tag.danger  { background: color-mix(in oklab, var(--destructive) 14%, var(--canvas)); color: var(--destructive); }
+.tag.muted   { background: var(--canvas-soft); color: var(--ink-sub); }
+
+/* ███████████████████████████████████████████████████████████████
+   TIER 2 · IMPACT LAYOUTS  — use SPARINGLY, one per slide.
+   Only when components can't express it or a hero moment is needed
+   (connecting lines · badges · ✓/✗ markers · editor chrome · bg image).
+   `<!-- _class: X -->`. Token-only → dark-safe.
+   ███████████████████████████████████████████████████████████████ */
+
+/* ---------- statement — ink canvas punctuation slide ---------- */
+section.statement {
+  background: var(--ink);
+  color: #ffffff;
+  justify-content: center;
+  align-items: flex-start;
+}
+section.statement h1 {
+  color: #ffffff;
+  font-size: 52pt;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.16;
+  border-bottom: none;
+  padding-bottom: 0;
+  margin: 0;
+  max-width: 90%;
+}
+section.statement h1 strong, section.statement .accent { color: var(--blue-hover); }
+section.statement p { color: rgba(255,255,255,0.6); font-size: 14pt; margin-top: 24px; }
+section.statement::after { color: rgba(255,255,255,0.4); border-color: rgba(255,255,255,0.18); }
+section.statement header, section.statement footer { color: rgba(255,255,255,0.4); }
+/* statement.light — white-canvas variant (vs default ink); supports a big blue .accent line.
+   <!-- _class: statement light -->  +  <p class="accent">강조 문장</p> */
+section.statement.light { background: var(--canvas); color: var(--ink); }
+section.statement.light h1 { color: var(--ink); }
+section.statement.light h1 strong, section.statement.light .accent { color: var(--blue); }
+section.statement.light p { color: var(--ink-mute); font-size: 18pt; }
+section.statement.light p.accent { color: var(--blue); font-size: 27pt; line-height: 1.32; margin-top: 20px; }
+section.statement.light::after { color: var(--ink-sub); border-color: var(--hairline); }
+section.statement.light header, section.statement.light footer { color: var(--ink-sub); }
+
+/* ---------- takeaway — 핵심 결론 강조 (white+blue, vs ink statement) ---------- */
+section.takeaway { justify-content: center; align-items: flex-start; }
+section.takeaway h1 {
+  font-size: 48pt; font-weight: 700; letter-spacing: -0.03em; line-height: 1.22;
+  color: var(--ink); border-bottom: none; padding-bottom: 0; margin: 0 0 20px; max-width: 92%;
+}
+section.takeaway h1::before { content: ''; display: block; width: 56px; height: 5px; background: var(--blue); border-radius: 3px; margin-bottom: 24px; }
+section.takeaway h1 strong, section.takeaway .accent { color: var(--blue); }
+section.takeaway p { font-size: 22pt; color: var(--ink-mute); max-width: 84%; margin: 0; line-height: 1.5; }
+
+/* ---------- [ARCHIVE] problem-solution — tinted 문제 → [→] → 해결 (directional) ---------- */
+section.problem-solution .ps-row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 28px; margin: auto 0; flex: 1; align-items: stretch; }
+section.problem-solution .problem, section.problem-solution .solution {
+  border-radius: var(--radius-lg); padding: 36px 38px;
+  display: flex; flex-direction: column; justify-content: center;
+}
+section.problem-solution .problem  { background: color-mix(in oklab, var(--destructive) 7%, var(--canvas)); border: 1px solid color-mix(in oklab, var(--destructive) 28%, var(--hairline)); }
+section.problem-solution .solution { background: var(--blue-soft); border: 1px solid color-mix(in oklab, var(--blue) 28%, var(--hairline)); }
+section.problem-solution h3 { font-size: 14pt; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 16px; font-weight: 700; }
+section.problem-solution .problem h3  { color: var(--destructive); }
+section.problem-solution .solution h3 { color: var(--blue); }
+section.problem-solution .body { font-size: 22pt; color: var(--ink); line-height: 1.5; font-weight: 500; }
+section.problem-solution .body strong { color: var(--ink); font-weight: 700; }
+section.problem-solution .body ul { margin: 0; padding-left: 20px; }
+section.problem-solution .body li { margin-bottom: 10px; }
+section.problem-solution .arrow { display: flex; align-items: center; color: var(--blue); font-size: 44pt; font-weight: 300; }
+
+/* ---------- [ARCHIVE] gap-analysis — 현재 → [격차] → 목표 ---------- */
+section.gap-analysis .gap-row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 28px; margin: auto 0; flex: 1; align-items: stretch; }
+section.gap-analysis .now, section.gap-analysis .goal { border-radius: var(--radius-lg); padding: 34px 36px; display: flex; flex-direction: column; justify-content: center; }
+section.gap-analysis .now  { background: var(--canvas-soft); border: 1px solid var(--hairline); }
+section.gap-analysis .goal { background: var(--blue-soft); border: 1px solid color-mix(in oklab, var(--blue) 28%, var(--hairline)); }
+section.gap-analysis h3 { font-size: 13pt; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 14px; font-weight: 700; }
+section.gap-analysis .now h3 { color: var(--ink-sub); }
+section.gap-analysis .goal h3 { color: var(--blue); }
+section.gap-analysis .big { font-size: 30pt; font-weight: 700; color: var(--ink); line-height: 1.25; margin-bottom: 8px; }
+section.gap-analysis p { font-size: 16pt; color: var(--ink-mute); margin: 0; line-height: 1.5; }
+section.gap-analysis .gap-mid { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+section.gap-analysis .gap-mid .label { font-size: 11pt; text-transform: uppercase; color: var(--blue); font-weight: 700; letter-spacing: 0.05em; margin-bottom: 4px; }
+section.gap-analysis .gap-mid .val { font-size: 30pt; font-weight: 700; color: var(--blue); font-variant-numeric: tabular-nums; line-height: 1; }
+section.gap-analysis .gap-mid .arr { font-size: 26pt; color: var(--blue); font-weight: 300; margin-top: 6px; }
+
+/* ---------- [ARCHIVE] pros-cons — 두 컬럼 장단점 비교 (✓/✗ 세만틱 마커) ---------- */
+section.pros-cons .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 14px; flex: 1; align-items: stretch; }
+section.pros-cons .pros, section.pros-cons .cons {
+  background: var(--card);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-lg);
+  padding: 32px 36px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+section.pros-cons .pros { border-top: 4px solid var(--blue); }
+section.pros-cons .cons { border-top: 4px solid var(--destructive); }
+section.pros-cons h4 { font-size: 14pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 16px; }
+section.pros-cons .pros h4 { color: var(--blue); }
+section.pros-cons .cons h4 { color: var(--destructive); }
+section.pros-cons ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
+section.pros-cons li { position: relative; padding-left: 28px; font-size: 18pt; line-height: 1.5; color: var(--ink-mute); margin: 0 0 4px; }
+section.pros-cons .pros li::before { content: '✓'; position: absolute; left: 0; color: var(--blue); font-weight: 700; }
+section.pros-cons .cons li::before { content: '✗'; position: absolute; left: 0; color: var(--destructive); font-weight: 700; }
+
+/* ---------- comparison — bordered table hero (inherits table style) ---------- */
+section.comparison table { font-size: 17pt; margin: auto 0; }
+section.comparison td:first-child { font-weight: 600; color: var(--ink); }
+
+/* ---------- steps — numbered steps stack + blue index ----------
+   absolute ::before badge keeps inline content flowing normally */
+section.steps ol { list-style: none; counter-reset: step; margin: 10px 0 0; padding: 0; flex: 1; display: flex; flex-direction: column; }
+section.steps ol li {
+  counter-increment: step;
+  position: relative;
+  flex: 1;                 /* evenly fill slide height (lecture) */
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 0 0 0 60px;
+  border-top: 1px solid var(--hairline);
+  font-size: 19pt;
+  line-height: 1.5;
+  color: var(--ink-mute);
+}
+section.steps ol li:last-child { border-bottom: 1px solid var(--hairline); }
+section.steps ol li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 50%; transform: translateY(-50%);
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--blue-soft);
+  color: var(--blue);
+  border-radius: 999px;
+  font-size: 16pt;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+section.steps ol li strong { color: var(--ink); }
+
+/* ---------- [ARCHIVE] timeline — horizontal track; wraps to 2 rows when >4 nodes ---------- */
+section.timeline .track {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));   /* wraps → 2 rows */
+  gap: 40px 24px;
+  margin: auto 0;   /* vertically center the timeline track */
+  padding-top: 8px;
+}
+section.timeline .node {
+  position: relative;
+  padding-top: 34px;
+  border-top: 2px solid var(--hairline-strong);   /* connecting line — more visible */
+}
+section.timeline .node::before {
+  content: '';
+  position: absolute;
+  top: -8px; left: 0;
+  width: 15px; height: 15px;
+  background: var(--blue);
+  border-radius: 999px;
+  box-shadow: 0 0 0 4px var(--canvas);
+}
+section.timeline .node .when {
+  font-size: 12pt; font-weight: 700; color: var(--blue);
+  text-transform: uppercase; letter-spacing: 0.05em;
+  font-variant-numeric: tabular-nums;
+}
+section.timeline .node h3 { font-size: 16pt; margin: 6px 0 6px; }
+section.timeline .node p  { font-size: 14pt; margin: 0; }
+
+/* ---------- vertical-timeline — left rail + blue numbered badges (v8.2 CORE 복귀) ---------- */
+section.vertical-timeline ol { list-style: none; counter-reset: vt; margin: auto 0; padding: 0; position: relative; }
+section.vertical-timeline ol::before { content: ''; position: absolute; left: 21px; top: 12px; bottom: 12px; width: 2px; background: var(--hairline); }
+section.vertical-timeline ol li { counter-increment: vt; position: relative; padding: 0 0 26px 64px; font-size: 17pt; line-height: 1.5; color: var(--ink-mute); }
+section.vertical-timeline ol li:last-child { padding-bottom: 0; }
+section.vertical-timeline ol li::before {
+  content: counter(vt, decimal-leading-zero); position: absolute; left: 0; top: -2px;
+  width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
+  background: var(--blue); color: var(--on-blue); border-radius: 999px;
+  font-family: var(--font-mono); font-size: 14pt; font-weight: 700; font-variant-numeric: tabular-nums;
+  box-shadow: 0 0 0 4px var(--canvas);   /* canvas ring masks the rail behind badge */
+}
+section.vertical-timeline ol li strong { color: var(--ink); }
+
+/* ---------- [ARCHIVE] roadmap — connected horizontal phase FLOW (numbered badges on a line) ----------
+   featured = current (blue badge). vs .process (lightweight inline). */
+section.roadmap .tiers { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 26px; margin: auto 0; counter-reset: rm; }
+section.roadmap .tier { position: relative; padding-top: 80px; }
+section.roadmap .tier::after { content: ''; position: absolute; top: 27px; left: 60px; right: -26px; height: 2px; background: var(--hairline-strong); }
+section.roadmap .tier:last-child::after { display: none; }
+section.roadmap .tier::before {
+  counter-increment: rm; content: counter(rm, decimal-leading-zero);
+  position: absolute; top: 0; left: 0; width: 54px; height: 54px; border-radius: 999px;
+  background: var(--canvas); border: 2px solid var(--hairline-strong); color: var(--ink-sub);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 16pt; font-weight: 700; box-shadow: 0 0 0 5px var(--canvas);
+}
+section.roadmap .tier.featured::before { background: var(--blue); border-color: var(--blue); color: var(--on-blue); }
+section.roadmap .tier h3 { font-size: 20pt; margin-bottom: 4px; }
+section.roadmap .tier.featured h3 { color: var(--blue); }
+section.roadmap .tier .phase-detail { font-size: 13pt; font-weight: 600; color: var(--blue); margin-bottom: 12px; }
+section.roadmap .tier p { font-size: 16pt; margin: 0 0 12px; color: var(--ink-mute); }
+section.roadmap .tier ul { list-style: none; padding: 0; margin: 0; }
+section.roadmap .tier li { position: relative; padding-left: 18px; font-size: 15pt; color: var(--ink-mute); margin-bottom: 8px; }
+section.roadmap .tier li::before { content: '·'; position: absolute; left: 4px; color: var(--blue); font-weight: 700; font-size: 18pt; line-height: 1; }
+
+/* ---------- [ARCHIVE] definition — big term + definition + example card ---------- */
+section.definition { justify-content: center; }
+section.definition .term {
+  font-size: 46pt; font-weight: 700; letter-spacing: -0.03em;
+  color: var(--ink); line-height: 1.1; margin: 0 0 4px;
+}
+section.definition .term .pos { font-size: 18pt; color: var(--blue); font-weight: 600; margin-left: 12px; }
+section.definition .gloss { font-size: 25pt; line-height: 1.5; color: var(--ink-mute); max-width: 84%; margin: 12px 0 0; }
+section.definition .example {
+  margin-top: 26px;
+  background: var(--card);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-lg);
+  padding: 18px 24px;
+  font-size: 17pt; color: var(--ink-mute);
+}
+section.definition .example strong { color: var(--blue); }
+
+/* ---------- faq — Q&A cards with blue Q badge (v8.2 CORE 복귀) ---------- */
+section.faq .qa {
+  position: relative;
+  flex: 1;                 /* evenly fill slide height (lecture) */
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 0 0 0 52px;
+  border-top: 1px solid var(--hairline);
+}
+section.faq .qa:last-of-type { border-bottom: 1px solid var(--hairline); }
+section.faq .qa::before {
+  content: 'Q';
+  position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+  width: 34px; height: 34px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--blue); color: var(--on-blue);
+  border-radius: 999px; font-size: 15pt; font-weight: 700;
+}
+section.faq .qa h3 { font-size: 21pt; margin: 0 0 8px; }
+section.faq .qa p  { font-size: 18pt; margin: 0; }
+
+/* ---------- checklist — blue ✓ done / hairline ○ todo (v8.1 CORE 복귀) ---------- */
+section.checklist ul { list-style: none; padding: 0; margin: auto 0; flex: none; display: flex; flex-direction: column; }
+section.checklist li {
+  position: relative; flex: none;       /* 고정 행 높이 — 균등 늘림 대신 촘촘하게 (2026-07) */
+  display: flex; align-items: center;
+  padding: 15px 0 15px 44px;
+  border-bottom: 1px solid var(--hairline);
+  font-size: 19pt; color: var(--ink-mute);
+}
+section.checklist li::before {
+  content: '○'; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+  color: var(--ink-sub); font-size: 21pt; line-height: 1;
+}
+section.checklist li.done { color: var(--ink); }
+section.checklist li.done::before { content: '✓'; color: var(--blue); font-weight: 700; }
+
+/* ---------- [ARCHIVE] code-focus — large code card + editor top bar ---------- */
+section.code-focus pre {
+  font-size: 15pt;
+  padding: 0;
+  overflow: hidden;
+}
+section.code-focus pre::before {
+  content: '';
+  display: block;
+  height: 38px;
+  background: var(--canvas-soft);
+  border-bottom: 1px solid var(--hairline);
+  /* three traffic-light dots via radial gradients */
+  background-image:
+    radial-gradient(circle 5px at 22px 19px, var(--hairline-strong) 99%, transparent),
+    radial-gradient(circle 5px at 40px 19px, var(--hairline-strong) 99%, transparent),
+    radial-gradient(circle 5px at 58px 19px, var(--hairline-strong) 99%, transparent);
+}
+section.code-focus pre code { padding: 20px 26px; }
+
+/* ---------- [ARCHIVE] image-split — bg image left + content right ----------
+   Marpit `![bg left]` already constrains content to the right half;
+   the .body just pads + vertically centers. */
+section.image-split { padding: 0; justify-content: center; }
+section.image-split .body {
+  padding: 64px 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+}
+section.image-split h1 { border-bottom: none; padding-bottom: 0; }
+
+/* ---------- [ARCHIVE] gallery — flexible image grid (pairs with figure helper) ---------- */
+section.gallery .grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-top: 12px;
+}
+section.gallery figure { margin: 0; }
+section.gallery img {
+  width: 100%; height: 188px; object-fit: cover;
+  border-radius: var(--radius-lg); border: 1px solid var(--hairline);
+}
+
+/* ---------- [ARCHIVE] before-after — image | blue arrow | image ---------- */
+section.before-after .ba-row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 24px; align-items: center; margin-top: 14px; }
+section.before-after .ba-col h3 { font-size: 16pt; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-sub); margin-bottom: 12px; }
+section.before-after .ba-col img { width: 100%; max-height: 360px; object-fit: cover; border-radius: var(--radius-lg); border: 1px solid var(--hairline); }
+section.before-after .ba-arrow { font-size: 48pt; color: var(--blue); font-weight: 300; line-height: 1; }
+
 /* ===============================================================
-   Shell 3 — cover / section / end
+   TIER 2b - RESTORED LAYOUTS (v7.1)
+   Originally removed in v7 favouring components; restored on request.
+   Some overlap with TIER 1 components (feature-cards ~ .cols-3 + .card,
+   split ~ .cols-2, metric-row ~ .stat, comparison-vs ~ .vs). Prefer
+   components for everyday slides; these stay available for impact and
+   for decks that already use them. All token-only -> dark auto-inverts.
    =============================================================== */
+
+/* ---------- [ARCHIVE] metric-row — large tabular-num KPIs ---------- */
+section.metric-row .metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  gap: 28px;
+  margin: auto 0;
+}
+section.metric-row .metric { display: flex; flex-direction: column; gap: 6px; }
+section.metric-row .metric .num {
+  font-size: 52pt;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+section.metric-row .metric .num .unit { font-size: 24pt; color: var(--blue); font-weight: 600; }
+section.metric-row .metric .label {
+  font-size: 12pt;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-sub);
+  font-weight: 600;
+}
+section.metric-row .metric .desc { font-size: 14pt; color: var(--ink-mute); }
+
+/* ---------- callout-hero — full blue callout centerpiece ---------- */
+section.callout-hero { justify-content: center; }
+section.callout-hero blockquote {
+  border-left: 4px solid var(--blue);
+  background: var(--blue-soft);
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+  padding: 36px 44px;
+  margin: 0;
+}
+section.callout-hero blockquote p { font-size: 34pt; line-height: 1.38; color: var(--ink); font-weight: 500; }
+section.callout-hero blockquote p:last-child:not(:first-child) {
+  font-size: 14pt; color: var(--ink-sub); font-weight: 600; margin-top: 20px;
+}
+
+/* ---------- split — 50/50 two columns + center hairline ---------- */
+section.split .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-top: 12px; flex: 1; align-items: stretch; }
+section.split .cols > * { padding: 0; min-width: 0; display: flex; flex-direction: column; justify-content: center; }
+section.split .cols > *:first-child { border-right: 1px solid var(--hairline); padding-right: 48px; }
+section.split .cols p { font-size: 20pt; line-height: 1.55; }
+section.split .cols img { max-width: 100%; height: auto; }
+
+/* ---------- feature-cards — 3-grid of the global .card component ---------- */
+section.feature-cards .cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  gap: 20px;
+  margin: 14px 0 0;
+  flex: 1;
+  align-items: stretch;
+}
+
+/* ---------- [ARCHIVE] grid-3 — universal 3-col grid, blue top-rule cells ---------- */
+section.grid-3 .grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  margin: auto 0;
+}
+section.grid-3 .grid > * { border-top: 2px solid var(--blue); padding-top: 16px; }
+section.grid-3 .grid h3 { font-size: 20pt; margin-bottom: 9px; }
+section.grid-3 .grid h4 { color: var(--blue); }
+section.grid-3 .grid p  { font-size: 17pt; margin: 0; }
+
+/* ---------- [ARCHIVE] quote — attribution quote ---------- */
+section.quote { justify-content: center; }
+section.quote blockquote {
+  border-left: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+}
+section.quote blockquote p { font-size: 40pt; line-height: 1.32; color: var(--ink); font-weight: 600; letter-spacing: -0.02em; }
+section.quote blockquote p:last-child:not(:first-child),
+section.quote > p {
+  font-size: 14pt; color: var(--ink-sub); font-weight: 600; margin-top: 22px;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+section.quote blockquote::before {
+  content: '';
+  display: block;
+  width: 44px; height: 4px;
+  background: var(--blue);
+  border-radius: 2px;
+  margin-bottom: 26px;
+}
+
+/* ---------- content-sidebar — main body + right sidebar box ---------- */
+section.content-sidebar .layout { display: grid; grid-template-columns: 1fr 320px; gap: 40px; margin: auto 0; }
+section.content-sidebar .layout > .main { min-width: 0; }
+section.content-sidebar .aside {
+  background: var(--card);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-lg);
+  padding: 24px 26px;
+  align-self: start;
+}
+section.content-sidebar .aside h4 { color: var(--blue); }
+section.content-sidebar .aside p, section.content-sidebar .aside li { font-size: 16pt; }   /* v7.3: lecture legibility (was 14pt) */
+
+/* ---------- icon-list — card rows + inline em badge ---------- */
+section.icon-list ul { list-style: none; padding: 0; margin: 10px 0 0; display: flex; flex-direction: column; gap: 14px; flex: 1; }
+section.icon-list li { flex: 1; background: var(--card); border: 1px solid var(--hairline); border-radius: var(--radius-md); padding: 16px 22px; font-size: 17pt; color: var(--ink-mute); display: flex; align-items: center; gap: 14px; }
+section.icon-list li em {
+  font-style: normal; flex-shrink: 0; font-family: var(--font-mono); font-size: 12pt; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.04em; color: var(--blue);
+  background: var(--blue-soft); border-radius: var(--radius-sm); padding: 3px 10px;
+}
+
+/* ---------- [ARCHIVE] toggle-list — heading/item card stack ---------- */
+section.toggle-list .toggle { background: var(--card); border: 1px solid var(--hairline); padding: 14px 20px 14px 44px; position: relative; font-size: 16pt; }
+section.toggle-list .toggle.heading { font-weight: 600; color: var(--ink); border-radius: var(--radius-md) var(--radius-md) 0 0; margin-top: 16px; }
+section.toggle-list .toggle.heading:first-child { margin-top: 0; }
+section.toggle-list .toggle.item { color: var(--ink-mute); border-top: none; }
+section.toggle-list .toggle.item:last-child { border-radius: 0 0 var(--radius-md) var(--radius-md); }
+section.toggle-list .toggle.heading::before { content: '▾'; position: absolute; left: 18px; color: var(--blue); font-size: 12pt; }
+section.toggle-list .toggle.item::before { content: '○'; position: absolute; left: 19px; top: 17px; color: var(--ink-sub); font-size: 10pt; }
+
+/* ---------- [ARCHIVE] block-features — 3-col icon blocks (single blue badge) ---------- */
+section.block-features .blocks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: auto 0; }
+section.block-features .block { background: var(--card); border: 1px solid var(--hairline); border-radius: var(--radius-lg); padding: 24px 24px 26px; }
+section.block-features .block .ico {
+  width: 46px; height: 46px; display: flex; align-items: center; justify-content: center;
+  background: var(--blue-soft); color: var(--blue); border-radius: var(--radius-md);
+  font-size: 20pt; font-weight: 700; margin-bottom: 16px;
+}
+section.block-features .block h3 { font-size: 19pt; margin-bottom: 9px; }
+section.block-features .block p { font-size: 16pt; margin: 0; }
+
+/* ---------- [ARCHIVE] two-image — 50/50 figures with forced caption ---------- */
+section.two-image .images { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 14px; }
+section.two-image figure { margin: 0; }
+section.two-image img { width: 100%; height: 300px; object-fit: cover; border-radius: var(--radius-lg); border: 1px solid var(--hairline); }
+section.two-image figcaption { text-align: center; font-size: 14pt; color: var(--ink-mute); margin-top: 10px; }
+
+/* ---------- comparison-vs — 1:1 large compare cards (centre VS badge) ---------- */
+section.comparison-vs .vs-row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 24px; margin-top: 16px; flex: 1; align-items: stretch; }
+section.comparison-vs .vs-card { background: var(--card); border: 1px solid var(--hairline); border-radius: var(--radius-lg); padding: 32px; display: flex; flex-direction: column; justify-content: flex-start; }
+section.comparison-vs .vs-card.accented { border-color: var(--blue); border-width: 2px; }
+section.comparison-vs .vs-card h3 { font-size: 20pt; margin-bottom: 12px; color: var(--ink); }
+section.comparison-vs .vs-card h3 .label { font-size: 11pt; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-sub); display: block; margin-bottom: 4px; }
+section.comparison-vs .vs-card.accented h3 .label { color: var(--blue); }
+section.comparison-vs .vs-card p { font-size: 17pt; color: var(--ink-mute); margin-bottom: 20px; margin-top: 0; }
+section.comparison-vs .vs-card ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+section.comparison-vs .vs-card li { position: relative; padding-left: 22px; font-size: 16pt; color: var(--ink-mute); margin: 0 0 4px; }
+section.comparison-vs .vs-card li::before { content: '•'; position: absolute; left: 0; color: var(--blue); font-weight: 700; }
+section.comparison-vs .vs-divider { display: flex; align-items: center; justify-content: center; position: relative; width: 44px; }
+section.comparison-vs .vs-divider::before { content: ''; position: absolute; top: 0; bottom: 0; left: 21px; width: 1px; background: var(--hairline-strong); }
+section.comparison-vs .vs-badge { position: relative; z-index: 10; background: var(--blue-soft); color: var(--blue); font-family: var(--font-sans); font-size: 11pt; font-weight: 700; border-radius: 999px; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--hairline-strong); letter-spacing: 0.05em; }
+
+/* ---------- [ARCHIVE] comparison-three — 3-col pricing/option compare cards ---------- */
+section.comparison-three .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 14px; flex: 1; align-items: stretch; }
+section.comparison-three .card { background: var(--card); border: 1px solid var(--hairline); border-radius: var(--radius-lg); padding: 32px 24px 28px; display: flex; flex-direction: column; justify-content: flex-start; }
+section.comparison-three .card.featured { border: 2px solid var(--blue); position: relative; }
+section.comparison-three .card.featured::before { content: '추천'; position: absolute; top: -12px; left: 24px; background: var(--blue); color: var(--on-blue); font-size: 9pt; font-weight: 700; padding: 2px 12px; border-radius: 999px; letter-spacing: 0.05em; }
+section.comparison-three .card h3 { font-size: 19pt; margin-bottom: 4px; color: var(--ink); }
+section.comparison-three .card .price-tag { font-size: 24pt; font-weight: 700; color: var(--ink); margin: 8px 0 12px; font-variant-numeric: tabular-nums; line-height: 1.1; }
+section.comparison-three .card .price-tag span { font-size: 14pt; color: var(--ink-sub); font-weight: 400; }
+section.comparison-three .card ul { list-style: none; padding: 0; margin: 12px 0 0; display: flex; flex-direction: column; gap: 8px; }
+section.comparison-three .card li { position: relative; padding-left: 20px; font-size: 15pt; color: var(--ink-mute); margin-bottom: 2px; }
+section.comparison-three .card li::before { content: '✓'; position: absolute; left: 0; color: var(--blue); font-weight: 700; }
+section.comparison-three .card li.disabled { color: var(--ink-sub); text-decoration: line-through; }
+section.comparison-three .card li.disabled::before { content: '✗'; color: var(--ink-sub); }
+
+/* ---------- [ARCHIVE] conclusion-cards — 3-grid of global .card.num (numbered) ---------- */
+section.conclusion-cards .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 14px 0 0; flex: 1; align-items: stretch; }
+
+/* ---------- [ARCHIVE] conclusion-split — big conclusion box + recommendation list ---------- */
+section.conclusion-split .layout { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px; margin-top: 14px; flex: 1; align-items: stretch; }
+section.conclusion-split .hero-box { background: var(--blue-soft); border-left: 4px solid var(--blue); border-radius: 0 var(--radius-lg) var(--radius-lg) 0; padding: 36px 32px; display: flex; flex-direction: column; justify-content: center; }
+section.conclusion-split .hero-box h3 { font-size: 30pt; line-height: 1.32; color: var(--ink); font-weight: 700; margin: 0 0 16px; }
+section.conclusion-split .hero-box p { font-size: 17pt; color: var(--ink-mute); margin: 0; line-height: 1.5; }
+section.conclusion-split .list-box { display: flex; flex-direction: column; justify-content: center; gap: 20px; }
+section.conclusion-split .item { border-bottom: 1px solid var(--hairline); padding-bottom: 16px; }
+section.conclusion-split .item:last-child { border-bottom: none; padding-bottom: 0; }
+section.conclusion-split .item h4 { color: var(--blue); margin-bottom: 6px; font-size: 13pt; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; }
+section.conclusion-split .item p { font-size: 16pt; margin: 0; color: var(--ink-mute); }
+
+/* ---------- [ARCHIVE] conclusion-actions — 4-col process action plan ---------- */
+section.conclusion-actions .flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 20px; flex: 1; align-items: stretch; }
+section.conclusion-actions .step { background: var(--card); border: 1px solid var(--hairline); border-radius: var(--radius-lg); padding: 28px 20px; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; }
+section.conclusion-actions .step .badge { background: var(--blue-soft); color: var(--blue); font-size: 11pt; font-weight: 700; padding: 2px 10px; border-radius: 999px; margin-bottom: 14px; text-transform: uppercase; font-family: var(--font-sans); }
+section.conclusion-actions .step h3 { font-size: 16pt; margin-bottom: 8px; color: var(--ink); }
+section.conclusion-actions .step p { font-size: 13pt; margin: 0; color: var(--ink-mute); line-height: 1.5; }
+
+/* ---------- [ARCHIVE] situation-insight — small situation / dominant insight (asymmetric) ---------- */
+section.situation-insight .si-row { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 40px; margin: auto 0; flex: 1; align-items: stretch; }
+section.situation-insight .situation { display: flex; flex-direction: column; justify-content: center; }
+section.situation-insight .situation h3 { font-size: 13pt; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-sub); margin-bottom: 16px; font-weight: 700; }
+section.situation-insight .situation ul { margin: 0; padding-left: 20px; }
+section.situation-insight .situation li { font-size: 17pt; color: var(--ink-mute); margin-bottom: 12px; }
+section.situation-insight .insight {
+  background: var(--blue-soft); border-radius: var(--radius-lg);
+  padding: 44px 44px; display: flex; flex-direction: column; justify-content: center;
+}
+section.situation-insight .insight h3 { font-size: 13pt; text-transform: uppercase; letter-spacing: 0.05em; color: var(--blue); margin-bottom: 16px; font-weight: 700; }
+section.situation-insight .insight p { font-size: 28pt; line-height: 1.4; color: var(--ink); font-weight: 600; margin: 0; letter-spacing: -0.01em; }
+section.situation-insight .insight strong { color: var(--blue); }
+
+/* ---------- [ARCHIVE] lead-support — claim + 3-point support (centred) ---------- */
+section.lead-support { justify-content: center; }
+section.lead-support h1 { font-size: 40pt; font-weight: 700; letter-spacing: -0.025em; line-height: 1.28; max-width: 94%; margin: 0 0 30px; }
+section.lead-support h1 strong, section.lead-support h1 .accent { color: var(--blue); }
+section.lead-support .support { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin: 0; }
+section.lead-support .support > * { border-top: 3px solid var(--blue); padding-top: 16px; }
+section.lead-support .support .n { font-family: var(--font-mono); font-size: 15pt; font-weight: 700; color: var(--blue); }
+section.lead-support .support h3 { font-size: 18pt; margin: 6px 0 6px; }
+section.lead-support .support p { font-size: 15pt; color: var(--ink-mute); margin: 0; line-height: 1.5; }
+
+/* ---------- [ARCHIVE] flow-arrow — A -> B -> C horizontal flow with arrows ---------- */
+section.flow-arrow .flow { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 18px; margin: auto 0; align-items: stretch; }
+section.flow-arrow .step { background: var(--card); border: 1px solid var(--hairline); border-radius: var(--radius-lg); padding: 30px 28px; display: flex; flex-direction: column; justify-content: center; }
+section.flow-arrow .step .n { font-family: var(--font-mono); font-size: 12pt; font-weight: 700; color: var(--blue); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; }
+section.flow-arrow .step h3 { font-size: 22pt; margin: 0 0 8px; color: var(--ink); }
+section.flow-arrow .step p { font-size: 16pt; color: var(--ink-mute); margin: 0; line-height: 1.5; }
+section.flow-arrow .arrow { display: flex; align-items: center; justify-content: center; color: var(--blue); font-size: 38pt; font-weight: 300; }
+
+/* ---------- [ARCHIVE] big-insight — small KPI/data row + one dominant insight line ---------- */
+section.big-insight { justify-content: center; }
+section.big-insight .data { display: flex; gap: 40px; margin-bottom: 30px; flex-wrap: wrap; }
+section.big-insight .data .stat .num { font-size: 44pt; }
+section.big-insight .lead { font-size: 36pt; font-weight: 700; line-height: 1.3; color: var(--ink); letter-spacing: -0.02em; max-width: 92%; }
+section.big-insight .lead strong, section.big-insight .lead .accent { color: var(--blue); }
+section.big-insight .lead::before { content: ''; display: block; width: 56px; height: 5px; background: var(--blue); border-radius: 3px; margin-bottom: 22px; }
+
+/* ███████████████████████████████████████████████████████████████
+   SHELLS — deck skeleton: cover variants / section / toc / closers.
+   Token-only → dark-safe (except photo-cover scrims, intentionally fixed).
+   ███████████████████████████████████████████████████████████████ */
+
+/* ---------- cover — title-subtitle hero, blue top border ---------- */
 section.cover {
   justify-content: center;
   align-items: flex-start;
@@ -267,6 +1136,100 @@ section.cover p {
 }
 section.cover::after, section.cover header, section.cover footer { display: none; }
 
+/* [ARCHIVE] cover-minimal — white canvas, giant 88pt H1, bottom-left meta (pure type) */
+section.cover-minimal { justify-content: flex-end; align-items: flex-start; }
+section.cover-minimal h1 {
+  font-size: 88pt; font-weight: 800; letter-spacing: -0.04em; line-height: 1.0;
+  color: var(--ink); margin: 0 0 24px; padding-bottom: 0; border-bottom: none; max-width: 92%;
+}
+section.cover-minimal h2 { font-size: 22pt; font-weight: 400; color: var(--ink-mute); max-width: 70%; margin-bottom: 18px; }
+section.cover-minimal p { color: var(--ink-sub); font-size: 12pt; text-transform: uppercase; letter-spacing: 0.08em; font-variant-numeric: tabular-nums; }
+section.cover-minimal::after, section.cover-minimal header, section.cover-minimal footer { display: none; }
+
+/* [ARCHIVE] cover-band — top 8px blue band + accent bar above H1, centered */
+section.cover-band { justify-content: center; align-items: flex-start; border-top: 8px solid var(--blue); }
+section.cover-band h1 {
+  font-size: 56pt; font-weight: 700; letter-spacing: -0.03em; line-height: 1.08;
+  color: var(--ink); margin: 0 0 18px; padding-bottom: 0; border-bottom: none; max-width: 86%;
+}
+section.cover-band h1::before { content: ''; display: block; width: 56px; height: 4px; background: var(--blue); margin: 0 0 22px; }
+section.cover-band h2 { font-size: 22pt; font-weight: 400; color: var(--ink-mute); max-width: 78%; }
+section.cover-band p { position: absolute; bottom: 56px; right: 88px; color: var(--ink-sub); font-size: 11pt; text-transform: uppercase; letter-spacing: 0.08em; }
+section.cover-band::after, section.cover-band header, section.cover-band footer { display: none; }
+
+/* cover-image — _backgroundImage photo + dark scrim overlay + white text.
+   Use the `_backgroundImage` directive (CSS bg on section), NOT ![bg]:
+   advanced ![bg] paints above section::before, hiding the scrim. */
+section.cover-image { justify-content: center; align-items: flex-start; }
+section.cover-image::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(8,11,16,0.55) 0%, rgba(8,11,16,0.80) 100%); }
+section.cover-image h1 {
+  position: relative; color: #ffffff; font-size: 52pt; font-weight: 700; letter-spacing: -0.03em; line-height: 1.08;
+  border-bottom: 1px solid rgba(255,255,255,0.4); padding-bottom: 22px; margin: 0 0 16px; max-width: 86%;
+}
+section.cover-image h2 { position: relative; color: rgba(255,255,255,0.85); font-size: 22pt; font-weight: 400; max-width: 78%; margin: 0; }
+section.cover-image p { position: relative; color: rgba(255,255,255,0.7); font-size: 11pt; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 28px; }
+section.cover-image::after, section.cover-image header, section.cover-image footer { display: none; }
+
+/* cover-split — ![bg left:50%] photo + right text (v8.1 CORE 복귀 — 사진 분할은 표지 성격) */
+section.cover-split { justify-content: center; align-items: flex-start; }
+section.cover-split h1 {
+  font-size: 46pt; font-weight: 700; letter-spacing: -0.03em; line-height: 1.1;
+  border-bottom: 1px solid var(--hairline); padding-bottom: 20px; margin: 0 0 16px;
+}
+section.cover-split h2 { font-size: 20pt; font-weight: 400; color: var(--ink-mute); margin: 0; }
+section.cover-split p { color: var(--ink-sub); font-size: 11pt; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 28px; }
+section.cover-split::after, section.cover-split header, section.cover-split footer { display: none; }
+
+/* [ARCHIVE] cover-photo-full — full _backgroundImage photo + bottom dark gradient + white title
+   (use `_backgroundImage` directive, not ![bg] — see cover-image note) */
+section.cover-photo-full { padding: 0; justify-content: flex-end; align-items: flex-start; }
+section.cover-photo-full::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(8,11,16,0) 42%, rgba(8,11,16,0.86) 92%); }
+section.cover-photo-full h1 { position: relative; color: #ffffff; font-size: 52pt; font-weight: 700; letter-spacing: -0.03em; margin: 0 88px 12px; padding-bottom: 0; border-bottom: none; max-width: 85%; }
+section.cover-photo-full h2 { position: relative; color: rgba(255,255,255,0.88); font-size: 22pt; font-weight: 400; margin: 0 88px 16px; max-width: 72%; }
+section.cover-photo-full p { position: relative; color: rgba(255,255,255,0.7); font-size: 11pt; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 88px 56px; }
+section.cover-photo-full::after, section.cover-photo-full header, section.cover-photo-full footer { display: none; }
+
+/* ---------------------------------------------------------------
+   thumb — 블로그/OG 썸네일 (16:9, 1280×720). cover-image 언어(사진 + 다크
+   스크림 + 화이트 타이포) + 좌상단 로고 + 블루 eyebrow. 슬라이드와 동일 테마
+   토큰을 써서 OSMU. make-thumbnail-marp.mjs가 생성.
+   사진·스크림은 `_backgroundImage` 디렉티브로 주입한다(![bg] 아님 — advanced
+   ![bg]가 section::before 위에 그려져 로고를 가리는 문제 회피). 스크림은 그
+   디렉티브의 gradient 레이어로 넣으므로(스크립트가 합성) ::before는 로고 전용.
+   사진이 없으면 잉크 캔버스 폴백(background: var(--ink)).
+   마크업: .eyebrow(카테고리) → # 제목 → <p class="sub">부제</p>.
+   세이프 영역: 배경 사진은 16:9 전체를 채우되, 텍스트·로고는 가운데
+   1:1(720×720) 영역 안에만 배치한다 — 정사각으로 크롭돼도 잘리지 않게.
+   좌우 패딩 300px → 내용 폭 ≈680px(1:1 영역 안, 안쪽 여백 포함).
+   --------------------------------------------------------------- */
+section.thumb {
+  background: var(--ink); color: #ffffff;
+  padding: 90px 320px 96px;   /* 좌우 320 → 내용이 가운데 1:1 세이프 영역 안 + 안쪽 여백 40px */
+  justify-content: center; align-items: flex-start;
+  word-break: keep-all;       /* 한글 단어 중간에서 줄바꿈되지 않게 */
+}
+section.thumb > * { position: relative; z-index: 1; }
+section.thumb::after, section.thumb header, section.thumb footer { display: none; }  /* 페이지 pill 숨김 */
+/* 좌상단 로고 (화이트 워드마크) — 내용 왼쪽선에 맞춤 */
+section.thumb::before {
+  content: ''; position: absolute; top: 74px; left: 320px; z-index: 2;
+  width: 120px; height: 40px; background: var(--logo) no-repeat left center / contain;
+}
+section.thumb .eyebrow {
+  color: #5b9cff; font-size: 20px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.09em; margin: 0 0 22px;
+}
+section.thumb h1 {
+  color: #ffffff; font-size: 56px; font-weight: 800; line-height: 1.2;
+  letter-spacing: -0.035em; border-bottom: none; padding: 0; margin: 0; max-width: 100%;
+}
+section.thumb .sub {
+  font-size: 23px; font-weight: 400; color: rgba(244,246,250,0.85);
+  margin: 24px 0 0; line-height: 1.5; max-width: 100%;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+
+/* ---------- section — chapter divider ---------- */
 section.section {
   background: var(--canvas-soft);
   justify-content: center;
@@ -290,6 +1253,45 @@ section.section h2 {
 }
 section.section::after { display: none; }
 
+/* ---------- toc — editorial agenda, hairline-separated rows ----------
+   absolute ::before keeps inline content (title + em) flowing normally */
+section.toc ol { list-style: none; counter-reset: toc; margin: 8px 0 0; padding: 0; }
+section.toc ol li {
+  counter-increment: toc;
+  position: relative;
+  padding: 13px 0 13px 60px;
+  border-top: 1px solid var(--hairline);
+  font-size: 20pt;
+  line-height: 1.25;
+  color: var(--ink);
+}
+section.toc ol li:last-child { border-bottom: 1px solid var(--hairline); }
+section.toc ol li::before {
+  content: counter(toc, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 16px;
+  font-size: 16pt;
+  font-weight: 600;
+  color: var(--blue);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+section.toc ol li em { font-style: normal; color: var(--ink-sub); font-size: 13pt; display: block; margin-top: 2px; }
+/* agenda progress — mark <li class="current"> to highlight the active chapter;
+   others dim only when a current exists (presenter aid for recap-between-sections) */
+section.toc:has(li.current) ol li:not(.current) { opacity: 0.4; }
+section.toc ol li.current { color: var(--blue); }
+section.toc ol li.current em { color: var(--blue); }
+section.toc ol li.current::before {
+  content: counter(toc, decimal-leading-zero);
+  width: 30px; height: 30px; top: 12px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--blue); color: var(--on-blue);
+  border-radius: 999px; font-size: 13pt;
+}
+
+/* ---------- end — closing hero, blue top border ---------- */
 section.end {
   justify-content: center;
   align-items: flex-start;
@@ -312,212 +1314,7 @@ section.end p {
 }
 section.end::after, section.end header, section.end footer { display: none; }
 
-/* ===============================================================
-   12 BRAND LAYOUTS
-   =============================================================== */
-
-/* ---------- 1) toc — editorial agenda, hairline-separated rows ----------
-   absolute ::before keeps inline content (title + em) flowing normally */
-section.toc ol { list-style: none; counter-reset: toc; margin: 8px 0 0; padding: 0; }
-section.toc ol li {
-  counter-increment: toc;
-  position: relative;
-  padding: 18px 0 18px 60px;
-  border-top: 1px solid var(--hairline);
-  font-size: 21pt;
-  color: var(--ink);
-}
-section.toc ol li:last-child { border-bottom: 1px solid var(--hairline); }
-section.toc ol li::before {
-  content: counter(toc, decimal-leading-zero);
-  position: absolute;
-  left: 0;
-  top: 22px;
-  font-size: 16pt;
-  font-weight: 600;
-  color: var(--blue);
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.02em;
-}
-section.toc ol li em { font-style: normal; color: var(--ink-sub); font-size: 14pt; display: block; margin-top: 2px; }
-
-/* ---------- 2) statement — ink canvas punctuation slide ---------- */
-section.statement {
-  background: var(--ink);
-  color: #ffffff;
-  justify-content: center;
-  align-items: flex-start;
-}
-section.statement h1 {
-  color: #ffffff;
-  font-size: 46pt;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.18;
-  border-bottom: none;
-  padding-bottom: 0;
-  margin: 0;
-  max-width: 90%;
-}
-section.statement h1 strong, section.statement .accent { color: var(--blue-hover); }
-section.statement p { color: rgba(255,255,255,0.6); font-size: 14pt; margin-top: 24px; }
-section.statement::after { color: rgba(255,255,255,0.4); border-color: rgba(255,255,255,0.18); }
-section.statement header, section.statement footer { color: rgba(255,255,255,0.4); }
-
-/* ---------- 3) metric-row — large tabular-num KPIs ---------- */
-section.metric-row .metrics {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-  gap: 28px;
-  margin-top: 16px;
-}
-section.metric-row .metric { display: flex; flex-direction: column; gap: 6px; }
-section.metric-row .metric .num {
-  font-size: 52pt;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  color: var(--ink);
-  font-variant-numeric: tabular-nums;
-  line-height: 1;
-}
-section.metric-row .metric .num .unit { font-size: 24pt; color: var(--blue); font-weight: 600; }
-section.metric-row .metric .label {
-  font-size: 12pt;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--ink-sub);
-  font-weight: 600;
-}
-section.metric-row .metric .desc { font-size: 14pt; color: var(--ink-mute); }
-
-/* ---------- 4) callout-hero — full blue callout centerpiece ---------- */
-section.callout-hero { justify-content: center; }
-section.callout-hero blockquote {
-  border-left: 4px solid var(--blue);
-  background: var(--blue-soft);
-  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
-  padding: 36px 44px;
-  margin: 0;
-}
-section.callout-hero blockquote p { font-size: 28pt; line-height: 1.4; color: var(--ink); font-weight: 500; }
-section.callout-hero blockquote p:last-child:not(:first-child) {
-  font-size: 14pt; color: var(--ink-sub); font-weight: 600; margin-top: 20px;
-}
-
-/* ---------- 5) split — 50/50 two columns + center hairline ---------- */
-section.split .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-top: 12px; }
-section.split .cols > * { padding: 0; }
-section.split .cols > *:first-child { border-right: 1px solid var(--hairline); padding-right: 48px; }
-
-/* ---------- 6) feature-cards — 3 bordered cards ---------- */
-section.feature-cards .cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-  gap: 20px;
-  margin-top: 14px;
-}
-section.feature-cards .card {
-  background: var(--card);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-lg);
-  padding: 24px 26px;
-}
-section.feature-cards .card h4 { color: var(--blue); margin-bottom: 12px; }
-section.feature-cards .card h3 { font-size: 19pt; margin-bottom: 8px; }
-section.feature-cards .card p { font-size: 15pt; margin: 0; }
-
-/* ---------- 7) comparison — bordered table hero (inherits table style) ---------- */
-section.comparison table { font-size: 15pt; }
-section.comparison th { background: var(--canvas-soft); }
-section.comparison td:first-child { font-weight: 600; color: var(--ink); }
-
-/* ---------- 8) code-focus — large code card + editor top bar ---------- */
-section.code-focus pre {
-  font-size: 15pt;
-  padding: 0;
-  overflow: hidden;
-}
-section.code-focus pre::before {
-  content: '';
-  display: block;
-  height: 38px;
-  background: var(--canvas-soft);
-  border-bottom: 1px solid var(--hairline);
-  /* three traffic-light dots via radial gradients */
-  background-image:
-    radial-gradient(circle 5px at 22px 19px, var(--hairline-strong) 99%, transparent),
-    radial-gradient(circle 5px at 40px 19px, var(--hairline-strong) 99%, transparent),
-    radial-gradient(circle 5px at 58px 19px, var(--hairline-strong) 99%, transparent);
-}
-section.code-focus pre code { padding: 20px 26px; }
-
-/* ---------- 9) steps — numbered steps stack + blue index ----------
-   absolute ::before badge keeps inline content flowing normally */
-section.steps ol { list-style: none; counter-reset: step; margin: 8px 0 0; padding: 0; }
-section.steps ol li {
-  counter-increment: step;
-  position: relative;
-  padding: 18px 0 18px 56px;
-  border-top: 1px solid var(--hairline);
-  font-size: 17pt;
-  line-height: 1.5;
-  color: var(--ink-mute);
-  min-height: 34px;
-}
-section.steps ol li:last-child { border-bottom: 1px solid var(--hairline); }
-section.steps ol li::before {
-  content: counter(step);
-  position: absolute;
-  left: 0;
-  top: 14px;
-  width: 34px; height: 34px;
-  display: flex; align-items: center; justify-content: center;
-  background: var(--blue-soft);
-  color: var(--blue);
-  border-radius: 999px;
-  font-size: 15pt;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-}
-section.steps ol li strong { color: var(--ink); }
-
-/* ---------- 10) quote — attribution quote ---------- */
-section.quote { justify-content: center; }
-section.quote blockquote {
-  border-left: none;
-  background: none;
-  padding: 0;
-  margin: 0;
-}
-section.quote blockquote p { font-size: 32pt; line-height: 1.35; color: var(--ink); font-weight: 600; letter-spacing: -0.02em; }
-section.quote blockquote p:last-child:not(:first-child),
-section.quote > p {
-  font-size: 14pt; color: var(--ink-sub); font-weight: 600; margin-top: 22px;
-  text-transform: uppercase; letter-spacing: 0.05em;
-}
-section.quote blockquote::before {
-  content: '';
-  display: block;
-  width: 44px; height: 4px;
-  background: var(--blue);
-  border-radius: 2px;
-  margin-bottom: 26px;
-}
-
-/* ---------- 11) image-split — bg image left + content right ----------
-   Marpit `![bg left]` already constrains content to the right half;
-   the .body just pads + vertically centers (no extra width/flex). */
-section.image-split { padding: 0; justify-content: center; }
-section.image-split .body {
-  padding: 64px 56px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  box-sizing: border-box;
-}
-section.image-split h1 { border-bottom: none; padding-bottom: 0; }
-
-/* ---------- 12) closing-cta — blue pill CTA + handle/url ---------- */
+/* ---------- [ARCHIVE] closing-cta — blue pill CTA + handle/url ---------- */
 section.closing-cta { justify-content: center; align-items: flex-start; border-top: 2px solid var(--blue); }
 section.closing-cta h1 { font-size: 44pt; border-bottom: none; padding-bottom: 0; margin-bottom: 24px; }
 section.closing-cta .pill {
@@ -532,3 +1329,53 @@ section.closing-cta .pill {
 }
 section.closing-cta p { color: var(--ink-sub); font-size: 13pt; text-transform: uppercase; letter-spacing: 0.06em; }
 section.closing-cta::after, section.closing-cta header, section.closing-cta footer { display: none; }
+
+/* ---------- qa — centred blue heading + giant faint "?" watermark ---------- */
+section.qa { justify-content: center; align-items: center; text-align: center; }
+section.qa::before {
+  content: '?'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  font-family: var(--font-mono); font-size: 380pt; font-weight: 800; line-height: 1;
+  color: color-mix(in oklab, var(--blue) 6%, transparent); pointer-events: none;
+}
+section.qa h1 { position: relative; font-size: 72pt; font-weight: 800; letter-spacing: -0.04em; color: var(--blue); margin: 0; padding-bottom: 0; border-bottom: none; }
+section.qa h2 { position: relative; font-size: 24pt; font-weight: 500; color: var(--ink-mute); margin-top: 18px; }
+section.qa::after, section.qa header, section.qa footer { display: none; }
+
+/* ---------- thanks-contact — contact list (left) + QR card (right) ---------- */
+section.thanks-contact { justify-content: center; align-items: flex-start; }
+section.thanks-contact h1 { color: var(--blue); font-size: 42pt; font-weight: 700; letter-spacing: -0.03em; margin: 0 0 8px; padding-bottom: 0; border-bottom: none; }
+section.thanks-contact h2 { color: var(--ink-mute); font-size: 20pt; font-weight: 400; margin-bottom: 40px; }
+section.thanks-contact .contact-wrapper { display: grid; grid-template-columns: 1.2fr 1fr; gap: 48px; width: 100%; align-items: center; }
+section.thanks-contact .contact-info ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 14px; }
+section.thanks-contact .contact-info li {
+  font-size: 16pt; color: var(--ink); background: var(--card);
+  border: 1px solid var(--hairline); border-radius: var(--radius-md);
+  padding: 12px 20px; display: flex; align-items: center; gap: 12px;
+}
+section.thanks-contact .contact-info li strong { color: var(--blue); width: 110px; font-weight: 700; }
+/* contact values (incl. auto-linked URLs) in black, not link-blue */
+section.thanks-contact .contact-info li a { color: var(--ink); border-bottom: none; font-weight: 400; }
+section.thanks-contact .contact-qr {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: var(--card); border: 1px solid var(--hairline);
+  border-radius: var(--radius-lg); padding: 24px; width: 240px; margin-left: auto;
+}
+section.thanks-contact .contact-qr img { width: 180px; height: 180px; border-radius: var(--radius-sm); border: 1px solid var(--hairline-strong); background: #ffffff; padding: 8px; }
+section.thanks-contact .contact-qr .qr-label { font-family: var(--font-mono); font-size: 10pt; color: var(--ink-sub); margin-top: 14px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* ---------- session-break — soft surface + blue eyebrow + 64pt heading (v8.2 CORE 복귀) ---------- */
+section.session-break { justify-content: center; align-items: center; text-align: center; background: var(--canvas-soft); }
+section.session-break::before { content: 'BREAK'; display: block; font-family: var(--font-mono); font-size: 13pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em; color: var(--blue); margin-bottom: 22px; }
+section.session-break h1 { font-size: 64pt; font-weight: 700; letter-spacing: -0.03em; color: var(--ink); margin: 0; padding-bottom: 0; border-bottom: none; }
+section.session-break h2 { font-size: 18pt; font-weight: 500; color: var(--ink-mute); margin-top: 28px; }
+section.session-break::after, section.session-break header, section.session-break footer { display: none; }
+
+/* ███████████████████████████████████████████████████████████████
+   PROJECT LAYOUTS — append NEW one-off layouts below this line.
+   Recipe (design.md §"새 레이아웃 추가"): only add here when a slide
+   truly can't be built from TIER 1 components AND needs a hero moment.
+   Keep token-only (no literal colours) so the dark variant inverts.
+   Then register one row in the skill mapping table + design.md list.
+   ───────────────────────────────────────────────────────────────
+   (none yet)
+   ███████████████████████████████████████████████████████████████ */

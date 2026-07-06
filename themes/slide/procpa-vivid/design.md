@@ -83,24 +83,27 @@ CSS는 4계층 배너로 구성된다(`procpa-vivid.css`): **Tokens/Base → TIE
 
 스킬 자동 매칭 규칙은 [`.claude/skills/md-to-marp-propca/references/procpa-vivid-matching.md`](../../../.claude/skills/md-to-marp-propca/references/procpa-vivid-matching.md).
 
-### 콘텐츠 신호 → 클래스 퀵맵
+> **v8 레이아웃 다이어트 (2026-07)**: 실사용 데이터 기반으로 section 레이아웃을 **CORE 세트(19종)**로 축소했다. 나머지 32종은 `[ARCHIVE]`로 강등 — CSS에 남아 렌더링은 되지만(기존 덱 호환) **신규 변환에는 쓰지 않는다**(§5-A). 아카이브가 담당하던 표현은 컴포넌트 레시피([`vivid-recipes.md`](../../../.claude/skills/md-to-marp-propca/references/vivid-recipes.md))로 대체한다.
+
+### 콘텐츠 신호 → 클래스 퀵맵 (CORE + 레시피)
 
 | 콘텐츠 신호 | 1순위 | 비고 |
 |---|---|---|
-| 핵심 숫자·KPI | `.stat`(본문에 섞을 때) / `metric-row`(전면) | 숫자는 텍스트 불릿보다 강함 |
+| 핵심 숫자·KPI | `.stat`(본문에 소량, R-02) | KPI 밴드·metric-row는 미사용(v8.1 아카이브) |
 | A vs B 비교 | `.vs` / `comparison-vs`(전면) | 표 형태면 `comparison` |
-| 장단점 | `pros-cons` | ✓/✗ 세만틱 마커 |
-| 문제→해결 | `problem-solution` | 현재→목표 격차는 `gap-analysis` |
-| 절차·순서 | `.process`(가로 3~5) / `steps`(세로 번호) | 시간축은 `timeline`·`vertical-timeline`·`roadmap` |
+| 장단점 | `.vs` 좌우에 ✓/✗ 리스트 | 레시피 R-04 |
+| 문제→해결 | `.cols-2` + `.card` vs `.card.accent` | 레시피 R-03 |
+| 절차·순서 | `.process`(가로 3~5) / `steps`(세로 번호) | 연혁·로드맵은 `vertical-timeline`(v8.2 복귀) |
 | 핵심 주장 한 문장 | `statement`(잉크) / `takeaway`(화이트 결론) | punctuation — 덱당 1~2장 |
-| 용어 정의 | `definition` | |
-| 체크리스트·판단 기준 | `checklist` | `.done`=✓ |
-| 예상 질문 | `faq` | |
-| 코드 | `.code-block`(본문 중) / `code-focus`(전면) | 투사용은 `.code-lg` 합성 |
-| 인용 | `.quote-block` | |
-| 스크린샷·이미지 | `.shot` / `image-split` / `gallery` / `before-after` | |
+| 용어 정의 | `.panel.accent`(h4 용어 + 본문) | 레시피 R-07 |
+| 체크리스트·판단 기준 | `checklist` 레이아웃 (✓/○, v8.1 복귀) | `li.done`=✓ |
+| 예상 질문 (Q&A) | `faq` 레이아웃 (Q 배지, v8.2 복귀) | 소형 2쌍 이하는 `.stack`+`.panel`(R-08) |
+| 코드 | `.code-block`(본문 중) | 투사용은 `code-lg` 합성 |
+| 인용 | `.quote-block` / `callout-hero`(전면) | |
+| 스크린샷·이미지 | `.shot` / `split` + 이미지 / `.cols-2` + `figure` | |
 | 병렬 개념 3~4개 | `.cols-3` + `.card` / `feature-cards` | |
 | 칸반·분류 보드 | `.board`(`.two`/`.four`) | 전용 레이아웃 없음 |
+| 본문 + 참고 정보 | `content-sidebar` | 실사용 1위권 |
 
 (제작 취향 축적본은 볼트 `.claude/harness/lessons/slides.md` — `/to-slides`가 필독)
 
@@ -136,61 +139,68 @@ CSS는 4계층 배너로 구성된다(`procpa-vivid.css`): **Tokens/Base → TIE
 | `.panel`(`.accent`/`.soft`) | 제목 박스 → `definition`·`content-sidebar` |
 | `.process` | A→B→C → `flow-arrow`·`steps` |
 
-### TIER 2 · 임팩트 레이아웃 (드물게 — `<!-- _class: X -->`, 한 장 한 레이아웃)
+### CORE 레이아웃 — 본문 7종 (`<!-- _class: X -->`, 한 장 한 레이아웃)
 
-컴포넌트로 표현이 어렵거나(연결선·배지·✓/✗·에디터 크롬·배경이미지) 화면을 통째로 강조할 때만.
+실사용 상위 레이아웃. 컴포넌트로 조립하기 애매하거나, 한 장 전체가 단일 구조일 때 사용한다.
+
+| 클래스 | 용도 / 마크업 키 | 실사용 근거 |
+|---|---|---|
+| `split` | 50/50 2열 + 중앙 헤어라인 (`.cols`) — 본문+이미지의 기본형. 이미지 자동 프레임 | 1위 (39장 중 10회) |
+| `feature-cards` | `.cards` 아래 `.card` N개 자동 그리드 — 특징·전략 3~4개 | 3위 |
+| `content-sidebar` | `.layout > .main / .aside` — 본문 + 우측 참고 박스 | 4위 |
+| `comparison-vs` | 1:1 대형 비교 카드 + 중앙 VS 배지 (`.vs-row > .vs-card/.vs-divider>.vs-badge`) — `.compact` 지원 | 5위 |
+| `comparison` | 보더 테이블 비교(첫 컬럼 강조) — `.compact` 지원 | 사용 |
+| `steps` | 번호 단계 스택 + 블루 원형 배지 (`ol`) | 사용 |
+| `icon-list` | 카드 행 리스트 + `em` mono 배지 — `.compact` 지원 | 사용 |
+| `checklist` | ✓(`li.done`)/○ 행 리스트 — 판단 기준·점검 목록 (고정 행 간격) | v8.1 복귀 |
+| `faq` | Q&A — 블루 Q 배지 (`.qa > h3 + p`) | v8.2 복귀 |
+| `vertical-timeline` | `ol` 좌측 수직 레일 + 원형 블루 번호 배지 — 연혁·로드맵 | v8.2 복귀 |
+
+### CORE 레이아웃 — 임팩트 3종 (덱당 1~3장, "한방"용)
 
 | 클래스 | 용도 / 마크업 키 |
 |---|---|
 | `statement` | ink 캔버스 대형 선언 + 블루 강조어. **`statement light`** = 화이트 변형(`<p class="accent">` 대형 블루 줄) |
-| `takeaway` | 화이트 결론 강조 — `.eyebrow` + 블루 액센트 바 + 대형 h1 + 보조 p |
-| `problem-solution` | 틴트 문제 → `.arrow` → 해결 (`.ps-row > .problem/.arrow/.solution > .body`) |
-| `gap-analysis` | 현재 → 격차 → 목표 (`.gap-row > .now/.gap-mid/.goal`) |
-| `pros-cons` | 2열 ✓(`.pros`)/✗(`.cons`) 세만틱 마커 (`.cols > .pros/.cons > ul`) |
-| `comparison` | 보더 테이블 비교(첫 컬럼 강조) |
-| `steps` | 번호 단계 스택 + 블루 원형 배지 |
-| `timeline` | 수평 타임라인 — 블루 닷 + 연결선, 5+노드 2행 (`.track > .node > .when/h3/p`) |
-| `vertical-timeline` | `ol` 좌측 수직 레일 + 원형 블루 번호 배지 |
-| `roadmap` | 연결 단계 흐름 — 번호 배지 + 진행선, `.featured`=현재 (`.tiers > .tier > h3/.phase-detail/p/ul`) |
-| `definition` | 대형 용어 + 정의 + 예시 (`.term`/`.pos`/`.gloss`/`.example`) |
-| `faq` | Q&A — 블루 Q 배지 (`.qa > h3 + p`) |
-| `checklist` | `ul>li` 블루 ✓(`.done`)/○(todo) |
-| `code-focus` | 대형 코드 카드 + 에디터 상단 바(신호등 점) |
-| `image-split` | `![bg left]` + 우측 `.body` 본문 |
-| `gallery` | 2×N 이미지 그리드 (`.grid > figure`) |
-| `before-after` | 이미지 \| 블루 → \| 이미지 (`.ba-row > .ba-col/.ba-arrow`) |
+| `takeaway` | 화이트 결론 강조 — 블루 액센트 바 + 대형 h1 + 보조 p |
+| `callout-hero` | 전면 블루 콜아웃 인용 (blockquote 대형) |
 
-### SHELLS (덱 골격)
+### SHELLS (덱 골격 — CORE)
 
-- **커버 6종** — `cover`(기본, 상단 2px 블루) · `cover-minimal`(88pt 순수 타이포) · `cover-band`(상단 8px 띠) · `cover-image`(`_backgroundImage`+다크 스크림) · `cover-split`(`![bg left:50%]`) · `cover-photo-full`(전면 사진+하단 그라데이션)
+- **커버 3종** — `cover`(기본, 상단 2px 블루) · `cover-image`(`_backgroundImage`+다크 스크림) · `cover-split`(`![bg left:50%]` 사진 분할, v8.1 복귀)
 - **전환/목차** — `section`(88pt 챕터 번호) · `toc`(헤어라인 번호 행, `<li class="current">`로 진행 강조)
-- **폐막 5종** — `end`(cover 미러) · `closing-cta`(블루 pill) · `qa`(거대 `?` 워터마크) · `thanks-contact`(연락 리스트 + QR, 값 텍스트 검정) · `session-break`(`BREAK` eyebrow)
+- **폐막 3종 + 휴식** — `end`(cover 미러) · `qa`(거대 `?` 워터마크) · `thanks-contact`(연락 리스트 + QR, 값 텍스트 검정) · `session-break`(`BREAK` eyebrow, 긴 강의 휴식 — v8.2 복귀)
+- **썸네일** — `thumb`(블로그/OG, §썸네일 시스템 참조)
 
-> 사진 커버(`cover-image`/`cover-photo-full`) 스크림은 **고정 다크 리터럴**(`rgba(8,11,16,…)`) — `--ink`를 쓰면 다크 테마에서 밝아져 흰-on-흰이 되므로 의도적 테마 독립. QR 흰 배경(`thanks-contact`)도 동일.
+> 사진 커버(`cover-image`) 스크림은 **고정 다크 리터럴**(`rgba(8,11,16,…)`) — `--ink`를 쓰면 다크 테마에서 밝아져 흰-on-흰이 되므로 의도적 테마 독립. QR 흰 배경(`thanks-contact`)도 동일.
 
-### TIER 2b · 복구된 레이아웃 (v7.1) — 사용 가능, 단 컴포넌트 우선
+### §5-A · ARCHIVE (32종) — 신규 사용 금지, 렌더링 호환만
 
-v7에서 컴포넌트로 대체된다며 제거했던 전용 레이아웃 20종을 **요청에 따라 복구**했다(CSS `TIER 2b` 배너). 모두 정상 동작하며 `<!-- _class: X -->`로 쓸 수 있다. 다만 상당수는 TIER 1 컴포넌트로 더 간단히 표현되므로 **일상 슬라이드는 컴포넌트 우선**, 이 레이아웃은 임팩트가 필요하거나 이미 쓰던 덱 호환용으로 사용한다.
+아래 레이아웃은 CSS에 `[ARCHIVE]` 마커와 함께 남아 있어 **기존 덱은 계속 빌드되지만, 신규 변환·신규 덱에서는 선택하지 않는다.** 같은 표현이 필요하면 우측 대안을 쓴다. (6개월 후 재집계에서도 미사용이면 삭제 검토.)
 
-| 복구된 레이아웃 | 권장 컴포넌트 대안 (간단할 때) |
+| ARCHIVE | 신규 덱에서의 대안 |
 |---|---|
-| `feature-cards` · `grid-3` · `block-features` | `.cols-3` + `.card`(`.top-rule`/`.ico`) |
-| `conclusion-cards` | `.cols-3` + `.card.num` |
-| `conclusion-split` · `content-sidebar` | `.split-7-5` + `.panel` |
+| `problem-solution` · `gap-analysis` | `.cols-2` + `.card`/`.card.accent` (레시피 R-03) |
+| `pros-cons` | `.vs` 좌우 ✓/✗ 리스트 (레시피 R-04) |
+| `timeline` · `roadmap` | `.process` / `steps` / `vertical-timeline` (레시피 R-06) |
+| `definition` | `.panel.accent` (레시피 R-07) |
+| `toggle-list` | `icon-list` / `checklist` |
+| `metric-row` | 미사용 (v8.1 — 숫자 강조는 `.stat` 소량만, R-02) |
+| `code-focus` | `.code-block` + `code-lg` modifier |
+| `image-split` · `gallery` · `before-after` · `two-image` | `split` + 이미지 / `.cols-2` + `figure` |
+| `grid-3` · `block-features` · `conclusion-cards` | `feature-cards` 또는 `.cols-3` + `.card`(`.num`/`.ico`) |
+| `conclusion-split` · `situation-insight` | `.split-7-5` + `.panel.accent` (레시피 R-05) |
 | `conclusion-actions` | `.cols-4` + `.card` |
-| `metric-row` | `.cols-*` + `.stat` |
-| `split` | `.cols-2` |
-| `comparison-vs` | `.vs` |
-| `comparison-three` | `.cols-3` + `.card.featured` |
-| `situation-insight` | `.split-7-5` + `.panel.accent` |
-| `lead-support` | `# 주장` + `.cols-3` + `.card` |
+| `lead-support` · `big-insight` | `takeaway` 또는 `# 주장` + `.cols-3`/`.stat` (레시피 R-02) |
+| `quote` | `callout-hero` / `.quote-block` |
 | `flow-arrow` | `.process` |
-| `big-insight` | `.cols-*` + `.stat` + `takeaway` |
-| `callout-hero` · `quote` | `.quote-block` |
-| `icon-list` · `toggle-list` | `.stack` + `.card` (또는 `.board`) |
-| `two-image` | `.cols-2` + `figure` |
+| `comparison-three` | `.cols-3` + `.card.featured` |
+| `closing-cta` | `end`/`qa` |
+| `cover-minimal` · `cover-band` · `cover-photo-full` | `cover` / `cover-image` / `cover-split` |
 
-> 마크업 골격은 데모 [`procpa-vivid.md`](procpa-vivid.md) PART 3에 전부 수록.
+> v8.1 (2026-07): `checklist`·`cover-split` CORE 복귀, `metric-row` 아카이브 이동.
+> v8.2 (2026-07): `faq`·`vertical-timeline`·`session-break` CORE 복귀 (사용자 선택). ARCHIVE 28종.
+
+> 아카이브 레이아웃의 마크업 골격은 데모 [`procpa-vivid.md`](procpa-vivid.md)에 남아 있다(호환 확인용).
 
 ### 여백/밀도
 
@@ -220,8 +230,7 @@ v7에서 컴포넌트로 대체된다며 제거했던 전용 레이아웃 20종�
 - 그림자·그라데이션 금지 — 깊이는 헤어라인 + 여백
 - `statement`의 ink 배경은 punctuation 1~2장 한정 (덱 전체 다크는 `procpa-vivid-dark`)
 - 인라인 코드는 블루 텍스트 아님 (토큰칩 = ink + muted 배경)
-- `image-split`에서 `.body`에 별도 width 지정 금지
-- 삭제된 레이아웃(§5) 출력 금지 — 컴포넌트로 대체
+- **ARCHIVE 레이아웃(§5-A) 신규 사용 금지** — 기존 덱 재빌드만 허용, 신규 변환은 CORE + 레시피로
 
 ---
 

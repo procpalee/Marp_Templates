@@ -32,6 +32,8 @@ tools: Read, Grep, Glob, Bash
 `Read 변환된 .md의 상단 20줄` → `theme:` 값 파싱:
 - `theme: propca-notion-style` (또는 색상 변형 `propca-notion-style-emerald/-slate/-ocean`) → Phase 1A (propca deck)
 - `theme: propca-notion-style-cards` → Phase 1B (card-news)
+- `theme: procpa-vivid` (또는 `procpa-vivid-dark`) → Phase 1C (vivid deck)
+- `theme: procpa-vivid-cards` → Phase 1B 준용 (클래스 네임스페이스는 `card-*`/`intro-*`/`outro-*`)
 - 그 외 → high 이슈 + 기본 deck 체크리스트로 진행 (예: tech-modern 잔재)
 
 ---
@@ -224,6 +226,64 @@ PDF 페이지 수 == 슬라이드 수 (pdfinfo 또는 grep -c '/Type[ ]*/Page[^s
 
 ---
 
+### Phase 1C — procpa-vivid deck 모드 (v8 CORE)
+
+#### V-1. Front matter
+```
+확인:
+  - `marp: true`, `theme: procpa-vivid` (또는 `procpa-vivid-dark`)
+  - `paginate: true`, `size: 16:9`
+```
+
+#### V-2. 슬라이드 구조
+```
+첫 슬라이드: `<!-- _class: cover -->` 또는 `cover-image`
+마지막 슬라이드: `<!-- _class: (end|qa|thanks-contact) -->`
+슬라이드 수 ≥ 3
+```
+
+#### V-3. ARCHIVE 어휘 방화벽 (v8 — 신규 사용 금지 32종)
+```
+변환물의 모든 _class 토큰에서 아래 매치 시 high 이슈 (v8.2):
+  problem-solution gap-analysis pros-cons timeline roadmap
+  definition code-focus image-split gallery before-after
+  grid-3 quote toggle-list block-features two-image comparison-three
+  conclusion-cards conclusion-split conclusion-actions situation-insight
+  lead-support flow-arrow big-insight metric-row closing-cta
+  cover-minimal cover-band cover-photo-full
+(주의: `quote`는 단독 토큰만 금지 — `.quote-block` div는 컴포넌트로 허용)
+propca 어휘(pastel-blocks/yellow-banner/tone-*) 매치 시에도 high.
+```
+
+#### V-4. CORE 어휘 검증
+```
+_class 토큰 허용 목록 (이외는 medium — PROJECT LAYOUTS 신규 추가분일 수 있으므로 high 아님, v8.2):
+  [셸] cover cover-image cover-split section toc end qa thanks-contact session-break thumb
+  [본문] split feature-cards content-sidebar comparison-vs comparison steps icon-list checklist faq vertical-timeline
+  [임팩트] statement light takeaway callout-hero
+  [modifier] compact roomy code-lg
+```
+
+#### V-5. 컴포넌트 우선 · 임팩트 상한
+```
+statement/takeaway/callout-hero 합계 > 3장 → medium (임팩트 남용)
+동일 CORE 레이아웃 3연속 → medium (반복 회피 위반)
+```
+
+#### V-6. 단일 강조색 검증
+```
+Grep `#[0-9a-fA-F]{3,8}` 변환물에서 — 인라인 HEX 매치 시 medium (토큰만 허용)
+```
+
+#### V-7. 스타일 프로파일 준수 (references/user-style-profile.md)
+```
+- 불릿 7개 이상 슬라이드 → medium
+- 문장 전체 볼드(불릿 텍스트의 80%+ 볼드) → low
+- 슬라이드당 콜아웃 2개 초과 → low
+```
+
+---
+
 ### Phase 2 — Visual (HTML 분석, 양 모드 공통)
 
 #### C-1. 빈 콘텐츠
@@ -361,10 +421,16 @@ high 0건, medium 2건 → PASS
 3. Phase 1A의 A-1, A-2, A-3, A-8, A-9 통과
 4. **Phase 2 C-5/C-6/C-7 high 0건** (시각 결함 무관용)
 
-### card-news (propca-notion-style-cards)
+### card-news (propca-notion-style-cards / procpa-vivid-cards)
 1. **high 이슈 0건**
 2. medium 이슈 ≤ 2건 (더 엄격)
 3. Phase 1B의 B-1, B-2, B-3, B-4 통과 (output=pdf면 B-6 포함)
+
+### deck (procpa-vivid / procpa-vivid-dark)
+1. **high 이슈 0건** (V-3 ARCHIVE 위반 포함 — 즉시 FAIL)
+2. medium 이슈 ≤ 3건
+3. Phase 1C의 V-1, V-2, V-3 통과
+4. **Phase 2 C-5/C-6/C-7 high 0건**
 
 그 외 FAIL.
 
