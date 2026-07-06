@@ -7,14 +7,23 @@
     { "name": "Obsidian_Vault", "path": "../Obsidian_Vault" }
   ],
   "settings": {
-    // 커스텀 테마 등록 — md의 front matter `theme:` 값으로 자동 선택됨
+    // 커스텀 테마 등록 — md의 front matter `theme:` 값으로 자동 선택됨.
+    // 경로 주의: Marp 확장은 상대경로를 "편집 중인 파일이 속한 워크스페이스 폴더"
+    // 기준으로 해석하고, 그 폴더 밖(../)으로 나가는 경로는 막는다. 그래서 두 루트를
+    // 각각 커버하도록 둘 다 나열한다 — 활성 파일의 루트에서 해석되는 항목만 로드되고
+    // 나머지는 조용히 무시됨:
+    //   · Marp_Templates 파일 → `./themes/...` (정본)
+    //   · Obsidian_Vault 파일 → `./.marp/...` (동기본; `node .scripts/lib/sync-card-theme.mjs`로 갱신)
     "markdown.marp.themes": [
       "./themes/slide/procpa-vivid/procpa-vivid.css",
       "./themes/slide/procpa-vivid/procpa-vivid-dark.css",
       "./themes/thumbnail/procpa-vivid/procpa-vivid-thumb.css",
       "./themes/card-news/procpa-vivid/procpa-vivid-cards.css",
-      "./themes/card-news/propca-notion-style/propca-notion-style-cards.css",
-      "./themes/slide/propca-notion-style/propca-notion-style.css"
+      "./themes/slide/propca-notion-style/propca-notion-style.css",
+      "./.marp/procpa-vivid.css",
+      "./.marp/procpa-vivid-dark.css",
+      "./.marp/procpa-vivid-thumb.css",
+      "./.marp/procpa-vivid-cards.css"
     ],
     // 컴포넌트(<div class="card"> 등) HTML 렌더링에 필수
     "markdown.marp.html": "all",
