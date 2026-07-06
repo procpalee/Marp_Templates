@@ -1,0 +1,26 @@
+{
+  // VS Code에서 이 파일을 더블클릭(또는 "파일 > 워크스페이스 열기")하면
+  // Marp_Templates + Obsidian_Vault가 한 창에 열리고,
+  // Marp for VS Code 확장에 procpa 테마들이 자동 등록됩니다.
+  "folders": [
+    { "name": "Marp_Templates", "path": "." },
+    { "name": "Obsidian_Vault", "path": "../Obsidian_Vault" }
+  ],
+  "settings": {
+    // 커스텀 테마 등록 — md의 front matter `theme:` 값으로 자동 선택됨
+    "markdown.marp.themes": [
+      "./themes/slide/procpa-vivid/procpa-vivid.css",
+      "./themes/slide/procpa-vivid/procpa-vivid-dark.css",
+      "./themes/thumbnail/procpa-vivid/procpa-vivid-thumb.css",
+      "./themes/card-news/procpa-vivid/procpa-vivid-cards.css",
+      "./themes/card-news/propca-notion-style/propca-notion-style-cards.css",
+      "./themes/slide/propca-notion-style/propca-notion-style.css"
+    ],
+    // 컴포넌트(<div class="card"> 등) HTML 렌더링에 필수
+    "markdown.marp.html": "all",
+    "markdown.preview.breaks": false
+  },
+  "extensions": {
+    "recommendations": ["marp-team.marp-vscode"]
+  }
+}
