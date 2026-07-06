@@ -1,0 +1,52 @@
+/* @theme procpa-vivid-dark */
+/* ============================================================
+   procpa-vivid — DARK "Bright Royal" variant
+   Dark canvas #0b0e13 + Bright Royal accent #5b9cff.
+   Inherits ALL layouts/helpers from procpa-vivid via @import;
+   only :root tokens are swapped (same pattern as
+   propca-notion-style-{emerald,slate,ocean}). Base updates
+   propagate automatically. Source: design.md §dark note.
+   ============================================================ */
+@import 'procpa-vivid';
+
+:root {
+  --canvas:       #0b0e13;            /* dark canvas (Bright Royal) */
+  --canvas-soft:  #151a23;            /* raised dark surface */
+  --card:         #11151c;
+
+  --ink:          #f4f6fa;            /* light foreground */
+  --ink-mute:     rgba(244,246,250,0.70);
+  --ink-sub:      rgba(244,246,250,0.50);
+
+  --blue:         #5b9cff;            /* Bright Royal accent */
+  --blue-hover:   #7db0ff;
+  --blue-soft:    rgba(91,156,255,0.14);
+  --on-blue:      #0b0e13;
+
+  --hairline:        rgba(255,255,255,0.12);
+  --hairline-strong: rgba(255,255,255,0.22);
+  --destructive:     #f87171;         /* lighter red for dark bg */
+  --success:         #4ade80;
+  --warn:            #fbbf24;
+
+  /* chart ramp — brighter blue family for dark */
+  --chart-1: #5b9cff;
+  --chart-2: #7db0ff;
+  --chart-3: #a5c8ff;
+  --chart-4: #94a3b8;
+  --chart-5: #475569;
+}
+
+/* ------------------------------------------------------------
+   statement — the ONLY base layout with literal colours.
+   Base uses `background: var(--ink); color: #fff` (a dark slide
+   inside the light theme). On dark that inverts to white-on-white,
+   so re-anchor it to a dark panel with light text.
+   (overrides procpa-vivid.css statement block)
+   ------------------------------------------------------------ */
+section.statement { background: var(--canvas-soft); color: var(--ink); }
+section.statement h1 { color: var(--ink); }
+section.statement p { color: var(--ink-mute); }
+section.statement::after { color: var(--ink-sub); border-color: var(--hairline); }
+section.statement header, section.statement footer { color: var(--ink-sub); }
+/* (h1 strong / .accent already use var(--blue-hover) — auto-inverts) */

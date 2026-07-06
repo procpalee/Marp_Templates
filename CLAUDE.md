@@ -29,7 +29,7 @@
 | 컴포넌트 | 경로 | 역할 |
 |---|---|---|
 | 오케스트레이터 | `.claude/skills/md-to-marp/` | 모드 선택 + md-to-marp-propca 호출 + 빌드 + QA + 재시도 + watch |
-| 변환 스킬 (통합) | `.claude/skills/md-to-marp-propca/` | 옵시디언 전처리(`[[wikilinks]]`/`![[embeds]]`/콜아웃/frontmatter/태그 + 이미지 자산 복사) + propca-notion-style 레이아웃(43 매칭 규칙)·8 인라인 헬퍼·톤 프리셋 3종(tone-exec/tone-lecture/tone-seminar) 자동 매칭. 변환은 [`themes/slide/propca-notion-style/propca-notion-style.md`](themes/slide/propca-notion-style/propca-notion-style.md) 쇼케이스 패턴 준수 — cover의 H1+H2+연월, section의 #=숫자/##=제목, 본문 슬라이드 # 헤더 우선, 인용 신중 사용, 여백 최소화 |
+| 변환 스킬 (통합) | `.claude/skills/md-to-marp-propca/` | 옵시디언 전처리(`[[wikilinks]]`/`![[embeds]]`/콜아웃/frontmatter/태그 + 이미지 자산 복사) + propca-notion-style 레이아웃(40 매칭 규칙)·8 인라인 헬퍼·톤 프리셋 3종(tone-exec/tone-lecture/tone-seminar) 자동 매칭. 변환은 [`themes/slide/propca-notion-style/propca-notion-style.md`](themes/slide/propca-notion-style/propca-notion-style.md) 쇼케이스 패턴 준수 — cover의 H1+H2+연월, section의 #=숫자/##=제목, 본문 슬라이드 # 헤더 우선, 인용 신중 사용, 여백 최소화 |
 | 검증 에이전트 | `.claude/agents/marp-reviewer.md` | 독립 컨텍스트 QA. theme front matter로 propca/card-news 분기 |
 | 슬래시 명령 | `.claude/commands/marp.md` | `/marp <file> [watch] [용도]` — 원샷 빌드 + 선택 watch |
 | 테마 폴더 | `themes/slide/<theme>/` | 테마별 design.md + slides/{css,md,html} 트리플 |
@@ -57,10 +57,15 @@
 | `airbnb` | 코랄 + 사진 우선 + 64pt rating (호스피탈리티/마켓플레이스) |
 | `nvidia` | 풀블랙/화이트 + brand green + 4 corner squares (하드웨어 AI/spec) |
 | `tesla` | 화이트/카본 + Electric Blue + 극단적 whitespace (자동차/럭셔리) |
+| `procpa-vivid` | 화이트 + Vivid Blue #2563eb + 헤어라인 에디토리얼 (모던/전문 발표, procpa.co.kr 블로그 톤) |
 
 용도→테마 매핑은 [`.claude/skills/md-to-deck/references/theme-picker.md`](.claude/skills/md-to-deck/references/theme-picker.md) 참조.
 
 `tech-modern` 외 14 테마는 [VoltAgent/awesome-design-md](https://github.com/VoltAgent/awesome-design-md) (MIT)의 DESIGN.md 토큰을 기반. 브랜드 로고·상표는 사용하지 않음.
+
+`procpa-vivid`는 사용자 블로그(procpa.co.kr, [`procpalee/procpa_obsidian_style`](https://github.com/procpalee/procpa_obsidian_style) `globals.css`)의 "Vivid Blue" 디자인 시스템을 이식한 **라이브 자기완결형 테마**다 (`themes/slide/procpa-vivid/`, 빌드 가능). 14 브랜드 테마(레퍼런스 전용, 자동 매칭 없음)와 달리 `npm run build:procpa-vivid`로 빌드된다. **v7부터 컴포넌트 우선(components-first) 모델**: CSS는 4계층(TIER 1 공통 컴포넌트 → TIER 2 임팩트 레이아웃 → 셸 → PROJECT LAYOUTS)으로 구성. **TIER 1 컴포넌트**(`.card`/`.stat`/`.vs`/`.board`/`.panel`/`.process`/`.quote-block`/`.callout`/`.code-block`(파일명 헤더 코드)/`.table-block`(표, 회계 스타일/compact) + `.cols-2/3/4`·`.stack`·`.split-7-5` + 인라인 헬퍼 `.mark`/`.tag`(상태 변형)/`.chip`/`.kbd`/`.note`/`figure`)로 한 장에 여러 개 조합하는 것이 기본이고, **v8 레이아웃 다이어트 (2026-07, v8.2 조정)**: 실사용 데이터 기반으로 section 레이아웃을 **CORE 세트**로 축소 — 셸 10종(`cover`/`cover-image`/`cover-split`/`section`/`toc`/`end`/`qa`/`thanks-contact`/`session-break`/`thumb`) + 본문 10종(`split`/`feature-cards`/`content-sidebar`/`comparison-vs`/`comparison`/`steps`/`icon-list`/`checklist`/`faq`/`vertical-timeline`) + 임팩트 3종(`statement`(+`light`)/`takeaway`/`callout-hero`) + modifier(`compact`/`roomy`/`code-lg`). 나머지 28종은 CSS에 `[ARCHIVE]` 마커로 잔존(기존 덱 재빌드 호환)하되 **신규 변환 사용 금지** — 대체는 컴포넌트 레시피 [references/vivid-recipes.md](.claude/skills/md-to-marp-propca/references/vivid-recipes.md) R-01~R-12. 카탈로그는 design.md §5·§5-A와 [layouts-by-purpose.md](themes/slide/procpa-vivid/layouts-by-purpose.md). `md-to-marp-propca` 스킬이 `theme: procpa-vivid` 타깃 분기(컴포넌트 우선 라우팅, [references/procpa-vivid-matching.md](.claude/skills/md-to-marp-propca/references/procpa-vivid-matching.md))를 지원하고, 변환 시 **사용자 스타일 프로파일**([references/user-style-profile.md](.claude/skills/md-to-marp-propca/references/user-style-profile.md) — 문체 3단 스위칭·밀도·강조·덱 골격)을 필수 로드한다(원고 작성 가이드: [references/authoring-guide.md](.claude/skills/md-to-marp-propca/references/authoring-guide.md)). marp-reviewer는 Phase 1C(vivid 분기)에서 ARCHIVE 어휘 방화벽을 검사. 사용 빈도 재집계는 `build/`에서 `npm run usage:vivid`. **새 레이아웃이 필요하면 CSS의 `PROJECT LAYOUTS` 섹션에 토큰 전용으로 추가**(design.md §5 "새 레이아웃 추가 절차"). **v7.3 강의 modifier**(한공회 발표 덱 기준): `.shot`(프레임 스크린샷)·`code-lg`(대형 투사 코드)·`statement light`(화이트 선언)·`.compact` 밀도(comparison/comparison-vs/icon-list)·content-sidebar aside 16pt — per-slide `<style scoped>` 없이 강의·회계 발표 덱 작성. 단일 레퍼런스=[`design.md`](themes/slide/procpa-vivid/design.md), 데모=[`procpa-vivid.md`](themes/slide/procpa-vivid/procpa-vivid.md). 다크 변형 `procpa-vivid-dark`("Bright Royal" `#5b9cff` on `#0b0e13`)는 `@import` + 토큰 override로 베이스를 상속 — front matter `theme: procpa-vivid-dark`, `npm run build:procpa-vivid-dark`로 빌드.
+
+**썸네일 시스템 (`themes/thumbnail/procpa-vivid/`)**: procpa-vivid 토큰을 계승한 자기완결형 썸네일 테마 `procpa-vivid-thumb` — 사이즈 프리셋 3종(**16:9 1280×720이 주 산출물** / `size: sq` 1:1 1080×1080 / `size: sns` 4:5 1080×1350, ratio 클래스 `sq`/`tall`을 `_class`에 합성) × 레이아웃 변형 5종(**`thumb-photo`가 기본(메인) — `_backgroundImage` cover + 다크 스크림** / `thumb-typo`/`thumb-ink`/`thumb-band`/`thumb-badge`). 16:9는 콘텐츠를 중앙 1:1(720×720) 세이프 존에 유지하며 **전 비율 텍스트 가운데 정렬 + 브랜드 마커(로고/PROCPA)는 하단 중앙 고정**. 빌드: `npm run build:thumb`(HTML 검수) / `thumb:png-169`·`thumb:png-sq`·`thumb:png-45`·`thumb:all`(PNG). md-to-marp 오케스트레이터 purpose에 "썸네일" 키워드 → `mode: thumbnail`, **"풀세트" 키워드 → `mode: full-set`(덱+카드뉴스+썸네일 일괄, procpa-vivid 계열 고정 — SKILL.md §4.5)** 자동 분기. 상세: [themes/thumbnail/procpa-vivid/design.md](themes/thumbnail/procpa-vivid/design.md) — **Marpit 주의**: `section::after`는 content 제거 + `padding: inherit` 주입되므로 로고 pseudo에 `padding: 0` 필수. 컴포넌트 레시피 시각 데모: [vivid-recipes-demo.md](themes/slide/procpa-vivid/vivid-recipes-demo.md) (`recipes-demo-png/`).
 
 ---
 
@@ -105,6 +110,7 @@ npx --yes @marp-team/marp-cli ^
 
 - 각 테마는 **자기완결형** (`@import` 사용 안 함). 베이스 변경이 다른 테마로 자동 전파되지 않음
   - **예외**: propca 색상 변형 3종(`propca-notion-style-{emerald,slate,ocean}.css`)은 Marpit `@import` 상속으로 베이스를 공유 — propca 변경이 자동 전파됨 (design.md §12)
+- **propca 옵션 카탈로그 동기화 (필수)**: propca-notion-style의 옵션(레이아웃/색상 변형/톤 프리셋/커버 변형/인라인 헬퍼)을 추가·제거·변경하면 [`themes/slide/propca-notion-style/README.md`](themes/slide/propca-notion-style/README.md)의 해당 표를 같은 커밋에서 갱신할 것
 - 베이스(`themes/slide/tech-modern/slides/tech-modern.css`) 수정 시 다른 테마 파생본도 함께 갱신해야 회귀 일관성 보장
 - 새 레이아웃 추가 위치:
   - 모든 테마 공용 → `tech-modern.css` 끝에 append + 다른 테마들에도 동일 append
@@ -143,7 +149,7 @@ npx --yes @marp-team/marp-cli ^
 
 자세한 정의는 각 [`themes/slide/<theme>/design.md`](./themes/) §5 참조.
 
-**자동 매칭 가능 deck 테마**: `propca-notion-style` (md-to-marp-propca 스킬, 40 전용 레이아웃 + 8 인라인 헬퍼 + 톤 프리셋 3종). 강의·교육·발표 컨텍스트 특화. 2026-06 신규 6종: `faq`/`code-focus`/`step-text`/`gallery-grid`/`content-sidebar`/`schedule`. 톤 프리셋(`tone-exec`/`tone-lecture`/`tone-seminar`)은 purpose 키워드(임원/강의/세미나)로 자동 선택. 색상 변형 3종(EMERALD/SLATE/OCEAN)은 front matter `theme:` 수동 지정 — [`themes/slide/propca-notion-style/design.md`](themes/slide/propca-notion-style/design.md) §14·§15 참조.
+**자동 매칭 가능 deck 테마**: `propca-notion-style` (md-to-marp-propca 스킬, 37 전용 레이아웃 + 8 인라인 헬퍼 + 톤 프리셋 3종). 강의·교육·발표 컨텍스트 특화. 2026-06 신규 6종: `faq`/`code-focus`/`step-text`/`gallery-grid`/`content-sidebar`/`schedule`. 톤 프리셋(`tone-exec`/`tone-lecture`/`tone-seminar`)은 purpose 키워드(임원/강의/세미나)로 자동 선택. 색상 변형 3종(EMERALD/SLATE/OCEAN)은 front matter `theme:` 수동 지정 — [`themes/slide/propca-notion-style/design.md`](themes/slide/propca-notion-style/design.md) §14·§15 참조.
 
 기존 14 브랜드 테마(`vercel`/`notion`/`claude`/`spotify`/`stripe`/`figma`/`apple`/`linear`/`cursor`/`raycast`/`supabase`/`airbnb`/`nvidia`/`tesla`)는 **자동 매칭 부재** — 사용자가 `<!-- _class -->`를 수동으로 작성한 MD에서만 사용 가능. `tech-modern`은 이번 워크플로 개편으로 자동 매칭 대상에서 제외됨 (구 `md-to-marp` tech-modern 휴리스틱 제거).
 

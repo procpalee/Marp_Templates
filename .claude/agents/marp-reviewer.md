@@ -32,6 +32,8 @@ tools: Read, Grep, Glob, Bash
 `Read 변환된 .md의 상단 20줄` → `theme:` 값 파싱:
 - `theme: propca-notion-style` (또는 색상 변형 `propca-notion-style-emerald/-slate/-ocean`) → Phase 1A (propca deck)
 - `theme: propca-notion-style-cards` → Phase 1B (card-news)
+- `theme: procpa-vivid` (또는 `procpa-vivid-dark`) → Phase 1C (vivid deck)
+- `theme: procpa-vivid-cards` → Phase 1B 준용 (클래스 네임스페이스는 `card-*`/`intro-*`/`outro-*`)
 - 그 외 → high 이슈 + 기본 deck 체크리스트로 진행 (예: tech-modern 잔재)
 
 ---
@@ -62,10 +64,10 @@ Grep `<!-- _class: (grid-3|stats|bg-full|split|flow-arrow|big-number|kpi-row|car
 (주의: `agenda`/`gallery-4`는 propca 실존 레이아웃 — 금지 목록 아님)
 ```
 
-#### A-4. propca 어휘 검증 (40종 + 톤 수식 3종)
+#### A-4. propca 어휘 검증 (37종 + 톤 수식 3종)
 ```
 변환물에서 모든 _class 값을 추출 — **공백 분리해 토큰별로 검증** (예: `_class: cards tone-exec` → cards + tone-exec)
-허용 목록 (40종):
+허용 목록 (37종):
   [기본 13종]
   cover, toc-split, section, hero-quote, image-quote, compare, two-image, before-after,
   cards, pastel-blocks, timeline, vertical-timeline, roadmap, toggle-list, icon-list, block-features,
@@ -73,7 +75,7 @@ Grep `<!-- _class: (grid-3|stats|bg-full|split|flow-arrow|big-number|kpi-row|car
   feature-compare, step-image-guide, definition-cards,
   [10종 — 2026-05 2차]
   compare-cards, compare-table, concept-list, concept-table,
-  comparison-3up, story-arc, example-case, pull-quote, pros-cons, checklist,
+  comparison-3up, pros-cons, checklist,
   [신규 6종 — 2026-06]
   faq, code-focus, step-text, gallery-grid, content-sidebar, schedule,
   [Cover 변형 5종]
@@ -106,15 +108,12 @@ Grep `<!-- _class: (grid-3|stats|bg-full|split|flow-arrow|big-number|kpi-row|car
 | `step-image-guide` | `<div class="step-grid">` (steps + img) 또는 ol + 인접 이미지 ≥1 |
 | `definition-cards` | H3 2~6개 + 각 본문 2~3행 |
 | `compare-cards` | `<div class="vs-grid">` + 2 카드 (좌/우) + 중앙 `<div class="vs">` 뱃지 |
-| `compare-table` | `<table>` 2~3 컬럼, 첫 행 헤더 (navy), 좌측 컬럼 속성 라벨 |
+| `compare-table` | `<table>` 2~3 컬럼, 첫 행 라이트 헤더 (transparent + 하단 2px 보더), 좌측 컬럼 속성 라벨 |
 | `concept-list` | `<ol>` 5~10 항목, 각 항목 굵은 제목 + 부가 설명 |
 | `concept-table` | `<table>` 2 컬럼 (용어/정의), 좌측 보라색 굵게 |
-| `comparison-3up` | `<div class="matrix">` + 3~4 카드 (보라 헤더 + ul) |
-| `story-arc` | H1 + 단락 3개 (배경→사건→결과), 좌측 거대 따옴표 ::before |
-| `example-case` | H1 + 본문 + `<blockquote>` 또는 `<div class="case-aside">` 보조 박스 |
-| `pull-quote` | `<blockquote>` (≥1행) + 출처 단락 (작은 글씨, `—` 출처) |
+| `comparison-3up` | `<div class="matrix">` + h3/ul 쌍 3~4 (라이트 카드 헤더 + 상단 3px purple) |
 | `pros-cons` | `<div class="pc-grid">` + `<div class="pros">` + `<div class="cons">` 2개 카드, 각 H3 + ul |
-| `checklist` | `<ul>` + 각 항목 GFM `<input type="checkbox">` (`- [ ]` / `- [x]`) |
+| `checklist` | `<ul>` raw HTML + `<li class="todo">`/`<li class="done">` (Marp Core가 GFM task list 미지원 — `- [ ]` 리터럴 잔존 시 FAIL) |
 | `cover-image` | 배경 이미지 + navy 오버레이 (CSS 변수 또는 Marp `_backgroundImage`) |
 | `cover-split` | Marp `![bg left:50%]` 디렉티브 + navy 우측 텍스트 |
 | `cover-minimal` | 흰 배경 + H1 88pt + 좌하단 부제·메타 |
@@ -227,6 +226,64 @@ PDF 페이지 수 == 슬라이드 수 (pdfinfo 또는 grep -c '/Type[ ]*/Page[^s
 
 ---
 
+### Phase 1C — procpa-vivid deck 모드 (v8 CORE)
+
+#### V-1. Front matter
+```
+확인:
+  - `marp: true`, `theme: procpa-vivid` (또는 `procpa-vivid-dark`)
+  - `paginate: true`, `size: 16:9`
+```
+
+#### V-2. 슬라이드 구조
+```
+첫 슬라이드: `<!-- _class: cover -->` 또는 `cover-image`
+마지막 슬라이드: `<!-- _class: (end|qa|thanks-contact) -->`
+슬라이드 수 ≥ 3
+```
+
+#### V-3. ARCHIVE 어휘 방화벽 (v8 — 신규 사용 금지 32종)
+```
+변환물의 모든 _class 토큰에서 아래 매치 시 high 이슈 (v8.2):
+  problem-solution gap-analysis pros-cons timeline roadmap
+  definition code-focus image-split gallery before-after
+  grid-3 quote toggle-list block-features two-image comparison-three
+  conclusion-cards conclusion-split conclusion-actions situation-insight
+  lead-support flow-arrow big-insight metric-row closing-cta
+  cover-minimal cover-band cover-photo-full
+(주의: `quote`는 단독 토큰만 금지 — `.quote-block` div는 컴포넌트로 허용)
+propca 어휘(pastel-blocks/yellow-banner/tone-*) 매치 시에도 high.
+```
+
+#### V-4. CORE 어휘 검증
+```
+_class 토큰 허용 목록 (이외는 medium — PROJECT LAYOUTS 신규 추가분일 수 있으므로 high 아님, v8.2):
+  [셸] cover cover-image cover-split section toc end qa thanks-contact session-break thumb
+  [본문] split feature-cards content-sidebar comparison-vs comparison steps icon-list checklist faq vertical-timeline
+  [임팩트] statement light takeaway callout-hero
+  [modifier] compact roomy code-lg
+```
+
+#### V-5. 컴포넌트 우선 · 임팩트 상한
+```
+statement/takeaway/callout-hero 합계 > 3장 → medium (임팩트 남용)
+동일 CORE 레이아웃 3연속 → medium (반복 회피 위반)
+```
+
+#### V-6. 단일 강조색 검증
+```
+Grep `#[0-9a-fA-F]{3,8}` 변환물에서 — 인라인 HEX 매치 시 medium (토큰만 허용)
+```
+
+#### V-7. 스타일 프로파일 준수 (references/user-style-profile.md)
+```
+- 불릿 7개 이상 슬라이드 → medium
+- 문장 전체 볼드(불릿 텍스트의 80%+ 볼드) → low
+- 슬라이드당 콜아웃 2개 초과 → low
+```
+
+---
+
 ### Phase 2 — Visual (HTML 분석, 양 모드 공통)
 
 #### C-1. 빈 콘텐츠
@@ -325,7 +382,7 @@ Grep `!\[.*\]\(([^)]+)\)` 변환물에서 이미지 경로 추출
 - [x] front matter
 - [x] slide structure
 - [x] 어휘 방화벽 (tech-modern 클래스 0건)
-- [x] propca 어휘 (40종 + 톤 수식)
+- [x] propca 어휘 (37종 + 톤 수식)
 - [FAIL] div blank lines (lines 142, 198)
 - [x] H2 preservation
 - [x] build artifact (HTML 108KB, base CSS present)
@@ -364,10 +421,16 @@ high 0건, medium 2건 → PASS
 3. Phase 1A의 A-1, A-2, A-3, A-8, A-9 통과
 4. **Phase 2 C-5/C-6/C-7 high 0건** (시각 결함 무관용)
 
-### card-news (propca-notion-style-cards)
+### card-news (propca-notion-style-cards / procpa-vivid-cards)
 1. **high 이슈 0건**
 2. medium 이슈 ≤ 2건 (더 엄격)
 3. Phase 1B의 B-1, B-2, B-3, B-4 통과 (output=pdf면 B-6 포함)
+
+### deck (procpa-vivid / procpa-vivid-dark)
+1. **high 이슈 0건** (V-3 ARCHIVE 위반 포함 — 즉시 FAIL)
+2. medium 이슈 ≤ 3건
+3. Phase 1C의 V-1, V-2, V-3 통과
+4. **Phase 2 C-5/C-6/C-7 high 0건**
 
 그 외 FAIL.
 

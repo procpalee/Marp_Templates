@@ -1,4 +1,4 @@
-# propca-notion-style — 레이아웃 매핑 휴리스틱 (43 규칙)
+# propca-notion-style — 레이아웃 매핑 휴리스틱 (40 규칙)
 
 표준 마크다운의 슬라이드 단위 콘텐츠를 분석해 propca-notion-style 레이아웃 중 하나로 매칭한다. 우선순위는 셸(cover/end/qa/section/session-break) → 네비게이션(toc-split) → 콘텐츠.
 
@@ -24,14 +24,14 @@
 
 ---
 
-## 매핑 표 (전체 43행)
+## 매핑 표 (전체 40행)
 
 | # | 입력 패턴 | 출력 클래스 | 신뢰도 | 폴백 |
 |---|---|---|---|---|
 | 1 | 첫 슬라이드 (H1 + 부제 + 발표자) | `cover` | 高 | — |
 | 2 | 첫 3 슬라이드 내 H2 `목차`/`Agenda`/`Outline` + ol/ul 3~6 | `toc-split` | 高 | content |
 | 3 | H2 `\d+\. <title>` 솔로 (≤1 본문 행), 형제 3+ | `section` | 高 | content |
-| 4 | H1 + blockquote 솔로 (≥2행, 마커 없음) | `hero-quote` | 高 | content |
+| 4 | blockquote 솔로 (≥2행, 마커 없음) — 출처(`— 출처`·URL) 유무 무관 | `hero-quote` | 高 | content |
 | 5 | 이미지 1 + blockquote 동일 슬라이드 | `image-quote` (+`![bg left:60%]`) | 高 | inline 이미지 |
 | 6 | 2 컬럼 ul/ol + `vs`/`대비`/`비교`/`compare` 키워드 | `compare` | 高 | content |
 | 7 | 인라인 이미지 정확히 2 + 본문 ≤3행 | `two-image` | 高 | content |
@@ -59,18 +59,15 @@
 | **29 (신규)** | ol 5~10 항목 + 각 `**bold** —` 리드인 + 정의·설명 (개념 사전 톤) | `concept-list` | 高 | vertical-timeline |
 | **30 (신규)** | 표 2 컬럼 + 첫 컬럼=용어 + 둘째 컬럼=정의 (행 4+) | `concept-table` | 高 | concept-list |
 | **31 (신규)** | 3~4개 항목 카드 그리드 + 각 카드 ul 비교 항목 (3~4 항목) | `comparison-3up` | 高 | feature-compare |
-| **32 (신규)** | 본문 시작이 `최근`/`예전에`/`한 번은`/`경험` 같은 회상 톤 + 단락형 3개 (배경→사건→결과) | `story-arc` | 中 | content |
-| **33 (신규)** | 본문 시작이 `예를 들어`/`사례`/`Case` + 단일 시나리오 본문 + 보조 인용/설명 | `example-case` | 中 | content |
-| **34 (신규)** | blockquote 솔로 (≥2행) + 외부 출처 명시 (이메일·URL·`— 출처` 패턴) | `pull-quote` | 高 | hero-quote |
-| **35 (신규)** | H1 `장단점`/`Pros & Cons` + 2 ul 그룹 (좌측 ✓ 항목 / 우측 ✗ 항목) | `pros-cons` | 高 | compare |
-| **36 (신규)** | GFM 태스크 리스트 (`- [ ]` / `- [x]`) ≥3 항목 | `checklist` | 高 | icon-list |
-| **37 (2026-06)** | H3 2~5개가 의문문 (`\?$`·`인가요`·`나요`·`까요`·`어떻게`·`왜`) + 각 1~3행 답변 | `faq` | 高 | definition-cards |
-| **38 (2026-06)** | fenced code block ≥6행 + 기타 본문 ≤3행 (코드가 슬라이드 지배) | `code-focus` | 高 | content |
-| **39 (2026-06)** | ol 3~5 + `**제목** —` 리드인 + 각 설명 ≥2행 + 절차 키워드(`단계`/`Step`/`먼저`/`다음`) + 이미지 0 | `step-text` | 中 | timeline |
-| **40 (2026-06)** | 이미지 3~6 + 본문 ≤2행 | `gallery-grid` | 高 | 슬라이드 분할 |
-| **41 (2026-06)** | 본문 ≥4행 + 보조 블록 동반 (`참고`/`Tip`/`주의`/`관련` 헤더의 짧은 ul·blockquote) | `content-sidebar` (main/side div 생성) | 中 | content + callout |
-| **42 (2026-06)** | 표 첫 컬럼 날짜 패턴 (`\d{1,2}/\d{1,2}`·`\d{4}-\d{2}`·`N월 N일`·`D-\d+`) 행 3+, 또는 ul 각 `**날짜** —` | `schedule` | 高 | roadmap / 일반 table |
-| 43 | (기본) 인식 못한 H2 + 본문 | 평범 content (no `_class`) | — | — |
+| **32 (신규)** | H1 `장단점`/`Pros & Cons` + 2 ul 그룹 (좌측 ✓ 항목 / 우측 ✗ 항목) | `pros-cons` | 高 | compare |
+| **33 (신규)** | GFM 태스크 리스트 (`- [ ]` / `- [x]`) ≥3 항목 — Marp Core가 GFM task list를 렌더링하지 않으므로 **반드시** `<ul>` raw HTML의 `<li class="todo">`/`<li class="done">`으로 치환해 출력 | `checklist` | 高 | icon-list |
+| **34 (2026-06)** | H3 2~5개가 의문문 (`\?$`·`인가요`·`나요`·`까요`·`어떻게`·`왜`) + 각 1~3행 답변 | `faq` | 高 | definition-cards |
+| **35 (2026-06)** | fenced code block ≥6행 + 기타 본문 ≤3행 (코드가 슬라이드 지배) | `code-focus` | 高 | content |
+| **36 (2026-06)** | ol 3~5 + `**제목** —` 리드인 + 각 설명 ≥2행 + 절차 키워드(`단계`/`Step`/`먼저`/`다음`) + 이미지 0 | `step-text` | 中 | timeline |
+| **37 (2026-06)** | 이미지 3~6 + 본문 ≤2행 | `gallery-grid` | 高 | 슬라이드 분할 |
+| **38 (2026-06)** | 본문 ≥4행 + 보조 블록 동반 (`참고`/`Tip`/`주의`/`관련` 헤더의 짧은 ul·blockquote) | `content-sidebar` (main/side div 생성) | 中 | content + callout |
+| **39 (2026-06)** | 표 첫 컬럼 날짜 패턴 (`\d{1,2}/\d{1,2}`·`\d{4}-\d{2}`·`N월 N일`·`D-\d+`) 행 3+, 또는 ul 각 `**날짜** —` | `schedule` | 高 | roadmap / 일반 table |
+| 40 | (기본) 인식 못한 H2 + 본문 | 평범 content (no `_class`) | — | — |
 
 ### 경합 정리 (2026-06 신규 규칙 ↔ 기존 규칙)
 
